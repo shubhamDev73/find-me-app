@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-Widget menuButton({key, context}) {
+Widget menuButton({key, scaffoldKey, selected, icon}) {
   final snackBar = SnackBar(
     content: Text(key),
     action: SnackBarAction(
@@ -8,25 +8,27 @@ Widget menuButton({key, context}) {
       onPressed: () {},
     ),
   );
-  return InkWell(
-    onTap: () {
-      context.currentState.showSnackBar(snackBar);
-    },
-    child: Container(
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(8),
-        color: Colors.black,
-        boxShadow: [
-          BoxShadow(
-            offset: Offset(0, 4),
-            blurRadius: 10,
-            color: Colors.grey.shade400,
-            spreadRadius: 0,
+  return Expanded(
+    flex: 2,
+    child: InkWell(
+      onTap: () {
+        scaffoldKey.currentState.showSnackBar(snackBar);
+      },
+      child: Container(
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.only(
+            topLeft: selected ? Radius.circular(0.0) : Radius.circular(8.0),
+            topRight: selected ? Radius.circular(0.0) : Radius.circular(0.0),
           ),
-        ],
+          color: selected ? Colors.white : Color(0xff00ACC1),
+        ),
+        height: 84,
+        width: 50,
+        child: Icon(
+          icon,
+          color: selected ? Color(0xff00ACC1) : Colors.white,
+        ),
       ),
-      height: 50,
-      width: 50,
     ),
   );
 }
