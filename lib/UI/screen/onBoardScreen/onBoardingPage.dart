@@ -91,7 +91,8 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
                         : Column(
                             children: [
                               InkWell(
-                                onTap: null,
+                                onTap: () => Navigator.of(context)
+                                    .pushNamed("/register"),
                                 child: Container(
                                   margin: EdgeInsets.symmetric(vertical: 2),
                                   padding: EdgeInsets.symmetric(
@@ -113,7 +114,8 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
                                 ),
                               ),
                               InkWell(
-                                onTap: null,
+                                onTap: () =>
+                                    Navigator.of(context).pushNamed("/login"),
                                 child: Container(
                                   margin: EdgeInsets.symmetric(vertical: 10),
                                   padding: EdgeInsets.symmetric(
@@ -191,87 +193,37 @@ class SlideTile extends StatelessWidget {
         mainAxisAlignment:
             isLast ? MainAxisAlignment.end : MainAxisAlignment.center,
         children: [
-          SvgPicture.asset(
-            imagePath,
+          Hero(
+            tag: "logo",
+            child: SvgPicture.asset(
+              imagePath,
+            ),
           ),
           SizedBox(
             height: 8,
           ),
-          Text(
-            title,
-            style: TextStyle(
-                fontSize: 46, fontWeight: FontWeight.w400, color: Colors.white),
+          Hero(
+            tag: "title",
+            child: Text(
+              title,
+              style: TextStyle(
+                  fontSize: 46,
+                  fontWeight: FontWeight.w400,
+                  color: Colors.white),
+            ),
           ),
-          Text(
-            desc,
-            style: TextStyle(
-                fontSize: 12, fontWeight: FontWeight.w400, color: Colors.white),
+          Hero(
+            tag: "desc",
+            child: Text(
+              desc,
+              style: TextStyle(
+                  fontSize: 12,
+                  fontWeight: FontWeight.w400,
+                  color: Colors.white),
+            ),
           ),
         ],
       ),
     );
   }
 }
-
-//  bottomSheet: slideIndex != 2
-//           ? Container(
-//               margin: EdgeInsets.symmetric(vertical: 16),
-//               child: Row(
-//                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
-//                 children: <Widget>[
-//                   FlatButton(
-//                     onPressed: () {
-//                       controller.animateToPage(2,
-//                           duration: Duration(milliseconds: 400),
-//                           curve: Curves.linear);
-//                     },
-//                     child: Text(
-//                       "SKIP",
-//                       style: TextStyle(
-//                           color: Color(0xFF0074E4),
-//                           fontWeight: FontWeight.w600),
-//                     ),
-//                   ),
-//                   Container(
-//                     child: Row(
-//                       children: [
-//                         for (int i = 0; i < 3; i++)
-//                           i == slideIndex
-//                               ? _buildPageIndicator(true)
-//                               : _buildPageIndicator(false),
-//                       ],
-//                     ),
-//                   ),
-//                   FlatButton(
-//                     onPressed: () {
-//                       print("this is slideIndex: $slideIndex");
-//                       controller.animateToPage(slideIndex + 1,
-//                           duration: Duration(milliseconds: 500),
-//                           curve: Curves.linear);
-//                     },
-//                     splashColor: Colors.blue[50],
-//                     child: Text(
-//                       "NEXT",
-//                       style: TextStyle(
-//                           color: Color(0xFF0074E4),
-//                           fontWeight: FontWeight.w600),
-//                     ),
-//                   ),
-//                 ],
-//               ),
-//             )
-//           : InkWell(
-//               onTap: () {
-//                 print("Get Started Now");
-//               },
-//               child: Container(
-//                 height: Platform.isIOS ? 70 : 60,
-//                 color: Colors.blue,
-//                 alignment: Alignment.center,
-//                 child: Text(
-//                   "GET STARTED NOW",
-//                   style: TextStyle(
-//                       color: Colors.white, fontWeight: FontWeight.w600),
-//                 ),
-//               ),
-//             ),
