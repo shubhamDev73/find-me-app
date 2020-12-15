@@ -3,7 +3,8 @@ import 'package:flutter/material.dart';
 class ActivityButton extends StatelessWidget {
   final Function function;
   final String title;
-  ActivityButton({this.function, this.title});
+  final double intensity;
+  ActivityButton({this.function, this.title, this.intensity});
   @override
   Widget build(BuildContext context) {
     return InkWell(
@@ -19,7 +20,7 @@ class ActivityButton extends StatelessWidget {
               spreadRadius: 0,
             ),
           ],
-          color: Color(0xff00ADC2),
+          color: Color(0xff00ADC2).withOpacity(intensity),
         ),
         height: 35,
         width: 95,

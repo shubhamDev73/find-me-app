@@ -46,7 +46,7 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
           end: Alignment.bottomCenter,
           colors: [
             Colors.white,
-            MyColors().primaryColor,
+            MyColors.primaryColor,
           ],
         )),
         child: Column(
@@ -96,10 +96,13 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
                                 child: Container(
                                   margin: EdgeInsets.symmetric(vertical: 2),
                                   padding: EdgeInsets.symmetric(
-                                      horizontal: 20, vertical: 10),
+                                    horizontal: 20,
+                                    vertical: 10,
+                                  ),
                                   decoration: BoxDecoration(
-                                      color: Colors.white,
-                                      borderRadius: BorderRadius.circular(14)),
+                                    color: Colors.white,
+                                    borderRadius: BorderRadius.circular(14),
+                                  ),
                                   width:
                                       MediaQuery.of(context).size.width * 0.5,
                                   child: Text(
@@ -107,7 +110,7 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
                                     style: TextStyle(
                                       fontSize: 14,
                                       fontWeight: FontWeight.w500,
-                                      color: MyColors().primaryColor,
+                                      color: MyColors.primaryColor,
                                     ),
                                     textAlign: TextAlign.center,
                                   ),
@@ -130,7 +133,7 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
                                     style: TextStyle(
                                       fontSize: 14,
                                       fontWeight: FontWeight.w500,
-                                      color: MyColors().primaryColor,
+                                      color: MyColors.primaryColor,
                                     ),
                                     textAlign: TextAlign.center,
                                   ),

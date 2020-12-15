@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'UI/Widgets/custom_page_route.dart';
 import 'UI/screen/home/homePage.dart';
@@ -19,21 +20,25 @@ class Main extends StatefulWidget {
 class _MainState extends State<Main> {
   @override
   Widget build(BuildContext context) {
+    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+      statusBarColor: MyColors.accentColor,
+      statusBarBrightness: Brightness.dark,
+    ));
+    final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey();
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: title,
       theme: ThemeData(
-        primaryColor: MyColors().primaryColor,
-        accentColor: MyColors().accentColor,
+        primaryColor: MyColors.primaryColor,
+        accentColor: MyColors.accentColor,
         scaffoldBackgroundColor: Colors.white,
-        cursorColor: Colors.white,
         appBarTheme: AppBarTheme().copyWith(
           iconTheme: IconThemeData(color: Colors.black),
           textTheme: TextTheme().copyWith(
             headline6: Theme.of(context)
                 .primaryTextTheme
                 .headline6
-                .copyWith(color: MyColors().primaryColor),
+                .copyWith(color: MyColors.primaryColor),
           ),
         ),
         textTheme: TextTheme(
@@ -42,7 +47,7 @@ class _MainState extends State<Main> {
             bodyText2:
                 GoogleFonts.quicksand(textStyle: TextStyle(fontSize: 14.0))),
       ),
-      initialRoute: '/',
+      initialRoute: '/home',
       onGenerateRoute: (RouteSettings settings) {
         switch (settings.name) {
           case '/':
@@ -58,7 +63,10 @@ class _MainState extends State<Main> {
                 settings: settings);
           case '/home':
             return PageRouteBuilder(
-                pageBuilder: (_, a1, a2) => HomeScreen(), settings: settings);
+                pageBuilder: (_, a1, a2) => HomeScreen(
+                      scaffoldKey: _scaffoldKey,
+                    ),
+                settings: settings);
           default:
             return CustomPageRoute.build(
                 builder: (_) => OnBoardingScreen(), settings: settings);
