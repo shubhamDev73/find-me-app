@@ -5,7 +5,9 @@ import 'dart:math';
 import '../../constant.dart';
 
 class TraitsElements extends StatefulWidget {
+  final String selectedElement;
   const TraitsElements({
+    this.selectedElement,
     Key key,
   }) : super(key: key);
 
@@ -37,52 +39,82 @@ class _TraitsElementsState extends State<TraitsElements>
         mainAxisSize: MainAxisSize.max,
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          MoodIcons(
-            icon: SvgPicture.asset(
-              Assets.moodOne,
+          GestureDetector(
+            onTap: () {
+              Navigator.pushNamed(context, "/profileLandingTrait",
+                  arguments: "Earth");
+            },
+            child: MoodIcons(
+              icon: SvgPicture.asset(
+                Assets.moodOne,
+              ),
+              sweepAngle: 100,
+              progress: 100,
             ),
-            sweepAngle: 100,
-            progress: 100,
           ),
           SizedBox(
             width: 20,
           ),
-          MoodIcons(
-            icon: SvgPicture.asset(
-              Assets.moodTwo,
+          GestureDetector(
+            onTap: () {
+              Navigator.pushNamed(context, "/profileLandingTrait",
+                  arguments: "Earth");
+            },
+            child: MoodIcons(
+              icon: SvgPicture.asset(
+                Assets.moodTwo,
+              ),
+              sweepAngle: 97,
+              progress: 38,
             ),
-            sweepAngle: 97,
-            progress: 38,
           ),
           SizedBox(
             width: 20,
           ),
-          MoodIcons(
-            icon: SvgPicture.asset(
-              Assets.moodThree,
+          GestureDetector(
+            onTap: () {
+              Navigator.pushNamed(context, "/profileLandingTrait",
+                  arguments: "Earth");
+            },
+            child: MoodIcons(
+              icon: SvgPicture.asset(
+                Assets.moodThree,
+              ),
+              sweepAngle: 57,
+              progress: 77,
             ),
-            sweepAngle: 57,
-            progress: 77,
           ),
           SizedBox(
             width: 20,
           ),
-          MoodIcons(
-            icon: SvgPicture.asset(
-              Assets.moodFour,
+          GestureDetector(
+            onTap: () {
+              Navigator.pushNamed(context, "/profileLandingTrait",
+                  arguments: "Earth");
+            },
+            child: MoodIcons(
+              icon: SvgPicture.asset(
+                Assets.moodFour,
+              ),
+              sweepAngle: 0,
+              progress: 25,
             ),
-            sweepAngle: 0,
-            progress: 25,
           ),
           SizedBox(
             width: 20,
           ),
-          MoodIcons(
-            icon: SvgPicture.asset(
-              Assets.moodFive,
+          GestureDetector(
+            onTap: () {
+              Navigator.pushNamed(context, "/profileLandingTrait",
+                  arguments: "Earth");
+            },
+            child: MoodIcons(
+              icon: SvgPicture.asset(
+                Assets.moodFive,
+              ),
+              sweepAngle: 60,
+              progress: 20,
             ),
-            sweepAngle: 60,
-            progress: 20,
           ),
         ],
       ),

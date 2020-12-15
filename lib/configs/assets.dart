@@ -9,4 +9,7 @@ class Assets {
   static const moodFive = "assets/moods/moodFive.svg";
   static const avatar = "assets/avatar/happyAvatar.png";
   static const edit = "assets/edits/edit.svg";
+  static const me = "assets/tabs/meTab.svg";
+  static const find = "assets/tabs/findTab.svg";
+  static const fire = "assets/logo/fire.svg";
 }

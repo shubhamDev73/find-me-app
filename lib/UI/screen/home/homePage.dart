@@ -59,7 +59,11 @@ class _HomeScreenState extends State<HomeScreen> {
                     height: 180,
                     child: Stack(
                       children: [
-                        Greating(),
+                        Greating(
+                          title: "Konichiwa",
+                          desc:
+                              "Did you know the US armys traning bumbelbees to sniff out explosive?",
+                        ),
                         TraitsElements(),
                       ],
                     ),
@@ -81,13 +85,8 @@ class _HomeScreenState extends State<HomeScreen> {
                       ActivityButton(
                         title: intrest[0].title,
                         function: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) =>
-                                  ActivityTwo(title: intrest[0].title),
-                            ),
-                          );
+                          Navigator.pushNamed(context, "/profileIntrestLanding",
+                              arguments: intrest[0].title);
                         },
                         intensity: intrest[0].intensity,
                       ),
@@ -97,13 +96,8 @@ class _HomeScreenState extends State<HomeScreen> {
                       ActivityButton(
                         title: intrest[1].title,
                         function: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) =>
-                                  ActivityTwo(title: intrest[1].title),
-                            ),
-                          );
+                          Navigator.pushNamed(context, "/profileIntrestLanding",
+                              arguments: intrest[0].title);
                         },
                         intensity: intrest[1].intensity,
                       ),
@@ -119,13 +113,8 @@ class _HomeScreenState extends State<HomeScreen> {
                       ActivityButton(
                         title: intrest[2].title,
                         function: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) =>
-                                  ActivityTwo(title: intrest[2].title),
-                            ),
-                          );
+                          Navigator.pushNamed(context, "/profileIntrestLanding",
+                              arguments: intrest[0].title);
                         },
                         intensity: intrest[2].intensity,
                       ),
@@ -135,14 +124,8 @@ class _HomeScreenState extends State<HomeScreen> {
                       ActivityButton(
                         title: intrest[3].title,
                         function: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => ActivityTwo(
-                                title: intrest[3].title,
-                              ),
-                            ),
-                          );
+                          Navigator.pushNamed(context, "/profileIntrestLanding",
+                              arguments: intrest[0].title);
                         },
                         intensity: intrest[3].intensity,
                       ),
@@ -152,14 +135,8 @@ class _HomeScreenState extends State<HomeScreen> {
                       ActivityButton(
                         title: intrest[4].title,
                         function: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => ActivityTwo(
-                                title: intrest[4].title,
-                              ),
-                            ),
-                          );
+                          Navigator.pushNamed(context, "/profileIntrestLanding",
+                              arguments: intrest[0].title);
                         },
                         intensity: intrest[4].intensity,
                       ),
@@ -168,23 +145,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 ],
               ),
             ),
-            Expanded(
-              flex: 1,
-              child: Row(
-                children: [
-                  menuButton(
-                      key: "Menu button 2",
-                      scaffoldKey: widget.scaffoldKey,
-                      selected: true,
-                      icon: Icons.ac_unit),
-                  menuButton(
-                      key: "Menu button 3",
-                      scaffoldKey: widget.scaffoldKey,
-                      selected: false,
-                      icon: Icons.access_alarm),
-                ],
-              ),
-            )
+            MenuButton(),
           ],
         ),
       ),

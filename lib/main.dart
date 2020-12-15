@@ -5,6 +5,8 @@ import 'UI/Widgets/custom_page_route.dart';
 import 'UI/screen/home/homePage.dart';
 import 'UI/screen/login/loginPage.dart';
 import 'UI/screen/onBoardScreen/onBoardingPage.dart';
+import 'UI/screen/profileIntrestLanding/profileIntrestLanding.dart';
+import 'UI/screen/profileLandingTrait/profileLandingTrait.dart';
 import 'UI/screen/registerPage/registerPage.dart';
 import 'constant.dart';
 
@@ -66,6 +68,14 @@ class _MainState extends State<Main> {
                 pageBuilder: (_, a1, a2) => HomeScreen(
                       scaffoldKey: _scaffoldKey,
                     ),
+                settings: settings);
+          case '/profileLandingTrait':
+            return PageRouteBuilder(
+                pageBuilder: (_, a1, a2) => ProfileLandingTrait(),
+                settings: settings);
+          case '/profileIntrestLanding':
+            return PageRouteBuilder(
+                pageBuilder: (_, a1, a2) => ProfileIntrestLanding(),
                 settings: settings);
           default:
             return CustomPageRoute.build(

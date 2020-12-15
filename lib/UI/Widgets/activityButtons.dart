@@ -36,21 +36,3 @@ class ActivityButton extends StatelessWidget {
     );
   }
 }
-
-// Widget activityButton({title, function}) {
-//   return RaisedButton(
-//     onPressed: function,
-//     color: Color(0xff00ADC2),
-//     shape: RoundedRectangleBorder(
-//       borderRadius: BorderRadius.circular(18.0),
-//     ),
-//     child: Center(
-//       child: Text(
-//         title,
-//         style: TextStyle(
-//           color: Colors.white,
-//         ),
-//       ),
-//     ),
-//   );
-// }
