@@ -33,7 +33,6 @@ class _TraitsElementsState extends State<TraitsElements>
   @override
   Widget build(BuildContext context) {
     return Positioned(
-      left: 30,
       top: 115,
       child: Row(
         mainAxisSize: MainAxisSize.max,

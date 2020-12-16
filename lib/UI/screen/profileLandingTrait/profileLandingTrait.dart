@@ -5,6 +5,7 @@ import 'package:findme/configs/assets.dart';
 import 'package:findme/constant.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:flutter_xlider/flutter_xlider.dart';
 
 class ProfileLandingTrait extends StatefulWidget {
   const ProfileLandingTrait({
@@ -43,6 +44,7 @@ class _ProfileLandingTraitState extends State<ProfileLandingTrait> {
                   Container(
                     height: 180,
                     child: Stack(
+                      alignment: Alignment.topCenter,
                       children: [
                         Greating(
                           title: "Ether",
@@ -56,7 +58,7 @@ class _ProfileLandingTraitState extends State<ProfileLandingTrait> {
               ),
             ),
             Expanded(
-              flex: 4,
+              flex: 5,
               child: Column(
                 children: [
                   Row(
@@ -91,7 +93,7 @@ class _ProfileLandingTraitState extends State<ProfileLandingTrait> {
                       ),
                     ],
                   ),
-                  InkWell(
+                  GestureDetector(
                     onTap: () {},
                     child: Container(
                       decoration: BoxDecoration(
@@ -131,7 +133,7 @@ class _ProfileLandingTraitState extends State<ProfileLandingTrait> {
                 },
               ),
             ),
-            InkWell(
+            GestureDetector(
               onTap: () {},
               child: Container(
                 decoration: BoxDecoration(
@@ -141,7 +143,7 @@ class _ProfileLandingTraitState extends State<ProfileLandingTrait> {
                 margin: EdgeInsets.symmetric(vertical: 10),
                 padding: EdgeInsets.symmetric(horizontal: 25, vertical: 10),
                 child: Text(
-                  "Take a test",
+                  "Explore",
                   style: TextStyle(color: Colors.white),
                 ),
               ),

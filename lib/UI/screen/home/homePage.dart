@@ -58,6 +58,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   Container(
                     height: 180,
                     child: Stack(
+                      alignment: Alignment.topCenter,
                       children: [
                         Greating(
                           title: "Konichiwa",
