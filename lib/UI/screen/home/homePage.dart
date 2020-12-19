@@ -12,18 +12,6 @@ import 'package:findme/data/models/user.dart';
 import 'package:findme/data/models/intrests.dart';
 import 'package:findme/API.dart';
 
-class HomeScreen extends StatefulWidget {
-  final GlobalKey<ScaffoldState> scaffoldKey;
-  const HomeScreen({
-    Key key,
-    @required this.scaffoldKey,
-  }) : super(key: key);
-
-  @override
-  _HomeScreenState createState() => _HomeScreenState();
-}
-
-
 Future<User> fetchUser() async {
   final response = await GET('me');
 
@@ -32,6 +20,22 @@ Future<User> fetchUser() async {
   } else {
     throw Exception('Failed to load user: ${response.statusCode}');
   }
+}
+
+FutureBuilder<User> createTraits (Future<User> futureUser) {
+  return FutureBuilder<User>(
+    future: futureUser,
+    builder: (context, snapshot) {
+      if (snapshot.hasData) {
+        return TraitsElements(personality: snapshot.data.personality);
+      } else if (snapshot.hasError) {
+        return Text("${snapshot.error}");
+      }
+
+      // By default, show a loading spinner.
+      return CircularProgressIndicator();
+    },
+  );
 }
 
 FutureBuilder<User> createIntrest (Future<User> futureUser, int index) {
@@ -44,7 +48,7 @@ FutureBuilder<User> createIntrest (Future<User> futureUser, int index) {
           name: intrest.name,
           function: () {
             Navigator.pushNamed(context, "/profileIntrestLanding",
-                arguments: intrest.name);
+                arguments: intrest.id);
           },
           amount: intrest.amount,
         );
@@ -57,6 +61,18 @@ FutureBuilder<User> createIntrest (Future<User> futureUser, int index) {
     },
   );
 }
+
+class HomeScreen extends StatefulWidget {
+  final GlobalKey<ScaffoldState> scaffoldKey;
+  const HomeScreen({
+    Key key,
+    @required this.scaffoldKey,
+  }) : super(key: key);
+
+  @override
+  _HomeScreenState createState() => _HomeScreenState();
+}
+
 class _HomeScreenState extends State<HomeScreen> {
   Future<User> futureUser;
 
@@ -100,7 +116,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           desc:
                               "Did you know the US armys traning bumbelbees to sniff out explosive?",
                         ),
-                        TraitsElements(),
+                        createTraits(futureUser),
                       ],
                     ),
                   ),

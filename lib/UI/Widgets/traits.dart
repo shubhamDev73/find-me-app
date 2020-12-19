@@ -6,19 +6,30 @@ import '../../constant.dart';
 
 class TraitsElements extends StatefulWidget {
   final String selectedElement;
+  final Map<String, dynamic> personality;
   const TraitsElements({
+    this.personality,
     this.selectedElement,
     Key key,
   }) : super(key: key);
 
   @override
-  _TraitsElementsState createState() => _TraitsElementsState();
+  _TraitsElementsState createState() => _TraitsElementsState(selectedElement: selectedElement, personality: personality);
 }
 
 class _TraitsElementsState extends State<TraitsElements>
     with SingleTickerProviderStateMixin {
   AnimationController progressController;
   Animation<double> animation;
+
+  final String selectedElement;
+  final Map<String, dynamic> personality;
+
+  _TraitsElementsState({
+    this.personality,
+    this.selectedElement,
+  });
+
   @override
   void initState() {
     super.initState();
@@ -30,6 +41,24 @@ class _TraitsElementsState extends State<TraitsElements>
       });
   }
 
+  GestureDetector createButton (String trait) {
+    double value = personality[trait] is double ? personality[trait] : personality[trait]['value'];
+    return GestureDetector(
+      onTap: () {
+        Navigator.pushNamed(context, "/profileLandingTrait",
+            arguments: trait);
+      },
+      child: MoodIcons(
+        icon: SvgPicture.asset(
+          Assets.traits[trait],
+        ),
+        progress: value.abs(),
+        positive: value >= 0,
+        selected: selectedElement == trait,
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Positioned(
@@ -38,83 +67,11 @@ class _TraitsElementsState extends State<TraitsElements>
         mainAxisSize: MainAxisSize.max,
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          GestureDetector(
-            onTap: () {
-              Navigator.pushNamed(context, "/profileLandingTrait",
-                  arguments: "Earth");
-            },
-            child: MoodIcons(
-              icon: SvgPicture.asset(
-                Assets.moodOne,
-              ),
-              sweepAngle: 100,
-              progress: 100,
-            ),
-          ),
-          SizedBox(
-            width: 20,
-          ),
-          GestureDetector(
-            onTap: () {
-              Navigator.pushNamed(context, "/profileLandingTrait",
-                  arguments: "Earth");
-            },
-            child: MoodIcons(
-              icon: SvgPicture.asset(
-                Assets.moodTwo,
-              ),
-              sweepAngle: 97,
-              progress: 38,
-            ),
-          ),
-          SizedBox(
-            width: 20,
-          ),
-          GestureDetector(
-            onTap: () {
-              Navigator.pushNamed(context, "/profileLandingTrait",
-                  arguments: "Earth");
-            },
-            child: MoodIcons(
-              icon: SvgPicture.asset(
-                Assets.moodThree,
-              ),
-              sweepAngle: 57,
-              progress: 77,
-            ),
-          ),
-          SizedBox(
-            width: 20,
-          ),
-          GestureDetector(
-            onTap: () {
-              Navigator.pushNamed(context, "/profileLandingTrait",
-                  arguments: "Earth");
-            },
-            child: MoodIcons(
-              icon: SvgPicture.asset(
-                Assets.moodFour,
-              ),
-              sweepAngle: 0,
-              progress: 25,
-            ),
-          ),
-          SizedBox(
-            width: 20,
-          ),
-          GestureDetector(
-            onTap: () {
-              Navigator.pushNamed(context, "/profileLandingTrait",
-                  arguments: "Earth");
-            },
-            child: MoodIcons(
-              icon: SvgPicture.asset(
-                Assets.moodFive,
-              ),
-              sweepAngle: 60,
-              progress: 20,
-            ),
-          ),
+          createButton("Water"), SizedBox(width: 20),
+          createButton("Space"), SizedBox(width: 20),
+          createButton("Fire"), SizedBox(width: 20),
+          createButton("Earth"), SizedBox(width: 20),
+          createButton("Air"),
         ],
       ),
     );
@@ -123,16 +80,17 @@ class _TraitsElementsState extends State<TraitsElements>
 
 class MoodIcons extends StatelessWidget {
   final Widget icon;
-  final double sweepAngle;
   final double progress;
-  const MoodIcons({Key key, this.sweepAngle, this.icon, this.progress})
+  final bool positive;
+  final bool selected;
+
+  const MoodIcons({Key key, this.icon, this.progress, this.positive, this.selected})
       : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return CustomPaint(
-      foregroundPainter: CircleProgress(
-          progress, sweepAngle), // this will add custom painter after child
+      foregroundPainter: CircleProgress(progress), // this will add custom painter after child
       child: Container(
         decoration: BoxDecoration(
           shape: BoxShape.circle,
@@ -145,8 +103,8 @@ class MoodIcons extends StatelessWidget {
           ],
         ),
         child: Container(
-          height: 45,
-          width: 45,
+          height: selected ? 60 : 45,
+          width: selected ? 60 : 45,
           decoration: BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.circular(50),
@@ -155,6 +113,7 @@ class MoodIcons extends StatelessWidget {
           child: CircleAvatar(
             backgroundColor: MyColors.primaryColor,
             child: icon,
+            foregroundColor: positive ? MyColors.positiveTraitColor : MyColors.negativeTraitColor,
           ),
         ),
       ),
@@ -164,9 +123,8 @@ class MoodIcons extends StatelessWidget {
 
 class CircleProgress extends CustomPainter {
   double currentProgress;
-  double sweepAngle;
 
-  CircleProgress(this.currentProgress, this.sweepAngle);
+  CircleProgress(this.currentProgress);
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -188,9 +146,9 @@ class CircleProgress extends CustomPainter {
     // canvas.drawCircle(
     //     center, radius, outerCircle); // this draws main outer circle
 
-    double angle = 2 * pi * (currentProgress / 100);
+    double angle = 2 * pi * currentProgress;
 
-    canvas.drawArc(Rect.fromCircle(center: center, radius: 23), sweepAngle,
+    canvas.drawArc(Rect.fromCircle(center: center, radius: 23), 0,
         angle, false, completeArc);
   }
 

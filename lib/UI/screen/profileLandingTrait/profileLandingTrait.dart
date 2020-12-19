@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:findme/UI/Widgets/greatings/greatings.dart';
 import 'package:findme/UI/Widgets/menuButton.dart';
 import 'package:findme/UI/Widgets/traits.dart';
@@ -5,7 +7,46 @@ import 'package:findme/configs/assets.dart';
 import 'package:findme/constant.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:flutter_xlider/flutter_xlider.dart';
+
+import 'package:findme/API.dart';
+
+Future<Map<String, dynamic>> fetchPersonality (Function callback, String trait) async {
+  final response = await GET('me/personality');
+
+  if (response.statusCode == 200) {
+    Map<String, dynamic> personality = jsonDecode(response.body);
+    callback(personality[trait]['value'], personality[trait]['adjectives']);
+    return personality;
+  } else {
+    throw Exception('Failed to load personality: ${response.statusCode}');
+  }
+}
+
+FutureBuilder<Map<String, dynamic>> createPersonality (Function callback, Future<Map<String, dynamic>> futurePersonality, String trait) {
+  return FutureBuilder<Map<String, dynamic>>(
+    future: futurePersonality,
+    builder: (context, snapshot) {
+      if (snapshot.hasData) {
+        Map<String, dynamic> traitData = snapshot.data[trait];
+        return Stack(
+          alignment: Alignment.topCenter,
+          children: [
+            Greating(
+          title: trait,
+          desc: traitData['description'],
+        ),
+      TraitsElements(personality: snapshot.data, selectedElement: trait),
+          ],
+        );
+      } else if (snapshot.hasError) {
+        return Text("${snapshot.error}");
+      }
+
+      // By default, show a loading spinner.
+      return CircularProgressIndicator();
+    },
+  );
+}
 
 class ProfileLandingTrait extends StatefulWidget {
   const ProfileLandingTrait({
@@ -16,11 +57,23 @@ class ProfileLandingTrait extends StatefulWidget {
 }
 
 class _ProfileLandingTraitState extends State<ProfileLandingTrait> {
-  List items = ["Confident", "Fearful", "Interesting", "Noob", "Sexiest"];
-  int height = 73;
+  double value = 0.50;
+  List adjectives = [];
+
+  Future<Map<String, dynamic>> futurePersonality;
+
+  @override
+  void initState() {
+    super.initState();
+    futurePersonality = fetchPersonality((double traitValue, List traitAdjectives) {setState(() {
+      value = traitValue;
+      adjectives = traitAdjectives;
+    });}, "Air");
+  }
+
   @override
   Widget build(BuildContext context) {
-    final args = ModalRoute.of(context).settings.arguments;
+    final trait = ModalRoute.of(context).settings.arguments;
     return Scaffold(
       body: SafeArea(
         child: Column(
@@ -43,16 +96,12 @@ class _ProfileLandingTraitState extends State<ProfileLandingTrait> {
                   ),
                   Container(
                     height: 180,
-                    child: Stack(
-                      alignment: Alignment.topCenter,
-                      children: [
-                        Greating(
-                          title: "Ether",
-                          desc: "Ether shows how emotionally stable are you",
-                        ),
-                        TraitsElements(selectedElement: args),
-                      ],
-                    ),
+                    child: createPersonality((double traitValue, List traitAdjectives) {
+                      setState(() {
+                        value = traitValue;
+                        adjectives = traitAdjectives;
+                      });
+                    }, futurePersonality, trait),
                   ),
                 ],
               ),
@@ -64,7 +113,7 @@ class _ProfileLandingTraitState extends State<ProfileLandingTrait> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      SvgPicture.asset(Assets.fire),
+                      SvgPicture.asset(Assets.traits[trait], color: MyColors.negativeTraitColor),
                       SliderTheme(
                         data: SliderTheme.of(context).copyWith(
                           activeTrackColor: Colors.black,
@@ -76,9 +125,9 @@ class _ProfileLandingTraitState extends State<ProfileLandingTrait> {
                         ),
                         // ignore: missing_required_param
                         child: Slider(
-                          value: height.toDouble(),
-                          min: 0.0,
-                          max: 100.0,
+                          value: value,
+                          min: -1.0,
+                          max: 1.0,
                           inactiveColor: Color(0xFF8D8E98),
                           // onChanged: (double newValue) {
                           //   setState(() {
@@ -88,7 +137,7 @@ class _ProfileLandingTraitState extends State<ProfileLandingTrait> {
                         ),
                       ),
                       SvgPicture.asset(
-                        Assets.fire,
+                        Assets.traits[trait],
                         color: MyColors.primaryColor,
                       ),
                     ],
@@ -119,14 +168,14 @@ class _ProfileLandingTraitState extends State<ProfileLandingTrait> {
             Expanded(
               flex: 6,
               child: ListView.builder(
-                itemCount: items.length,
+                itemCount: adjectives.length,
                 itemBuilder: (context, index) {
                   return Container(
                     color: Color(0xffE0F7FA),
                     margin: EdgeInsets.only(top: 5),
                     padding: EdgeInsets.symmetric(vertical: 10),
                     child: Text(
-                      items[index],
+                      adjectives[index]['name'],
                       textAlign: TextAlign.center,
                     ),
                   );

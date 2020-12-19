@@ -5,7 +5,7 @@ import 'package:findme/data/models/intrests.dart';
 class User {
   String nick;
   String avatar;
-  String personality;
+  Map<String, dynamic> personality;
   List<Intrest> intrests;
   String mood;
 
@@ -20,7 +20,7 @@ class User {
   factory User.fromJson(Map<String, dynamic> json) => User(
     nick: json["nick"],
     avatar: json["avatar"],
-    personality: "",//json["personality"],
+    personality: json["personality"],
     intrests: json["interests"].map<Intrest>((intrest) => Intrest.fromJson(intrest)).toList(),
     mood: json["mood"],
   );

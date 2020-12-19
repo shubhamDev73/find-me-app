@@ -53,7 +53,7 @@ flutter:
   assets:
     - assets/avatar/
     - assets/logo/
-    - assets/moods/
+    - assets/traits/
     - assets/edits/
     - assets/tabs/
 

@@ -1,8 +1,106 @@
+import 'dart:convert';
+
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:findme/UI/Widgets/activityButtons.dart';
 import 'package:findme/UI/Widgets/menuButton.dart';
 import 'package:findme/data/models/intrests.dart';
 import 'package:flutter/material.dart';
+import 'package:findme/API.dart';
+
+Future<List<Intrest>> fetchIntrests(Function callback) async {
+  final response = await GET('me/interests');
+
+  if (response.statusCode == 200) {
+    List<Intrest> intrests = jsonDecode(response.body).map<Intrest>((intrest) => Intrest.fromJson(intrest)).toList();
+    callback(intrests);
+    return intrests;
+  } else {
+    throw Exception('Failed to load interests: ${response.statusCode}');
+  }
+}
+
+Intrest findIntrest (List<Intrest> intrests, int id) {
+  for(int i = 0; i < intrests.length; i++) {
+    if (intrests[i].id == id) {
+      return intrests[i];
+    }
+  }
+  return null;
+}
+
+FutureBuilder<List<Intrest>> createQuestions (Function onPageChange, Future<List<Intrest>> futureIntrests, int id, CarouselController buttonCarouselController) {
+  return FutureBuilder<List<Intrest>>(
+    future: futureIntrests,
+    builder: (context, snapshot) {
+      if (snapshot.hasData) {
+        Intrest intrest = findIntrest(snapshot.data, id);
+        if(intrest != null) {
+          return CarouselSlider(
+            carouselController: buttonCarouselController,
+            items: intrest.questions.map((question) =>
+                Builder(
+                  builder: (BuildContext context) {
+                    return Container(
+                      margin: EdgeInsets.symmetric(horizontal: 35),
+                      child: Center(
+                        child: Text(
+                          question['question'],
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            fontSize: 24,
+                            fontWeight: FontWeight.w700,
+                          ),
+                        ),
+                      ),
+                    );
+                  },
+                )).toList(),
+            options: CarouselOptions(
+                initialPage: 0,
+                // autoPlay: true,
+                enlargeCenterPage: true,
+                aspectRatio: 2.0,
+                onPageChanged: (index, reason) {
+                  onPageChange(intrest.questions[index]['answer']);
+                }
+            ),
+          );
+        }else{
+          return Text("Interest not found");
+        }
+      } else if (snapshot.hasError) {
+        return Text("${snapshot.error}");
+      }
+
+      // By default, show a loading spinner.
+      return CircularProgressIndicator();
+    },
+  );
+}
+
+FutureBuilder<List<Intrest>> createIntrest (Function onClick, Future<List<Intrest>> futureIntrests, int index) {
+  return FutureBuilder<List<Intrest>>(
+    future: futureIntrests,
+    builder: (context, snapshot) {
+      if (snapshot.hasData) {
+        if(index > 4)
+          return Text("Not used");
+
+        Intrest intrest = snapshot.data[index];
+        return ActivityButton(
+          name: intrest.name,
+          function: () {onClick(intrest.id, intrest.questions[0]['answer']);},
+          amount: intrest.amount,
+        );
+      } else if (snapshot.hasError) {
+      return Text("${snapshot.error}");
+      }
+
+      // By default, show a loading spinner.
+      return CircularProgressIndicator();
+    },
+  );
+}
 
 class ProfileIntrestLanding extends StatefulWidget {
   @override
@@ -10,15 +108,25 @@ class ProfileIntrestLanding extends StatefulWidget {
 }
 
 class _ProfileIntrestLandingState extends State<ProfileIntrestLanding> {
+  Future<List<Intrest>> futureIntrests;
+
+  int id = -1;
+  String answer = '';
+
+  @override
+  void initState() {
+    super.initState();
+    futureIntrests = fetchIntrests((List<Intrest> intrests) {setState(() {
+      answer = findIntrest(intrests, id).questions[0]['answer'];
+    });});
+  }
+
   @override
   Widget build(BuildContext context) {
-    List<Intrest> intrest = [
-      Intrest(name: "Drama", amount: 3),
-      Intrest(name: "Reading", amount: 2),
-      Intrest(name: "Swimming", amount: 1),
-      Intrest(name: "Music", amount: 2),
-    ];
-    final args = ModalRoute.of(context).settings.arguments;
+    setState(() {
+      if(id == -1)
+        id = ModalRoute.of(context).settings.arguments;
+    });
     CarouselController buttonCarouselController = CarouselController();
     return Scaffold(
       body: SafeArea(
@@ -39,29 +147,9 @@ class _ProfileIntrestLandingState extends State<ProfileIntrestLanding> {
               child: Stack(
                 alignment: Alignment.center,
                 children: [
-                  CarouselSlider(
-                    options: CarouselOptions(initialPage: returnKey(args)),
-                    carouselController: buttonCarouselController,
-                    items: ["Drama", "Music", "Swimming", "Reading"].map((i) {
-                      return Builder(
-                        builder: (BuildContext context) {
-                          return Container(
-                            margin: EdgeInsets.symmetric(horizontal: 35),
-                            child: Center(
-                              child: Text(
-                                returnText(i),
-                                textAlign: TextAlign.center,
-                                style: TextStyle(
-                                  fontSize: 24,
-                                  fontWeight: FontWeight.w700,
-                                ),
-                              ),
-                            ),
-                          );
-                        },
-                      );
-                    }).toList(),
-                  ),
+                  createQuestions((String answerText) {setState(() {
+                    answer = answerText;
+                  });}, futureIntrests, id, buttonCarouselController),
                   Positioned(
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -113,7 +201,7 @@ class _ProfileIntrestLandingState extends State<ProfileIntrestLanding> {
                   Container(
                     margin: EdgeInsets.symmetric(horizontal: 50, vertical: 0),
                     child: Text(
-                      "comfortably numb ; pink floyd",
+                      answer,
                       textAlign: TextAlign.center,
                       style: TextStyle(
                         fontSize: 20,
@@ -150,27 +238,23 @@ class _ProfileIntrestLandingState extends State<ProfileIntrestLanding> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        ActivityButton(
-                          name: intrest[0].name,
-                          function: () {
-                            Navigator.pushNamed(
-                                context, "/profileIntrestLanding",
-                                arguments: intrest[0].name);
-                          },
-                          amount: intrest[0].amount,
-                        ),
+                        createIntrest((int intrestId, String answerText) {
+                          setState(() {
+                            id = intrestId;
+                            answer = answerText;
+                          }
+                          );
+                        }, futureIntrests, 0),
                         SizedBox(
                           width: 12,
                         ),
-                        ActivityButton(
-                          name: intrest[1].name,
-                          function: () {
-                            Navigator.pushNamed(
-                                context, "/profileIntrestLanding",
-                                arguments: intrest[0].name);
-                          },
-                          amount: intrest[1].amount,
-                        ),
+                        createIntrest((int intrestId, String answerText) {
+                          setState(() {
+                            id = intrestId;
+                            answer = answerText;
+                          }
+                          );
+                        }, futureIntrests, 1),
                       ],
                     ),
                     SizedBox(
@@ -180,39 +264,33 @@ class _ProfileIntrestLandingState extends State<ProfileIntrestLanding> {
                       mainAxisSize: MainAxisSize.max,
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        ActivityButton(
-                          name: intrest[2].name,
-                          function: () {
-                            Navigator.pushNamed(
-                                context, "/profileIntrestLanding",
-                                arguments: intrest[0].name);
-                          },
-                          amount: intrest[2].amount,
-                        ),
+                        createIntrest((int intrestId, String answerText) {
+                          setState(() {
+                            id = intrestId;
+                            answer = answerText;
+                          }
+                          );
+                        }, futureIntrests, 2),
                         SizedBox(
                           width: 12,
                         ),
-                        ActivityButton(
-                          name: intrest[3].name,
-                          function: () {
-                            Navigator.pushNamed(
-                                context, "/profileIntrestLanding",
-                                arguments: intrest[0].name);
-                          },
-                          amount: intrest[3].amount,
-                        ),
+                        createIntrest((int intrestId, String answerText) {
+                          setState(() {
+                            id = intrestId;
+                            answer = answerText;
+                          }
+                          );
+                        }, futureIntrests, 3),
                         SizedBox(
                           width: 12,
                         ),
-                        ActivityButton(
-                          name: intrest[4].name,
-                          function: () {
-                            Navigator.pushNamed(
-                                context, "/profileIntrestLanding",
-                                arguments: intrest[0].name);
-                          },
-                          amount: intrest[4].amount,
-                        ),
+                        createIntrest((int intrestId, String answerText) {
+                          setState(() {
+                            id = intrestId;
+                            answer = answerText;
+                          }
+                          );
+                        }, futureIntrests, 4),
                       ],
                     ),
                     SizedBox(
@@ -221,27 +299,23 @@ class _ProfileIntrestLandingState extends State<ProfileIntrestLanding> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        ActivityButton(
-                          name: intrest[0].name,
-                          function: () {
-                            Navigator.pushNamed(
-                                context, "/profileIntrestLanding",
-                                arguments: intrest[0].name);
-                          },
-                          amount: intrest[0].amount,
-                        ),
+                        createIntrest((int intrestId, String answerText) {
+                          setState(() {
+                            id = intrestId;
+                            answer = answerText;
+                          }
+                          );
+                        }, futureIntrests, 5),
                         SizedBox(
                           width: 12,
                         ),
-                        ActivityButton(
-                          name: intrest[1].name,
-                          function: () {
-                            Navigator.pushNamed(
-                                context, "/profileIntrestLanding",
-                                arguments: intrest[0].name);
-                          },
-                          amount: intrest[1].amount,
-                        ),
+                        createIntrest((int intrestId, String answerText) {
+                          setState(() {
+                            id = intrestId;
+                            answer = answerText;
+                          }
+                          );
+                        }, futureIntrests, 6),
                       ],
                     ),
                     SizedBox(
@@ -251,39 +325,33 @@ class _ProfileIntrestLandingState extends State<ProfileIntrestLanding> {
                       mainAxisSize: MainAxisSize.max,
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        ActivityButton(
-                          name: intrest[2].name,
-                          function: () {
-                            Navigator.pushNamed(
-                                context, "/profileIntrestLanding",
-                                arguments: intrest[0].name);
-                          },
-                          amount: intrest[2].amount,
-                        ),
+                        createIntrest((int intrestId, String answerText) {
+                          setState(() {
+                            id = intrestId;
+                            answer = answerText;
+                          }
+                          );
+                        }, futureIntrests, 7),
                         SizedBox(
                           width: 12,
                         ),
-                        ActivityButton(
-                          name: intrest[3].name,
-                          function: () {
-                            Navigator.pushNamed(
-                                context, "/profileIntrestLanding",
-                                arguments: intrest[0].name);
-                          },
-                          amount: intrest[3].amount,
-                        ),
+                        createIntrest((int intrestId, String answerText) {
+                          setState(() {
+                            id = intrestId;
+                            answer = answerText;
+                          }
+                          );
+                        }, futureIntrests, 8),
                         SizedBox(
                           width: 12,
                         ),
-                        ActivityButton(
-                          name: intrest[4].name,
-                          function: () {
-                            Navigator.pushNamed(
-                                context, "/profileIntrestLanding",
-                                arguments: intrest[0].name);
-                          },
-                          amount: intrest[4].amount,
-                        ),
+                        createIntrest((int intrestId, String answerText) {
+                          setState(() {
+                            id = intrestId;
+                            answer = answerText;
+                          }
+                          );
+                        }, futureIntrests, 9),
                       ],
                     ),
                     SizedBox(
@@ -292,27 +360,23 @@ class _ProfileIntrestLandingState extends State<ProfileIntrestLanding> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        ActivityButton(
-                          name: intrest[0].name,
-                          function: () {
-                            Navigator.pushNamed(
-                                context, "/profileIntrestLanding",
-                                arguments: intrest[0].name);
-                          },
-                          amount: intrest[0].amount,
-                        ),
+                        createIntrest((int intrestId, String answerText) {
+                          setState(() {
+                            id = intrestId;
+                            answer = answerText;
+                          }
+                          );
+                        }, futureIntrests, 10),
                         SizedBox(
                           width: 12,
                         ),
-                        ActivityButton(
-                          name: intrest[1].name,
-                          function: () {
-                            Navigator.pushNamed(
-                                context, "/profileIntrestLanding",
-                                arguments: intrest[0].name);
-                          },
-                          amount: intrest[1].amount,
-                        ),
+                        createIntrest((int intrestId, String answerText) {
+                          setState(() {
+                            id = intrestId;
+                            answer = answerText;
+                          }
+                          );
+                        }, futureIntrests, 11),
                       ],
                     ),
                   ],
@@ -340,31 +404,5 @@ class _ProfileIntrestLandingState extends State<ProfileIntrestLanding> {
         ),
       ),
     );
-  }
-
-  int returnKey(key) {
-    if (key == "Drama") {
-      return 0;
-    } else if (key == "Music") {
-      return 1;
-    } else if (key == "Swimming") {
-      return 2;
-    } else if (key == "Reading") {
-      return 3;
-    }
-    return 0;
-  }
-
-  String returnText(key) {
-    if (key == "Drama") {
-      return "a play for the theatre, radio or television";
-    } else if (key == "Music") {
-      return "What song helps you keep the demons at bay, thoughts in peace and sleep at night?";
-    } else if (key == "Swimming") {
-      return "the skill or technique of a person who swims.";
-    } else if (key == "Reading") {
-      return "the action or practice of a person who reads.";
-    }
-    return "bye";
   }
 }
