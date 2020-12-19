@@ -13,11 +13,10 @@ class _ProfileIntrestLandingState extends State<ProfileIntrestLanding> {
   @override
   Widget build(BuildContext context) {
     List<Intrest> intrest = [
-      Intrest(title: "Drama", intensity: 0.8),
-      Intrest(title: "Reading", intensity: 0.7),
-      Intrest(title: "Swimming", intensity: 0.6),
-      Intrest(title: "Music", intensity: 0.5),
-      Intrest(title: "Coding", intensity: 0.4),
+      Intrest(name: "Drama", amount: 3),
+      Intrest(name: "Reading", amount: 2),
+      Intrest(name: "Swimming", amount: 1),
+      Intrest(name: "Music", amount: 2),
     ];
     final args = ModalRoute.of(context).settings.arguments;
     CarouselController buttonCarouselController = CarouselController();
@@ -152,25 +151,25 @@ class _ProfileIntrestLandingState extends State<ProfileIntrestLanding> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         ActivityButton(
-                          title: intrest[0].title,
+                          name: intrest[0].name,
                           function: () {
                             Navigator.pushNamed(
                                 context, "/profileIntrestLanding",
-                                arguments: intrest[0].title);
+                                arguments: intrest[0].name);
                           },
-                          intensity: intrest[0].intensity,
+                          amount: intrest[0].amount,
                         ),
                         SizedBox(
                           width: 12,
                         ),
                         ActivityButton(
-                          title: intrest[1].title,
+                          name: intrest[1].name,
                           function: () {
                             Navigator.pushNamed(
                                 context, "/profileIntrestLanding",
-                                arguments: intrest[0].title);
+                                arguments: intrest[0].name);
                           },
-                          intensity: intrest[1].intensity,
+                          amount: intrest[1].amount,
                         ),
                       ],
                     ),
@@ -182,37 +181,37 @@ class _ProfileIntrestLandingState extends State<ProfileIntrestLanding> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         ActivityButton(
-                          title: intrest[2].title,
+                          name: intrest[2].name,
                           function: () {
                             Navigator.pushNamed(
                                 context, "/profileIntrestLanding",
-                                arguments: intrest[0].title);
+                                arguments: intrest[0].name);
                           },
-                          intensity: intrest[2].intensity,
+                          amount: intrest[2].amount,
                         ),
                         SizedBox(
                           width: 12,
                         ),
                         ActivityButton(
-                          title: intrest[3].title,
+                          name: intrest[3].name,
                           function: () {
                             Navigator.pushNamed(
                                 context, "/profileIntrestLanding",
-                                arguments: intrest[0].title);
+                                arguments: intrest[0].name);
                           },
-                          intensity: intrest[3].intensity,
+                          amount: intrest[3].amount,
                         ),
                         SizedBox(
                           width: 12,
                         ),
                         ActivityButton(
-                          title: intrest[4].title,
+                          name: intrest[4].name,
                           function: () {
                             Navigator.pushNamed(
                                 context, "/profileIntrestLanding",
-                                arguments: intrest[0].title);
+                                arguments: intrest[0].name);
                           },
-                          intensity: intrest[4].intensity,
+                          amount: intrest[4].amount,
                         ),
                       ],
                     ),
@@ -223,25 +222,25 @@ class _ProfileIntrestLandingState extends State<ProfileIntrestLanding> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         ActivityButton(
-                          title: intrest[0].title,
+                          name: intrest[0].name,
                           function: () {
                             Navigator.pushNamed(
                                 context, "/profileIntrestLanding",
-                                arguments: intrest[0].title);
+                                arguments: intrest[0].name);
                           },
-                          intensity: intrest[0].intensity,
+                          amount: intrest[0].amount,
                         ),
                         SizedBox(
                           width: 12,
                         ),
                         ActivityButton(
-                          title: intrest[1].title,
+                          name: intrest[1].name,
                           function: () {
                             Navigator.pushNamed(
                                 context, "/profileIntrestLanding",
-                                arguments: intrest[0].title);
+                                arguments: intrest[0].name);
                           },
-                          intensity: intrest[1].intensity,
+                          amount: intrest[1].amount,
                         ),
                       ],
                     ),
@@ -253,37 +252,37 @@ class _ProfileIntrestLandingState extends State<ProfileIntrestLanding> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         ActivityButton(
-                          title: intrest[2].title,
+                          name: intrest[2].name,
                           function: () {
                             Navigator.pushNamed(
                                 context, "/profileIntrestLanding",
-                                arguments: intrest[0].title);
+                                arguments: intrest[0].name);
                           },
-                          intensity: intrest[2].intensity,
+                          amount: intrest[2].amount,
                         ),
                         SizedBox(
                           width: 12,
                         ),
                         ActivityButton(
-                          title: intrest[3].title,
+                          name: intrest[3].name,
                           function: () {
                             Navigator.pushNamed(
                                 context, "/profileIntrestLanding",
-                                arguments: intrest[0].title);
+                                arguments: intrest[0].name);
                           },
-                          intensity: intrest[3].intensity,
+                          amount: intrest[3].amount,
                         ),
                         SizedBox(
                           width: 12,
                         ),
                         ActivityButton(
-                          title: intrest[4].title,
+                          name: intrest[4].name,
                           function: () {
                             Navigator.pushNamed(
                                 context, "/profileIntrestLanding",
-                                arguments: intrest[0].title);
+                                arguments: intrest[0].name);
                           },
-                          intensity: intrest[4].intensity,
+                          amount: intrest[4].amount,
                         ),
                       ],
                     ),
@@ -294,25 +293,25 @@ class _ProfileIntrestLandingState extends State<ProfileIntrestLanding> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         ActivityButton(
-                          title: intrest[0].title,
+                          name: intrest[0].name,
                           function: () {
                             Navigator.pushNamed(
                                 context, "/profileIntrestLanding",
-                                arguments: intrest[0].title);
+                                arguments: intrest[0].name);
                           },
-                          intensity: intrest[0].intensity,
+                          amount: intrest[0].amount,
                         ),
                         SizedBox(
                           width: 12,
                         ),
                         ActivityButton(
-                          title: intrest[1].title,
+                          name: intrest[1].name,
                           function: () {
                             Navigator.pushNamed(
                                 context, "/profileIntrestLanding",
-                                arguments: intrest[0].title);
+                                arguments: intrest[0].name);
                           },
-                          intensity: intrest[1].intensity,
+                          amount: intrest[1].amount,
                         ),
                       ],
                     ),

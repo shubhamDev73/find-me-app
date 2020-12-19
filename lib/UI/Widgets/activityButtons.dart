@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 
 class ActivityButton extends StatelessWidget {
   final Function function;
-  final String title;
-  final double intensity;
-  ActivityButton({this.function, this.title, this.intensity});
+  final String name;
+  final int amount;
+  ActivityButton({this.function, this.name, this.amount});
   @override
   Widget build(BuildContext context) {
     return InkWell(
@@ -20,13 +20,13 @@ class ActivityButton extends StatelessWidget {
               spreadRadius: 0,
             ),
           ],
-          color: Color(0xff00ADC2).withOpacity(intensity),
+          color: Color(0xff00ADC2).withOpacity(amount / 3.0),
         ),
         height: 35,
         width: 95,
         child: Center(
           child: Text(
-            title,
+            name,
             style: TextStyle(
               color: Colors.white,
             ),

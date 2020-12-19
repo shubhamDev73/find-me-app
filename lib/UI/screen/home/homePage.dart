@@ -1,12 +1,16 @@
+import 'dart:convert';
+
+import 'package:flutter/material.dart';
+
+import 'package:findme/globals.dart' as globals;
 import 'package:findme/UI/Widgets/greatings/greatings.dart';
 import 'package:findme/UI/Widgets/traits.dart';
 import 'package:findme/UI/Widgets/userInfo.dart';
+import 'package:findme/UI/Widgets/menuButton.dart';
+import 'package:findme/UI/Widgets/activityButtons.dart';
+import 'package:findme/data/models/user.dart';
 import 'package:findme/data/models/intrests.dart';
-import 'package:flutter/material.dart';
-
-import '../../Widgets/activityButtons.dart';
-import '../../../activityTwo.dart';
-import '../../Widgets/menuButton.dart';
+import 'package:findme/API.dart';
 
 class HomeScreen extends StatefulWidget {
   final GlobalKey<ScaffoldState> scaffoldKey;
@@ -19,21 +23,52 @@ class HomeScreen extends StatefulWidget {
   _HomeScreenState createState() => _HomeScreenState();
 }
 
+
+Future<User> fetchUser() async {
+  final response = await GET('me');
+
+  if (response.statusCode == 200) {
+    return User.fromJson(jsonDecode(response.body));
+  } else {
+    throw Exception('Failed to load user: ${response.statusCode}');
+  }
+}
+
+FutureBuilder<User> createIntrest (Future<User> futureUser, int index) {
+  return FutureBuilder<User>(
+    future: futureUser,
+    builder: (context, snapshot) {
+      if (snapshot.hasData) {
+        Intrest intrest = snapshot.data.intrests[index];
+        return ActivityButton(
+          name: intrest.name,
+          function: () {
+            Navigator.pushNamed(context, "/profileIntrestLanding",
+                arguments: intrest.name);
+          },
+          amount: intrest.amount,
+        );
+      } else if (snapshot.hasError) {
+        return Text("${snapshot.error}");
+      }
+
+      // By default, show a loading spinner.
+      return CircularProgressIndicator();
+    },
+  );
+}
 class _HomeScreenState extends State<HomeScreen> {
+  Future<User> futureUser;
+
   @override
   void initState() {
     super.initState();
+    globals.token = 'e06df4fbae56e7ed03aadb66c233368a4b93fef115728896a220b60ed5e81ede';
+    futureUser = fetchUser();
   }
 
   @override
   Widget build(BuildContext context) {
-    List<Intrest> intrest = [
-      Intrest(title: "Drama", intensity: 0.8),
-      Intrest(title: "Reading", intensity: 0.7),
-      Intrest(title: "Swimming", intensity: 0.6),
-      Intrest(title: "Music", intensity: 0.5),
-      Intrest(title: "Coding", intensity: 0.4),
-    ];
     return Scaffold(
       key: widget.scaffoldKey,
       body: SafeArea(
@@ -74,7 +109,7 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
             Expanded(
               flex: 7,
-              child: UserInfo(),
+              child: UserInfo(futureUser),
             ),
             Expanded(
               flex: 4,
@@ -83,25 +118,11 @@ class _HomeScreenState extends State<HomeScreen> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      ActivityButton(
-                        title: intrest[0].title,
-                        function: () {
-                          Navigator.pushNamed(context, "/profileIntrestLanding",
-                              arguments: intrest[0].title);
-                        },
-                        intensity: intrest[0].intensity,
-                      ),
+                      createIntrest(futureUser, 0),
                       SizedBox(
                         width: 12,
                       ),
-                      ActivityButton(
-                        title: intrest[1].title,
-                        function: () {
-                          Navigator.pushNamed(context, "/profileIntrestLanding",
-                              arguments: intrest[0].title);
-                        },
-                        intensity: intrest[1].intensity,
-                      ),
+                      createIntrest(futureUser, 1),
                     ],
                   ),
                   SizedBox(
@@ -111,36 +132,15 @@ class _HomeScreenState extends State<HomeScreen> {
                     mainAxisSize: MainAxisSize.max,
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      ActivityButton(
-                        title: intrest[2].title,
-                        function: () {
-                          Navigator.pushNamed(context, "/profileIntrestLanding",
-                              arguments: intrest[0].title);
-                        },
-                        intensity: intrest[2].intensity,
-                      ),
+                      createIntrest(futureUser, 2),
                       SizedBox(
                         width: 12,
                       ),
-                      ActivityButton(
-                        title: intrest[3].title,
-                        function: () {
-                          Navigator.pushNamed(context, "/profileIntrestLanding",
-                              arguments: intrest[0].title);
-                        },
-                        intensity: intrest[3].intensity,
-                      ),
+                      createIntrest(futureUser, 3),
                       SizedBox(
                         width: 12,
                       ),
-                      ActivityButton(
-                        title: intrest[4].title,
-                        function: () {
-                          Navigator.pushNamed(context, "/profileIntrestLanding",
-                              arguments: intrest[0].title);
-                        },
-                        intensity: intrest[4].intensity,
-                      ),
+                      createIntrest(futureUser, 4),
                     ],
                   )
                 ],
