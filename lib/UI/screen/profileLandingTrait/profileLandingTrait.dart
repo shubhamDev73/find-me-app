@@ -175,66 +175,71 @@ class _ProfileLandingTraitState extends State<ProfileLandingTrait> {
             ),
             Expanded(
               flex: 6,
-              child: CarouselSlider(
-                items: adjectives
-                    .map((adjective) => Builder(
-                          builder: (BuildContext context) {
-                            return Container(
-                              margin: EdgeInsets.symmetric(horizontal: 35),
-                              child: Column(
-                                children: [
-                                  Center(
-                                    child: Text(
-                                      adjective['name'],
-                                      textAlign: TextAlign.center,
-                                      style: TextStyle(
-                                        fontSize: 24,
-                                        fontWeight: FontWeight.w700,
-                                      ),
-                                    ),
+              child: SizedBox(
+                height: 100,
+                width: 320,
+                child: Container(
+                  child: CarouselSlider(
+                    items: adjectives
+                        .map((adjective) => Builder(
+                              builder: (BuildContext context) {
+                                return Container(
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(10),
+                                    color: Color(0xffDFF7F9),
                                   ),
-                                  SizedBox(height: 25),
-                                  Center(
-                                    child: Text(
-                                      adjective['description'],
-                                      textAlign: TextAlign.center,
-                                      style: TextStyle(
-                                        fontSize: 15,
-                                        fontWeight: FontWeight.w700,
+                                  child: Column(
+                                    children: [
+                                      Center(
+                                        child: Text(
+                                          adjective['name'],
+                                          textAlign: TextAlign.center,
+                                          style: TextStyle(
+                                            fontSize: 24,
+                                            fontWeight: FontWeight.w700,
+                                          ),
+                                        ),
                                       ),
-                                    ),
+                                      SizedBox(height: 25),
+                                      Center(
+                                        child: Text(
+                                          adjective['description'],
+                                          textAlign: TextAlign.center,
+                                          style: TextStyle(
+                                            fontSize: 15,
+                                            fontWeight: FontWeight.w700,
+                                          ),
+                                        ),
+                                      ),
+                                      Container(
+                                        decoration: BoxDecoration(
+                                          color: Colors.black,
+                                          borderRadius:
+                                              BorderRadius.circular(12),
+                                        ),
+                                        margin:
+                                            EdgeInsets.symmetric(vertical: 10),
+                                        padding: EdgeInsets.symmetric(
+                                            horizontal: 25, vertical: 10),
+                                        child: Text(
+                                          "Explore",
+                                          style: TextStyle(color: Colors.white),
+                                        ),
+                                      ),
+                                    ],
                                   ),
-                                ],
-                              ),
-                            );
-                          },
-                        ))
-                    .toList(),
-                options: CarouselOptions(
-                    initialPage: 0,
-                    // autoPlay: true,
-                    enlargeCenterPage: true,
-                    aspectRatio: 2.0,
-                    onPageChanged: (index, reason) {
-                      print("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
-                      print(adjectives[index]['name']);
-                      print(adjectives[index]['description']);
-                      // onPageChange(adjectives[index]['name']);
-                    }),
-              ),
-            ),
-            GestureDetector(
-              onTap: () {},
-              child: Container(
-                decoration: BoxDecoration(
-                  color: Colors.black,
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                margin: EdgeInsets.symmetric(vertical: 10),
-                padding: EdgeInsets.symmetric(horizontal: 25, vertical: 10),
-                child: Text(
-                  "Explore",
-                  style: TextStyle(color: Colors.white),
+                                );
+                              },
+                            ))
+                        .toList(),
+                    options: CarouselOptions(
+                      // height: height,
+                      viewportFraction: 1.0,
+                      enlargeCenterPage: false,
+                      initialPage: 0,
+                      aspectRatio: 2.0,
+                    ),
+                  ),
                 ),
               ),
             ),
