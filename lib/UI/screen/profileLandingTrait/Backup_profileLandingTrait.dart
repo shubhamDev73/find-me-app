@@ -1,6 +1,5 @@
 import 'dart:convert';
 
-import 'package:carousel_slider/carousel_slider.dart';
 import 'package:findme/UI/Widgets/greatings/greatings.dart';
 import 'package:findme/UI/Widgets/menuButton.dart';
 import 'package:findme/UI/Widgets/traits.dart';
@@ -175,52 +174,19 @@ class _ProfileLandingTraitState extends State<ProfileLandingTrait> {
             ),
             Expanded(
               flex: 6,
-              child: CarouselSlider(
-                items: adjectives
-                    .map((adjective) => Builder(
-                          builder: (BuildContext context) {
-                            return Container(
-                              margin: EdgeInsets.symmetric(horizontal: 35),
-                              child: Column(
-                                children: [
-                                  Center(
-                                    child: Text(
-                                      adjective['name'],
-                                      textAlign: TextAlign.center,
-                                      style: TextStyle(
-                                        fontSize: 24,
-                                        fontWeight: FontWeight.w700,
-                                      ),
-                                    ),
-                                  ),
-                                  SizedBox(height: 25),
-                                  Center(
-                                    child: Text(
-                                      adjective['description'],
-                                      textAlign: TextAlign.center,
-                                      style: TextStyle(
-                                        fontSize: 15,
-                                        fontWeight: FontWeight.w700,
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            );
-                          },
-                        ))
-                    .toList(),
-                options: CarouselOptions(
-                    initialPage: 0,
-                    // autoPlay: true,
-                    enlargeCenterPage: true,
-                    aspectRatio: 2.0,
-                    onPageChanged: (index, reason) {
-                      print("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
-                      print(adjectives[index]['name']);
-                      print(adjectives[index]['description']);
-                      // onPageChange(adjectives[index]['name']);
-                    }),
+              child: ListView.builder(
+                itemCount: adjectives.length,
+                itemBuilder: (context, index) {
+                  return Container(
+                    color: Color(0xffE0F7FA),
+                    margin: EdgeInsets.only(top: 5),
+                    padding: EdgeInsets.symmetric(vertical: 10),
+                    child: Text(
+                      adjectives[index]['name'],
+                      textAlign: TextAlign.center,
+                    ),
+                  );
+                },
               ),
             ),
             GestureDetector(
@@ -245,3 +211,34 @@ class _ProfileLandingTraitState extends State<ProfileLandingTrait> {
     );
   }
 }
+
+// CarouselSlider(
+//             carouselController: buttonCarouselController,
+//             items: intrest.questions
+//                 .map((question) => Builder(
+//                       builder: (BuildContext context) {
+//                         return Container(
+//                           margin: EdgeInsets.symmetric(horizontal: 35),
+//                           child: Center(
+//                             child: Text(
+//                               question['question'],
+//                               textAlign: TextAlign.center,
+//                               style: TextStyle(
+//                                 fontSize: 24,
+//                                 fontWeight: FontWeight.w700,
+//                               ),
+//                             ),
+//                           ),
+//                         );
+//                       },
+//                     ))
+//                 .toList(),
+//             options: CarouselOptions(
+//                 initialPage: 0,
+//                 // autoPlay: true,
+//                 enlargeCenterPage: true,
+//                 aspectRatio: 2.0,
+//                 onPageChanged: (index, reason) {
+//                   onPageChange(intrest.questions[index]['answer']);
+//                 }),
+//           )
