@@ -10,12 +10,12 @@ import 'package:flutter_svg/flutter_svg.dart';
 
 import 'package:findme/API.dart';
 
-Future<Map<String, dynamic>> fetchPersonality (Function callback, String trait) async {
+Future<Map<String, dynamic>> fetchPersonality (Function callback) async {
   final response = await GET('me/personality');
 
   if (response.statusCode == 200) {
     Map<String, dynamic> personality = jsonDecode(response.body);
-    callback(personality[trait]['value'], personality[trait]['adjectives']);
+    callback(personality);
     return personality;
   } else {
     throw Exception('Failed to load personality: ${response.statusCode}');
@@ -35,7 +35,9 @@ FutureBuilder<Map<String, dynamic>> createPersonality (Function callback, Future
           title: trait,
           desc: traitData['description'],
         ),
-      TraitsElements(personality: snapshot.data, selectedElement: trait),
+      TraitsElements(onClick: (String traitString, Map<String, dynamic> personality) {
+        callback(traitString, personality);
+      }, personality: snapshot.data, selectedElement: trait),
           ],
         );
       } else if (snapshot.hasError) {
@@ -57,6 +59,7 @@ class ProfileLandingTrait extends StatefulWidget {
 }
 
 class _ProfileLandingTraitState extends State<ProfileLandingTrait> {
+  String trait = '';
   double value = 0.50;
   List adjectives = [];
 
@@ -65,15 +68,18 @@ class _ProfileLandingTraitState extends State<ProfileLandingTrait> {
   @override
   void initState() {
     super.initState();
-    futurePersonality = fetchPersonality((double traitValue, List traitAdjectives) {setState(() {
-      value = traitValue;
-      adjectives = traitAdjectives;
-    });}, "Air");
+    futurePersonality = fetchPersonality((Map<String, dynamic> personality) {setState(() {
+      value = personality[trait]['value'];
+      adjectives = personality[trait]['adjectives'];
+    });});
   }
 
   @override
   Widget build(BuildContext context) {
-    final trait = ModalRoute.of(context).settings.arguments;
+    setState(() {
+      if(trait == '')
+        trait = ModalRoute.of(context).settings.arguments;
+    });
     return Scaffold(
       body: SafeArea(
         child: Column(
@@ -96,10 +102,11 @@ class _ProfileLandingTraitState extends State<ProfileLandingTrait> {
                   ),
                   Container(
                     height: 180,
-                    child: createPersonality((double traitValue, List traitAdjectives) {
+                    child: createPersonality((String traitString, Map<String, dynamic> personality) {
                       setState(() {
-                        value = traitValue;
-                        adjectives = traitAdjectives;
+                        trait = traitString;
+                        value = personality[trait]['value'];
+                        adjectives = personality[trait]['adjectives'];
                       });
                     }, futurePersonality, trait),
                   ),

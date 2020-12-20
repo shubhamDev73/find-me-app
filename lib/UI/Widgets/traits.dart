@@ -4,49 +4,23 @@ import 'package:flutter_svg/svg.dart';
 import 'dart:math';
 import '../../constant.dart';
 
-class TraitsElements extends StatefulWidget {
+class TraitsElements extends StatelessWidget {
+
   final String selectedElement;
   final Map<String, dynamic> personality;
+  final Function onClick;
+
   const TraitsElements({
-    this.personality,
     this.selectedElement,
-    Key key,
-  }) : super(key: key);
-
-  @override
-  _TraitsElementsState createState() => _TraitsElementsState(selectedElement: selectedElement, personality: personality);
-}
-
-class _TraitsElementsState extends State<TraitsElements>
-    with SingleTickerProviderStateMixin {
-  AnimationController progressController;
-  Animation<double> animation;
-
-  final String selectedElement;
-  final Map<String, dynamic> personality;
-
-  _TraitsElementsState({
     this.personality,
-    this.selectedElement,
+    this.onClick,
   });
-
-  @override
-  void initState() {
-    super.initState();
-    progressController = AnimationController(
-        vsync: this, duration: Duration(milliseconds: 1000));
-    animation = Tween<double>(begin: 0, end: 80).animate(progressController)
-      ..addListener(() {
-        setState(() {});
-      });
-  }
 
   GestureDetector createButton (String trait) {
     double value = personality[trait] is double ? personality[trait] : personality[trait]['value'];
     return GestureDetector(
       onTap: () {
-        Navigator.pushNamed(context, "/profileLandingTrait",
-            arguments: trait);
+        onClick(trait, personality);
       },
       child: MoodIcons(
         icon: SvgPicture.asset(

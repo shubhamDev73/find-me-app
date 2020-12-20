@@ -27,7 +27,9 @@ FutureBuilder<User> createTraits (Future<User> futureUser) {
     future: futureUser,
     builder: (context, snapshot) {
       if (snapshot.hasData) {
-        return TraitsElements(personality: snapshot.data.personality);
+        return TraitsElements(onClick: (String trait, Map<String, dynamic> personality) {
+          Navigator.pushNamed(context, "/profileLandingTrait", arguments: trait);
+        }, personality: snapshot.data.personality);
       } else if (snapshot.hasError) {
         return Text("${snapshot.error}");
       }
