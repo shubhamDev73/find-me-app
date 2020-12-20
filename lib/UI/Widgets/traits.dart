@@ -122,7 +122,7 @@ class CircleProgress extends CustomPainter {
 
     double angle = 2 * pi * currentProgress;
 
-    canvas.drawArc(Rect.fromCircle(center: center, radius: 23), 0,
+    canvas.drawArc(Rect.fromCircle(center: center, radius: size.width / 2), pi / 2 - angle / 2,
         angle, false, completeArc);
   }
 
