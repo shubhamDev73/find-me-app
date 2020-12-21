@@ -97,7 +97,7 @@ FutureBuilder<List<Intrest>> createQuestions (Function onPageChange, Future<List
   );
 }
 
-FutureBuilder<List<Intrest>> createIntrest (Function onClick, Future<List<Intrest>> futureIntrests, int index) {
+FutureBuilder<List<Intrest>> createIntrest (Function onClick, Future<List<Intrest>> futureIntrests, int id, int index) {
   return FutureBuilder<List<Intrest>>(
     future: futureIntrests,
     builder: (context, snapshot) {
@@ -110,6 +110,7 @@ FutureBuilder<List<Intrest>> createIntrest (Function onClick, Future<List<Intres
           name: intrest.name,
           function: () {onClick(intrest.id, intrest.questions[0]['answer']);},
           amount: intrest.amount,
+          selected: intrest.id == id,
         );
       } else if (snapshot.hasError) {
       return Text("${snapshot.error}");
@@ -241,11 +242,6 @@ class _ProfileIntrestLandingState extends State<ProfileIntrestLanding> {
                   SizedBox(
                     height: 25,
                   ),
-                  Container(
-                    height: 1,
-                    width: 150,
-                    color: Colors.black,
-                  )
                 ],
               ),
             ),
@@ -258,7 +254,7 @@ class _ProfileIntrestLandingState extends State<ProfileIntrestLanding> {
             Expanded(
               flex: 6,
               child: Container(
-                color: Color(0xffE0F7FA),
+                color: Color(0xfff0fbfd),
                 child: Column(
                   children: [
                     SizedBox(
@@ -273,7 +269,7 @@ class _ProfileIntrestLandingState extends State<ProfileIntrestLanding> {
                             answer = answerText;
                           }
                           );
-                        }, futureIntrests, 0),
+                        }, futureIntrests, id, 0),
                         SizedBox(
                           width: 12,
                         ),
@@ -283,7 +279,7 @@ class _ProfileIntrestLandingState extends State<ProfileIntrestLanding> {
                             answer = answerText;
                           }
                           );
-                        }, futureIntrests, 1),
+                        }, futureIntrests, id, 1),
                       ],
                     ),
                     SizedBox(
@@ -299,7 +295,7 @@ class _ProfileIntrestLandingState extends State<ProfileIntrestLanding> {
                             answer = answerText;
                           }
                           );
-                        }, futureIntrests, 2),
+                        }, futureIntrests, id, 2),
                         SizedBox(
                           width: 12,
                         ),
@@ -309,7 +305,7 @@ class _ProfileIntrestLandingState extends State<ProfileIntrestLanding> {
                             answer = answerText;
                           }
                           );
-                        }, futureIntrests, 3),
+                        }, futureIntrests, id, 3),
                         SizedBox(
                           width: 12,
                         ),
@@ -319,7 +315,7 @@ class _ProfileIntrestLandingState extends State<ProfileIntrestLanding> {
                             answer = answerText;
                           }
                           );
-                        }, futureIntrests, 4),
+                        }, futureIntrests, id, 4),
                       ],
                     ),
                     SizedBox(
@@ -334,7 +330,7 @@ class _ProfileIntrestLandingState extends State<ProfileIntrestLanding> {
                             answer = answerText;
                           }
                           );
-                        }, futureIntrests, 5),
+                        }, futureIntrests, id, 5),
                         SizedBox(
                           width: 12,
                         ),
@@ -344,7 +340,7 @@ class _ProfileIntrestLandingState extends State<ProfileIntrestLanding> {
                             answer = answerText;
                           }
                           );
-                        }, futureIntrests, 6),
+                        }, futureIntrests, id, 6),
                       ],
                     ),
                     SizedBox(
@@ -360,7 +356,7 @@ class _ProfileIntrestLandingState extends State<ProfileIntrestLanding> {
                             answer = answerText;
                           }
                           );
-                        }, futureIntrests, 7),
+                        }, futureIntrests, id, 7),
                         SizedBox(
                           width: 12,
                         ),
@@ -370,7 +366,7 @@ class _ProfileIntrestLandingState extends State<ProfileIntrestLanding> {
                             answer = answerText;
                           }
                           );
-                        }, futureIntrests, 8),
+                        }, futureIntrests, id, 8),
                         SizedBox(
                           width: 12,
                         ),
@@ -380,7 +376,7 @@ class _ProfileIntrestLandingState extends State<ProfileIntrestLanding> {
                             answer = answerText;
                           }
                           );
-                        }, futureIntrests, 9),
+                        }, futureIntrests, id, 9),
                       ],
                     ),
                     SizedBox(
@@ -395,7 +391,7 @@ class _ProfileIntrestLandingState extends State<ProfileIntrestLanding> {
                             answer = answerText;
                           }
                           );
-                        }, futureIntrests, 10),
+                        }, futureIntrests, id, 10),
                         SizedBox(
                           width: 12,
                         ),
@@ -405,7 +401,7 @@ class _ProfileIntrestLandingState extends State<ProfileIntrestLanding> {
                             answer = answerText;
                           }
                           );
-                        }, futureIntrests, 11),
+                        }, futureIntrests, id, 11),
                       ],
                     ),
                   ],

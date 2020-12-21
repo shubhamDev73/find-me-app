@@ -53,6 +53,7 @@ FutureBuilder<User> createIntrest (Future<User> futureUser, int index) {
                 arguments: intrest.id);
           },
           amount: intrest.amount,
+          selected: false,
         );
       } else if (snapshot.hasError) {
         return Text("${snapshot.error}");

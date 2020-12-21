@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:findme/constant.dart';
 
 class ActivityButton extends StatelessWidget {
   final Function function;
   final String name;
   final int amount;
-  ActivityButton({this.function, this.name, this.amount});
+  final bool selected;
+
+  ActivityButton({this.function, this.name, this.amount, this.selected});
   @override
   Widget build(BuildContext context) {
     return InkWell(
@@ -12,15 +15,11 @@ class ActivityButton extends StatelessWidget {
       child: Container(
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(50),
-          boxShadow: [
-            BoxShadow(
-              offset: Offset(0, 2),
-              blurRadius: 8,
-              color: Colors.grey.shade400,
-              spreadRadius: 0,
-            ),
-          ],
-          color: Color(0xff00ADC2).withOpacity(amount / 3.0),
+          color: MyColors.intrestColors[amount],
+          border: selected ? Border.all(
+            color: Colors.black,
+            width: 2,
+          ) : null,
         ),
         height: 35,
         width: 95,
@@ -28,7 +27,7 @@ class ActivityButton extends StatelessWidget {
           child: Text(
             name,
             style: TextStyle(
-              color: Colors.white,
+              color: Colors.black,
             ),
           ),
         ),
