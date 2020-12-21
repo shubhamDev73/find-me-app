@@ -24,10 +24,10 @@ class TraitsElements extends StatelessWidget {
       },
       child: MoodIcons(
         icon: SvgPicture.asset(
-          Assets.traits[trait],
+          Assets.traits[trait]['icon'],
+          color: value >= 0 ? MyColors.positiveTraitColor : MyColors.negativeTraitColor,
         ),
         progress: value.abs(),
-        positive: value >= 0,
         selected: selectedElement == trait,
       ),
     );
@@ -55,10 +55,9 @@ class TraitsElements extends StatelessWidget {
 class MoodIcons extends StatelessWidget {
   final Widget icon;
   final double progress;
-  final bool positive;
   final bool selected;
 
-  const MoodIcons({Key key, this.icon, this.progress, this.positive, this.selected})
+  const MoodIcons({Key key, this.icon, this.progress, this.selected})
       : super(key: key);
 
   @override
@@ -68,13 +67,6 @@ class MoodIcons extends StatelessWidget {
       child: Container(
         decoration: BoxDecoration(
           shape: BoxShape.circle,
-          boxShadow: [
-            BoxShadow(
-                offset: Offset(0, 2),
-                blurRadius: 10,
-                color: Colors.grey.shade400,
-                spreadRadius: 0)
-          ],
         ),
         child: Container(
           height: selected ? 60 : 45,
@@ -87,7 +79,6 @@ class MoodIcons extends StatelessWidget {
           child: CircleAvatar(
             backgroundColor: MyColors.primaryColor,
             child: icon,
-            foregroundColor: positive ? MyColors.positiveTraitColor : MyColors.negativeTraitColor,
           ),
         ),
       ),

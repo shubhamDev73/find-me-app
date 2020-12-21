@@ -3,11 +3,31 @@ class Assets {
   static const onBoardingTwo = "assets/logo/onBoardingTwo.svg";
   static const onBoardingThree = "assets/logo/onBoardingThree.svg";
   static const traits = {
-    "Fire": "assets/traits/fire.svg",
-    "Space": "assets/traits/space.svg",
-    "Water": "assets/traits/moodFour.svg",
-    "Air": "assets/traits/air.svg",
-    "Earth": "assets/traits/moodOne.svg",
+    "Fire": {
+      "icon": "assets/traits/fire.svg",
+      "negative": "assets/traits/fire_negative.svg",
+      "positive": "assets/traits/fire_positive.svg",
+    },
+    "Space": {
+      "icon": "assets/traits/space.svg",
+      "negative": "assets/traits/space_negative.svg",
+      "positive": "assets/traits/space_positive.svg",
+    },
+    "Water": {
+      "icon": "assets/traits/water.svg",
+      "negative": "assets/traits/water_negative.svg",
+      "positive": "assets/traits/water_positive.svg",
+    },
+    "Air": {
+      "icon": "assets/traits/air.svg",
+      "negative": "assets/traits/air_negative.svg",
+      "positive": "assets/traits/air_positive.svg",
+    },
+    "Earth": {
+      "icon": "assets/traits/earth.svg",
+      "negative": "assets/traits/earth_negative.svg",
+      "positive": "assets/traits/earth_positive.svg",
+    },
   };
   static const edit = "assets/edits/edit.svg";
   static const me = "assets/tabs/meTab.svg";

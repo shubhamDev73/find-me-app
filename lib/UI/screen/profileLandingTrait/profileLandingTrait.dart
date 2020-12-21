@@ -120,7 +120,7 @@ class _ProfileLandingTraitState extends State<ProfileLandingTrait> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      SvgPicture.asset(Assets.traits[trait], color: MyColors.negativeTraitColor),
+                      SvgPicture.asset(Assets.traits[trait]['negative']),
                       SliderTheme(
                         data: SliderTheme.of(context).copyWith(
                           activeTrackColor: Colors.black,
@@ -143,10 +143,7 @@ class _ProfileLandingTraitState extends State<ProfileLandingTrait> {
                           // },
                         ),
                       ),
-                      SvgPicture.asset(
-                        Assets.traits[trait],
-                        color: MyColors.primaryColor,
-                      ),
+                      SvgPicture.asset(Assets.traits[trait]['positive']),
                     ],
                   ),
                   GestureDetector(
