@@ -1,6 +1,5 @@
 import 'dart:convert';
 
-import 'package:carousel_slider/carousel_slider.dart';
 import 'package:findme/UI/Widgets/greatings/greatings.dart';
 import 'package:findme/UI/Widgets/menuButton.dart';
 import 'package:findme/UI/Widgets/traits.dart';
@@ -11,12 +10,13 @@ import 'package:flutter_svg/flutter_svg.dart';
 
 import 'package:findme/API.dart';
 
-Future<Map<String, dynamic>> fetchPersonality (Function callback) async {
-  final response = await GET('me/personality/');
+Future<Map<String, dynamic>> fetchPersonality(
+    Function callback, String trait) async {
+  final response = await GET('me/personality');
 
   if (response.statusCode == 200) {
     Map<String, dynamic> personality = jsonDecode(response.body);
-    callback(personality);
+    callback(personality[trait]['value'], personality[trait]['adjectives']);
     return personality;
   } else {
     throw Exception('Failed to load personality: ${response.statusCode}');
@@ -34,12 +34,10 @@ FutureBuilder<Map<String, dynamic>> createPersonality(Function callback,
           alignment: Alignment.topCenter,
           children: [
             Greating(
-          title: trait,
-          desc: traitData['description'],
-        ),
-      TraitsElements(onClick: (String traitString, Map<String, dynamic> personality) {
-        callback(traitString, personality);
-      }, personality: snapshot.data, selectedElement: trait),
+              title: trait,
+              desc: traitData['description'],
+            ),
+            TraitsElements(personality: snapshot.data, selectedElement: trait),
           ],
         );
       } else if (snapshot.hasError) {
@@ -61,7 +59,6 @@ class ProfileLandingTrait extends StatefulWidget {
 }
 
 class _ProfileLandingTraitState extends State<ProfileLandingTrait> {
-  String trait = '';
   double value = 0.50;
   List adjectives = [];
 
@@ -70,18 +67,18 @@ class _ProfileLandingTraitState extends State<ProfileLandingTrait> {
   @override
   void initState() {
     super.initState();
-    futurePersonality = fetchPersonality((Map<String, dynamic> personality) {setState(() {
-      value = personality[trait]['value'];
-      adjectives = personality[trait]['adjectives'];
-    });});
+    futurePersonality =
+        fetchPersonality((double traitValue, List traitAdjectives) {
+      setState(() {
+        value = traitValue;
+        adjectives = traitAdjectives;
+      });
+    }, "Air");
   }
 
   @override
   Widget build(BuildContext context) {
-    setState(() {
-      if(trait == '')
-        trait = ModalRoute.of(context).settings.arguments;
-    });
+    final trait = ModalRoute.of(context).settings.arguments;
     return Scaffold(
       body: SafeArea(
         child: Column(
@@ -104,11 +101,11 @@ class _ProfileLandingTraitState extends State<ProfileLandingTrait> {
                   ),
                   Container(
                     height: 180,
-                    child: createPersonality((String traitString, Map<String, dynamic> personality) {
+                    child: createPersonality(
+                        (double traitValue, List traitAdjectives) {
                       setState(() {
-                        trait = traitString;
-                        value = personality[trait]['value'];
-                        adjectives = personality[trait]['adjectives'];
+                        value = traitValue;
+                        adjectives = traitAdjectives;
                       });
                     }, futurePersonality, trait),
                   ),
@@ -122,7 +119,8 @@ class _ProfileLandingTraitState extends State<ProfileLandingTrait> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      SvgPicture.asset(Assets.traits[trait]['negative']),
+                      SvgPicture.asset(Assets.traits[trait],
+                          color: MyColors.negativeTraitColor),
                       SliderTheme(
                         data: SliderTheme.of(context).copyWith(
                           activeTrackColor: Colors.black,
@@ -145,7 +143,10 @@ class _ProfileLandingTraitState extends State<ProfileLandingTrait> {
                           // },
                         ),
                       ),
-                      SvgPicture.asset(Assets.traits[trait]['positive']),
+                      SvgPicture.asset(
+                        Assets.traits[trait],
+                        color: MyColors.primaryColor,
+                      ),
                     ],
                   ),
                   GestureDetector(
@@ -173,71 +174,33 @@ class _ProfileLandingTraitState extends State<ProfileLandingTrait> {
             ),
             Expanded(
               flex: 6,
-              child: SizedBox(
-                height: 100,
-                width: 320,
-                child: Container(
-                  child: CarouselSlider(
-                    items: adjectives
-                        .map((adjective) => Builder(
-                              builder: (BuildContext context) {
-                                return Container(
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(10),
-                                    color: Color(0xffDFF7F9),
-                                  ),
-                                  child: Column(
-                                    children: [
-                                      Center(
-                                        child: Text(
-                                          adjective['name'],
-                                          textAlign: TextAlign.center,
-                                          style: TextStyle(
-                                            fontSize: 24,
-                                            fontWeight: FontWeight.w700,
-                                          ),
-                                        ),
-                                      ),
-                                      SizedBox(height: 25),
-                                      Center(
-                                        child: Text(
-                                          adjective['description'],
-                                          textAlign: TextAlign.center,
-                                          style: TextStyle(
-                                            fontSize: 15,
-                                            fontWeight: FontWeight.w700,
-                                          ),
-                                        ),
-                                      ),
-                                      Container(
-                                        decoration: BoxDecoration(
-                                          color: Colors.black,
-                                          borderRadius:
-                                              BorderRadius.circular(12),
-                                        ),
-                                        margin:
-                                            EdgeInsets.symmetric(vertical: 10),
-                                        padding: EdgeInsets.symmetric(
-                                            horizontal: 25, vertical: 10),
-                                        child: Text(
-                                          "Explore",
-                                          style: TextStyle(color: Colors.white),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                );
-                              },
-                            ))
-                        .toList(),
-                    options: CarouselOptions(
-                      // height: height,
-                      viewportFraction: 1.0,
-                      enlargeCenterPage: false,
-                      initialPage: 0,
-                      aspectRatio: 2.0,
+              child: ListView.builder(
+                itemCount: adjectives.length,
+                itemBuilder: (context, index) {
+                  return Container(
+                    color: Color(0xffE0F7FA),
+                    margin: EdgeInsets.only(top: 5),
+                    padding: EdgeInsets.symmetric(vertical: 10),
+                    child: Text(
+                      adjectives[index]['name'],
+                      textAlign: TextAlign.center,
                     ),
-                  ),
+                  );
+                },
+              ),
+            ),
+            GestureDetector(
+              onTap: () {},
+              child: Container(
+                decoration: BoxDecoration(
+                  color: Colors.black,
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                margin: EdgeInsets.symmetric(vertical: 10),
+                padding: EdgeInsets.symmetric(horizontal: 25, vertical: 10),
+                child: Text(
+                  "Explore",
+                  style: TextStyle(color: Colors.white),
                 ),
               ),
             ),
@@ -248,3 +211,34 @@ class _ProfileLandingTraitState extends State<ProfileLandingTrait> {
     );
   }
 }
+
+// CarouselSlider(
+//             carouselController: buttonCarouselController,
+//             items: intrest.questions
+//                 .map((question) => Builder(
+//                       builder: (BuildContext context) {
+//                         return Container(
+//                           margin: EdgeInsets.symmetric(horizontal: 35),
+//                           child: Center(
+//                             child: Text(
+//                               question['question'],
+//                               textAlign: TextAlign.center,
+//                               style: TextStyle(
+//                                 fontSize: 24,
+//                                 fontWeight: FontWeight.w700,
+//                               ),
+//                             ),
+//                           ),
+//                         );
+//                       },
+//                     ))
+//                 .toList(),
+//             options: CarouselOptions(
+//                 initialPage: 0,
+//                 // autoPlay: true,
+//                 enlargeCenterPage: true,
+//                 aspectRatio: 2.0,
+//                 onPageChanged: (index, reason) {
+//                   onPageChange(intrest.questions[index]['answer']);
+//                 }),
+//           )

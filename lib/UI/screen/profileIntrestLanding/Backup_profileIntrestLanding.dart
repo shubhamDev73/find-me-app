@@ -8,7 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:findme/API.dart';
 
 Future<List<Intrest>> fetchIntrests(Function callback) async {
-  final response = await GET('me/interests/');
+  final response = await GET('me/interests');
 
   if (response.statusCode == 200) {
     List<Intrest> intrests = jsonDecode(response.body)
@@ -21,27 +21,8 @@ Future<List<Intrest>> fetchIntrests(Function callback) async {
   }
 }
 
-Future<List<Intrest>> changeIntrests(Future<List<Intrest>> futureIntrests, int intrestId, int questionId, String answerText) async {
-  List<Intrest> intrests = await futureIntrests;
-  List<dynamic> questions = findIntrest(intrests, intrestId)?.questions;
-  for(int i = 0; i < questions.length; i++) {
-    if (questions[i]['id'] == questionId) {
-      questions[i]['answer'] = answerText;
-      break;
-    }
-  }
-  return intrests;
-}
-
-void submitAnswer (String url, String body) async {
-  final response = await POST(url, body, true);
-
-  if (response.statusCode != 200)
-    throw Exception('Failed to submit answer: ${response.statusCode}');
-}
-
-Intrest findIntrest (List<Intrest> intrests, int id) {
-  for(int i = 0; i < intrests.length; i++) {
+Intrest findIntrest(List<Intrest> intrests, int id) {
+  for (int i = 0; i < intrests.length; i++) {
     if (intrests[i].id == id) {
       return intrests[i];
     }
@@ -87,9 +68,8 @@ FutureBuilder<List<Intrest>> createQuestions(
                 enlargeCenterPage: true,
                 aspectRatio: 2.0,
                 onPageChanged: (index, reason) {
-                  onPageChange(intrest.questions[index]['id'], intrest.questions[index]['answer']);
-                }
-            ),
+                  onPageChange(intrest.questions[index]['answer']);
+                }),
           );
         } else {
           return Text("Interest not found");
@@ -104,31 +84,21 @@ FutureBuilder<List<Intrest>> createQuestions(
   );
 }
 
-FutureBuilder<List<Intrest>> createIntrests (Function onClick, Future<List<Intrest>> futureIntrests, int id) {
+FutureBuilder<List<Intrest>> createIntrest(
+    Function onClick, Future<List<Intrest>> futureIntrests, int index) {
   return FutureBuilder<List<Intrest>>(
     future: futureIntrests,
     builder: (context, snapshot) {
       if (snapshot.hasData) {
-        List<Intrest> int_list_obj = new List(snapshot.data.length);
+        if (index > 4) return Text("Not used");
 
-        return ListView.builder(
-          itemCount: snapshot.data.length,
-          itemBuilder: (context, index) {
-            Intrest intrest = snapshot.data[index];
-            return Container(
-              color: Color(0xffE0F7FA),
-              margin: EdgeInsets.only(top: 5),
-              padding: EdgeInsets.symmetric(vertical: 10),
-              child: ActivityButton(
-                name: intrest.name,
-                function: () {
-                  onClick(intrest.id, intrest.questions[0]['answer']);
-                },
-                amount: intrest.amount,
-                selected: intrest.id == id,
-              ),
-            );
+        Intrest intrest = snapshot.data[index];
+        return ActivityButton(
+          name: intrest.name,
+          function: () {
+            onClick(intrest.id, intrest.questions[0]['answer']);
           },
+          amount: intrest.amount,
         );
       } else if (snapshot.hasError) {
         return Text("${snapshot.error}");
@@ -149,17 +119,16 @@ class _ProfileIntrestLandingState extends State<ProfileIntrestLanding> {
   Future<List<Intrest>> futureIntrests;
 
   int id = -1;
-  int questionId = -1;
   String answer = '';
 
   @override
   void initState() {
     super.initState();
-    futureIntrests = fetchIntrests((List<Intrest> intrests) {setState(() {
-      Intrest intrest = findIntrest(intrests, id);
-      questionId = intrest.questions[0]['id'];
-      answer = intrest.questions[0]['answer'];
-    });});
+    futureIntrests = fetchIntrests((List<Intrest> intrests) {
+      setState(() {
+        answer = findIntrest(intrests, id).questions[0]['answer'];
+      });
+    });
   }
 
   @override
@@ -168,8 +137,6 @@ class _ProfileIntrestLandingState extends State<ProfileIntrestLanding> {
       if (id == -1) id = ModalRoute.of(context).settings.arguments;
     });
     CarouselController buttonCarouselController = CarouselController();
-    TextEditingController answerController = new TextEditingController(text: answer);
-
     return Scaffold(
       body: SafeArea(
         child: Column(
@@ -189,10 +156,11 @@ class _ProfileIntrestLandingState extends State<ProfileIntrestLanding> {
               child: Stack(
                 alignment: Alignment.center,
                 children: [
-                  createQuestions((int id, String answerText) {setState(() {
-                    questionId = id;
-                    answer = answerText;
-                  });}, futureIntrests, id, buttonCarouselController),
+                  createQuestions((String answerText) {
+                    setState(() {
+                      answer = answerText;
+                    });
+                  }, futureIntrests, id, buttonCarouselController),
                   Positioned(
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -243,12 +211,8 @@ class _ProfileIntrestLandingState extends State<ProfileIntrestLanding> {
                 children: [
                   Container(
                     margin: EdgeInsets.symmetric(horizontal: 50, vertical: 0),
-                    child: TextField(
-                      controller: answerController,
-                      onSubmitted: (text) {
-                        submitAnswer('me/interests/$id/update/', jsonEncode([{"question": questionId, "answer": text}]));
-                        futureIntrests = changeIntrests(futureIntrests, id, questionId, text);
-                      },
+                    child: Text(
+                      answer,
                       textAlign: TextAlign.center,
                       style: TextStyle(
                         fontSize: 20,
@@ -259,6 +223,11 @@ class _ProfileIntrestLandingState extends State<ProfileIntrestLanding> {
                   SizedBox(
                     height: 25,
                   ),
+                  Container(
+                    height: 1,
+                    width: 150,
+                    color: Colors.black,
+                  )
                 ],
               ),
             ),
@@ -271,13 +240,146 @@ class _ProfileIntrestLandingState extends State<ProfileIntrestLanding> {
             Expanded(
               flex: 6,
               child: Container(
-                color: Color(0xfff0fbfd),
-                child: createIntrests((int intrestId, String answerText) {
-                  setState(() {
-                    id = intrestId;
-                    answer = answerText;
-                  });
-                }, futureIntrests),
+                color: Color(0xffE0F7FA),
+                child: Column(
+                  children: [
+                    SizedBox(
+                      height: 12,
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        createIntrest((int intrestId, String answerText) {
+                          setState(() {
+                            id = intrestId;
+                            answer = answerText;
+                          });
+                        }, futureIntrests, 0),
+                        SizedBox(
+                          width: 12,
+                        ),
+                        createIntrest((int intrestId, String answerText) {
+                          setState(() {
+                            id = intrestId;
+                            answer = answerText;
+                          });
+                        }, futureIntrests, 1),
+                      ],
+                    ),
+                    SizedBox(
+                      height: 8,
+                    ),
+                    Row(
+                      mainAxisSize: MainAxisSize.max,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        createIntrest((int intrestId, String answerText) {
+                          setState(() {
+                            id = intrestId;
+                            answer = answerText;
+                          });
+                        }, futureIntrests, 2),
+                        SizedBox(
+                          width: 12,
+                        ),
+                        createIntrest((int intrestId, String answerText) {
+                          setState(() {
+                            id = intrestId;
+                            answer = answerText;
+                          });
+                        }, futureIntrests, 3),
+                        SizedBox(
+                          width: 12,
+                        ),
+                        createIntrest((int intrestId, String answerText) {
+                          setState(() {
+                            id = intrestId;
+                            answer = answerText;
+                          });
+                        }, futureIntrests, 4),
+                      ],
+                    ),
+                    SizedBox(
+                      height: 12,
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        createIntrest((int intrestId, String answerText) {
+                          setState(() {
+                            id = intrestId;
+                            answer = answerText;
+                          });
+                        }, futureIntrests, 5),
+                        SizedBox(
+                          width: 12,
+                        ),
+                        createIntrest((int intrestId, String answerText) {
+                          setState(() {
+                            id = intrestId;
+                            answer = answerText;
+                          });
+                        }, futureIntrests, 6),
+                      ],
+                    ),
+                    SizedBox(
+                      height: 8,
+                    ),
+                    Row(
+                      mainAxisSize: MainAxisSize.max,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        createIntrest((int intrestId, String answerText) {
+                          setState(() {
+                            id = intrestId;
+                            answer = answerText;
+                          });
+                        }, futureIntrests, 7),
+                        SizedBox(
+                          width: 12,
+                        ),
+                        createIntrest((int intrestId, String answerText) {
+                          setState(() {
+                            id = intrestId;
+                            answer = answerText;
+                          });
+                        }, futureIntrests, 8),
+                        SizedBox(
+                          width: 12,
+                        ),
+                        createIntrest((int intrestId, String answerText) {
+                          setState(() {
+                            id = intrestId;
+                            answer = answerText;
+                          });
+                        }, futureIntrests, 9),
+                      ],
+                    ),
+                    SizedBox(
+                      height: 8,
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        createIntrest((int intrestId, String answerText) {
+                          setState(() {
+                            id = intrestId;
+                            answer = answerText;
+                          });
+                        }, futureIntrests, 10),
+                        SizedBox(
+                          width: 12,
+                        ),
+                        createIntrest((int intrestId, String answerText) {
+                          setState(() {
+                            id = intrestId;
+                            answer = answerText;
+                          });
+                        }, futureIntrests, 11),
+                      ],
+                    ),
+                  ],
+                ),
               ),
             ),
 
@@ -303,139 +405,3 @@ class _ProfileIntrestLandingState extends State<ProfileIntrestLanding> {
     );
   }
 }
-
-// SizedBox(
-//   height: 12,
-// ),
-// Row(
-//   mainAxisAlignment: MainAxisAlignment.center,
-//   children: [
-//     createIntrest((int intrestId, String answerText) {
-//       setState(() {
-//         id = intrestId;
-//         answer = answerText;
-//       });
-//     }, futureIntrests, id, 0),
-//     SizedBox(
-//       width: 12,
-//     ),
-//     createIntrest((int intrestId, String answerText) {
-//       setState(() {
-//         id = intrestId;
-//         answer = answerText;
-//       });
-//     }, futureIntrests, id, 1),
-//   ],
-// ),
-// SizedBox(
-//   height: 8,
-// ),
-// Row(
-//   mainAxisSize: MainAxisSize.max,
-//   mainAxisAlignment: MainAxisAlignment.center,
-//   children: [
-//     createIntrest((int intrestId, String answerText) {
-//       setState(() {
-//         id = intrestId;
-//         answer = answerText;
-//       });
-//     }, futureIntrests, id, 2),
-//     SizedBox(
-//       width: 12,
-//     ),
-//     createIntrest((int intrestId, String answerText) {
-//       setState(() {
-//         id = intrestId;
-//         answer = answerText;
-//       });
-//     }, futureIntrests, id, 3),
-//     SizedBox(
-//       width: 12,
-//     ),
-//     createIntrest((int intrestId, String answerText) {
-//       setState(() {
-//         id = intrestId;
-//         answer = answerText;
-//       });
-//     }, futureIntrests, id, 4),
-//   ],
-// ),
-// SizedBox(
-//   height: 12,
-// ),
-// Row(
-//   mainAxisAlignment: MainAxisAlignment.center,
-//   children: [
-//     createIntrest((int intrestId, String answerText) {
-//       setState(() {
-//         id = intrestId;
-//         answer = answerText;
-//       });
-//     }, futureIntrests, id, 5),
-//     SizedBox(
-//       width: 12,
-//     ),
-//     createIntrest((int intrestId, String answerText) {
-//       setState(() {
-//         id = intrestId;
-//         answer = answerText;
-//       });
-//     }, futureIntrests, id, 6),
-//   ],
-// ),
-// SizedBox(
-//   height: 8,
-// ),
-// Row(
-//   mainAxisSize: MainAxisSize.max,
-//   mainAxisAlignment: MainAxisAlignment.center,
-//   children: [
-//     createIntrest((int intrestId, String answerText) {
-//       setState(() {
-//         id = intrestId;
-//         answer = answerText;
-//       });
-//     }, futureIntrests, id, 7),
-//     SizedBox(
-//       width: 12,
-//     ),
-//     createIntrest((int intrestId, String answerText) {
-//       setState(() {
-//         id = intrestId;
-//         answer = answerText;
-//       });
-//     }, futureIntrests, id, 8),
-//     SizedBox(
-//       width: 12,
-//     ),
-//     createIntrest((int intrestId, String answerText) {
-//       setState(() {
-//         id = intrestId;
-//         answer = answerText;
-//       });
-//     }, futureIntrests, id, 9),
-//   ],
-// ),
-// SizedBox(
-//   height: 8,
-// ),
-// Row(
-//   mainAxisAlignment: MainAxisAlignment.center,
-//   children: [
-//     createIntrest((int intrestId, String answerText) {
-//       setState(() {
-//         id = intrestId;
-//         answer = answerText;
-//       });
-//     }, futureIntrests, id, 10),
-//     SizedBox(
-//       width: 12,
-//     ),
-//     createIntrest((int intrestId, String answerText) {
-//       setState(() {
-//         id = intrestId;
-//         answer = answerText;
-//       });
-//     }, futureIntrests, id, 11),
-//   ],
-// ),
