@@ -109,8 +109,6 @@ FutureBuilder<List<Intrest>> createIntrests (Function onClick, Future<List<Intre
     future: futureIntrests,
     builder: (context, snapshot) {
       if (snapshot.hasData) {
-        List<Intrest> int_list_obj = new List(snapshot.data.length);
-
         return ListView.builder(
           itemCount: snapshot.data.length,
           itemBuilder: (context, index) {
@@ -277,7 +275,7 @@ class _ProfileIntrestLandingState extends State<ProfileIntrestLanding> {
                     id = intrestId;
                     answer = answerText;
                   });
-                }, futureIntrests),
+                }, futureIntrests, id),
               ),
             ),
 
