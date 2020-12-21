@@ -19,6 +19,25 @@ Future<List<Intrest>> fetchIntrests(Function callback) async {
   }
 }
 
+Future<List<Intrest>> changeIntrests(Future<List<Intrest>> futureIntrests, int intrestId, int questionId, String answerText) async {
+  List<Intrest> intrests = await futureIntrests;
+  List<dynamic> questions = findIntrest(intrests, intrestId)?.questions;
+  for(int i = 0; i < questions.length; i++) {
+    if (questions[i]['id'] == questionId) {
+      questions[i]['answer'] = answerText;
+      break;
+    }
+  }
+  return intrests;
+}
+
+void submitAnswer (String url, String body) async {
+  final response = await POST(url, body, true);
+
+  if (response.statusCode != 200)
+    throw Exception('Failed to submit answer: ${response.statusCode}');
+}
+
 Intrest findIntrest (List<Intrest> intrests, int id) {
   for(int i = 0; i < intrests.length; i++) {
     if (intrests[i].id == id) {
@@ -61,7 +80,7 @@ FutureBuilder<List<Intrest>> createQuestions (Function onPageChange, Future<List
                 enlargeCenterPage: true,
                 aspectRatio: 2.0,
                 onPageChanged: (index, reason) {
-                  onPageChange(intrest.questions[index]['answer']);
+                  onPageChange(intrest.questions[index]['id'], intrest.questions[index]['answer']);
                 }
             ),
           );
@@ -111,13 +130,16 @@ class _ProfileIntrestLandingState extends State<ProfileIntrestLanding> {
   Future<List<Intrest>> futureIntrests;
 
   int id = -1;
+  int questionId = -1;
   String answer = '';
 
   @override
   void initState() {
     super.initState();
     futureIntrests = fetchIntrests((List<Intrest> intrests) {setState(() {
-      answer = findIntrest(intrests, id).questions[0]['answer'];
+      Intrest intrest = findIntrest(intrests, id);
+      questionId = intrest.questions[0]['id'];
+      answer = intrest.questions[0]['answer'];
     });});
   }
 
@@ -128,6 +150,8 @@ class _ProfileIntrestLandingState extends State<ProfileIntrestLanding> {
         id = ModalRoute.of(context).settings.arguments;
     });
     CarouselController buttonCarouselController = CarouselController();
+    TextEditingController answerController = new TextEditingController(text: answer);
+
     return Scaffold(
       body: SafeArea(
         child: Column(
@@ -147,7 +171,8 @@ class _ProfileIntrestLandingState extends State<ProfileIntrestLanding> {
               child: Stack(
                 alignment: Alignment.center,
                 children: [
-                  createQuestions((String answerText) {setState(() {
+                  createQuestions((int id, String answerText) {setState(() {
+                    questionId = id;
                     answer = answerText;
                   });}, futureIntrests, id, buttonCarouselController),
                   Positioned(
@@ -200,8 +225,12 @@ class _ProfileIntrestLandingState extends State<ProfileIntrestLanding> {
                 children: [
                   Container(
                     margin: EdgeInsets.symmetric(horizontal: 50, vertical: 0),
-                    child: Text(
-                      answer,
+                    child: TextField(
+                      controller: answerController,
+                      onSubmitted: (text) {
+                        submitAnswer('me/interests/$id/update/', jsonEncode([{"question": questionId, "answer": text}]));
+                        futureIntrests = changeIntrests(futureIntrests, id, questionId, text);
+                      },
                       textAlign: TextAlign.center,
                       style: TextStyle(
                         fontSize: 20,
