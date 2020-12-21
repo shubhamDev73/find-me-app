@@ -28,6 +28,7 @@ class ActivityButton extends StatelessWidget {
             name,
             style: TextStyle(
               color: Colors.black,
+              fontSize: 13,
             ),
           ),
         ),

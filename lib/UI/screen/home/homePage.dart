@@ -100,7 +100,7 @@ class _HomeScreenState extends State<HomeScreen> {
               child: Column(
                 children: [
                   Container(
-                    color: Color(0xffDFF7F9),
+                    color: Color(0xffE0F7FA),
                     padding: const EdgeInsets.all(12.0),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.end,
@@ -145,7 +145,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     ],
                   ),
                   SizedBox(
-                    height: 8,
+                    height: 12,
                   ),
                   Row(
                     mainAxisSize: MainAxisSize.max,

@@ -18,6 +18,7 @@ class TraitsElements extends StatelessWidget {
 
   GestureDetector createButton (String trait) {
     double value = personality[trait] is double ? personality[trait] : personality[trait]['value'];
+    bool selected = selectedElement == trait;
     return GestureDetector(
       onTap: () {
         onClick(trait, personality);
@@ -26,9 +27,11 @@ class TraitsElements extends StatelessWidget {
         icon: SvgPicture.asset(
           Assets.traits[trait]['icon'],
           color: value >= 0 ? MyColors.positiveTraitColor : MyColors.negativeTraitColor,
+          width: selected ? 40 : 30,
+          height: selected ? 40 : 30,
         ),
         progress: value.abs(),
-        selected: selectedElement == trait,
+        selected: selected,
       ),
     );
   }
@@ -41,10 +44,10 @@ class TraitsElements extends StatelessWidget {
         mainAxisSize: MainAxisSize.max,
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          createButton("Water"), SizedBox(width: 20),
-          createButton("Space"), SizedBox(width: 20),
-          createButton("Fire"), SizedBox(width: 20),
-          createButton("Earth"), SizedBox(width: 20),
+          createButton("Water"), SizedBox(width: 15),
+          createButton("Space"), SizedBox(width: 15),
+          createButton("Fire"), SizedBox(width: 15),
+          createButton("Earth"), SizedBox(width: 15),
           createButton("Air"),
         ],
       ),
@@ -69,13 +72,8 @@ class MoodIcons extends StatelessWidget {
           shape: BoxShape.circle,
         ),
         child: Container(
-          height: selected ? 60 : 45,
-          width: selected ? 60 : 45,
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(50),
-            border: Border.all(color: Colors.white),
-          ),
+          height: selected ? 65 : 50,
+          width: selected ? 65 : 50,
           child: CircleAvatar(
             backgroundColor: MyColors.primaryColor,
             child: icon,
@@ -93,27 +91,17 @@ class CircleProgress extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    //this is base circle
-    // Paint outerCircle = Paint()
-    //   ..strokeWidth = 1
-    //   ..color = Colors.black
-    //   ..style = PaintingStyle.stroke;
-
     Paint completeArc = Paint()
       ..strokeWidth = 1
       ..color = Colors.black
       ..style = PaintingStyle.stroke
       ..strokeCap = StrokeCap.round;
 
-    Offset center = Offset(size.width / 2, size.height / 2);
-    // double radius = min(size.width / 2, size.height / 2) - 10;
-
-    // canvas.drawCircle(
-    //     center, radius, outerCircle); // this draws main outer circle
-
+    double radius = size.width / 2;
     double angle = 2 * pi * currentProgress;
+    Offset center = Offset(radius, radius);
 
-    canvas.drawArc(Rect.fromCircle(center: center, radius: size.width / 2), pi / 2 - angle / 2,
+    canvas.drawArc(Rect.fromCircle(center: center, radius: radius + 1), pi / 2 - angle / 2,
         angle, false, completeArc);
   }
 

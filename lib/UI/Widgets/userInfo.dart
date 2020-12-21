@@ -35,6 +35,8 @@ FutureBuilder<User> createAvatar (Future<User> futureUser) {
       if (snapshot.hasData) {
         return Image.network(
           snapshot.data.avatar,
+          width: 300,
+          height: 300,
         );
       } else if (snapshot.hasError) {
         return Text("${snapshot.error}");
@@ -60,8 +62,8 @@ class UserInfo extends StatelessWidget {
     return Column(
       children: [
         Container(
-          height: 130,
-          width: 130,
+          height: 170,
+          width: 170,
           child: Stack(
             alignment: AlignmentDirectional.center,
             children: [
@@ -71,8 +73,8 @@ class UserInfo extends StatelessWidget {
                 ),
               ),
               Positioned(
-                top: 15,
-                left: 96,
+                top: 25,
+                left: 130,
                 child: Container(
                   height: 25,
                   width: 25,
@@ -91,6 +93,9 @@ class UserInfo extends StatelessWidget {
         Container(
           child: Column(
             children: [
+              SizedBox(
+                height: 18,
+              ),
               createUser(this.user),
               SizedBox(
                 height: 8,

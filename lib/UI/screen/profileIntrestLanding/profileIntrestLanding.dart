@@ -162,9 +162,12 @@ class _ProfileIntrestLandingState extends State<ProfileIntrestLanding> {
 
   @override
   Widget build(BuildContext context) {
-    setState(() {
-      if (id == -1) id = ModalRoute.of(context).settings.arguments;
-    });
+    if (id == -1) {
+      setState(() {
+        id = ModalRoute.of(context).settings.arguments;
+      });
+    }
+
     CarouselController buttonCarouselController = CarouselController();
     TextEditingController answerController = new TextEditingController(text: answer);
 
