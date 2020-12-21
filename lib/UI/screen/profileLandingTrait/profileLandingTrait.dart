@@ -11,7 +11,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:findme/API.dart';
 
 Future<Map<String, dynamic>> fetchPersonality (Function callback) async {
-  final response = await GET('me/personality');
+  final response = await GET('me/personality/');
 
   if (response.statusCode == 200) {
     Map<String, dynamic> personality = jsonDecode(response.body);

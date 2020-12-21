@@ -8,7 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:findme/API.dart';
 
 Future<List<Intrest>> fetchIntrests(Function callback) async {
-  final response = await GET('me/interests');
+  final response = await GET('me/interests/');
 
   if (response.statusCode == 200) {
     List<Intrest> intrests = jsonDecode(response.body).map<Intrest>((intrest) => Intrest.fromJson(intrest)).toList();

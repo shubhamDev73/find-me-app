@@ -13,7 +13,7 @@ import 'package:findme/data/models/intrests.dart';
 import 'package:findme/API.dart';
 
 Future<User> fetchUser() async {
-  final response = await GET('me');
+  final response = await GET('me/');
 
   if (response.statusCode == 200) {
     return User.fromJson(jsonDecode(response.body));
