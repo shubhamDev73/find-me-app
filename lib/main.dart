@@ -8,6 +8,8 @@ import 'UI/screen/onBoardScreen/onBoardingPage.dart';
 import 'UI/screen/profileIntrestLanding/profileIntrestLanding.dart';
 import 'UI/screen/profileLandingTrait/profileLandingTrait.dart';
 import 'UI/screen/registerPage/registerPage.dart';
+import 'UI/screen/profileIntrestLanding/addUserInterest.dart';
+
 import 'constant.dart';
 
 void main() {
@@ -76,6 +78,10 @@ class _MainState extends State<Main> {
           case '/profileIntrestLanding':
             return PageRouteBuilder(
                 pageBuilder: (_, a1, a2) => ProfileIntrestLanding(),
+                settings: settings);
+          case '/addUserIntrest':
+            return PageRouteBuilder(
+                pageBuilder: (_, a1, a2) => AddUserinterests(),
                 settings: settings);
           default:
             return CustomPageRoute.build(

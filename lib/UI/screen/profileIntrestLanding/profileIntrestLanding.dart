@@ -41,7 +41,7 @@ void submitAnswer (String url, String body) async {
 }
 
 Intrest findIntrest (List<Intrest> intrests, int id) {
-  for(int i = 0; i < intrests.length; i++) {
+  for (int i = 0; i < intrests.length; i++) {
     if (intrests[i].id == id) {
       return intrests[i];
     }
@@ -157,7 +157,8 @@ class _ProfileIntrestLandingState extends State<ProfileIntrestLanding> {
       Intrest intrest = findIntrest(intrests, id);
       questionId = intrest.questions[0]['id'];
       answer = intrest.questions[0]['answer'];
-    });});
+      });
+    });
   }
 
   @override
@@ -264,11 +265,6 @@ class _ProfileIntrestLandingState extends State<ProfileIntrestLanding> {
               ),
             ),
 
-            // 24 maths 11:45
-            // 26 e sci 8:30
-            // 29 E AND V 8:30
-            // 31 ENG 11:45 , PSP 8:30
-
             Expanded(
               flex: 6,
               child: Container(
@@ -283,7 +279,9 @@ class _ProfileIntrestLandingState extends State<ProfileIntrestLanding> {
             ),
 
             GestureDetector(
-              onTap: () {},
+              onTap: () {
+                Navigator.of(context).pushNamed('/addUserIntrest');
+              },
               child: Container(
                 decoration: BoxDecoration(
                   color: Colors.black,
