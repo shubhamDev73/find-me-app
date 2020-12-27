@@ -21,6 +21,29 @@ Future<List<Intrest>> fetchIntrests(Function callback) async {
   }
 }
 
+<<<<<<< Updated upstream
+=======
+Future<List<Intrest>> changeIntrests(Future<List<Intrest>> futureIntrests,
+    int intrestId, int questionId, String answerText) async {
+  List<Intrest> intrests = await futureIntrests;
+  List<dynamic> questions = findIntrest(intrests, intrestId)?.questions;
+  for (int i = 0; i < questions.length; i++) {
+    if (questions[i]['id'] == questionId) {
+      questions[i]['answer'] = answerText;
+      break;
+    }
+  }
+  return intrests;
+}
+
+void submitAnswer(String url, String body) async {
+  final response = await POST(url, body, true);
+
+  if (response.statusCode != 200)
+    throw Exception('Failed to submit answer: ${response.statusCode}');
+}
+
+>>>>>>> Stashed changes
 Intrest findIntrest(List<Intrest> intrests, int id) {
   for (int i = 0; i < intrests.length; i++) {
     if (intrests[i].id == id) {
@@ -68,7 +91,12 @@ FutureBuilder<List<Intrest>> createQuestions(
                 enlargeCenterPage: true,
                 aspectRatio: 2.0,
                 onPageChanged: (index, reason) {
+<<<<<<< Updated upstream
                   onPageChange(intrest.questions[index]['answer']);
+=======
+                  onPageChange(intrest.questions[index]['id'],
+                      intrest.questions[index]['answer']);
+>>>>>>> Stashed changes
                 }),
           );
         } else {
@@ -84,8 +112,13 @@ FutureBuilder<List<Intrest>> createQuestions(
   );
 }
 
+<<<<<<< Updated upstream
 FutureBuilder<List<Intrest>> createIntrest(
     Function onClick, Future<List<Intrest>> futureIntrests) {
+=======
+FutureBuilder<List<Intrest>> createIntrests(
+    Function onClick, Future<List<Intrest>> futureIntrests, int id) {
+>>>>>>> Stashed changes
   return FutureBuilder<List<Intrest>>(
     future: futureIntrests,
     builder: (context, snapshot) {
@@ -139,7 +172,13 @@ class _ProfileIntrestLandingState extends State<ProfileIntrestLanding> {
     super.initState();
     futureIntrests = fetchIntrests((List<Intrest> intrests) {
       setState(() {
+<<<<<<< Updated upstream
         answer = findIntrest(intrests, id).questions[0]['answer'];
+=======
+        Intrest intrest = findIntrest(intrests, id);
+        questionId = intrest.questions[0]['id'];
+        answer = intrest.questions[0]['answer'];
+>>>>>>> Stashed changes
       });
     });
   }
@@ -150,6 +189,12 @@ class _ProfileIntrestLandingState extends State<ProfileIntrestLanding> {
       if (id == -1) id = ModalRoute.of(context).settings.arguments;
     });
     CarouselController buttonCarouselController = CarouselController();
+<<<<<<< Updated upstream
+=======
+    TextEditingController answerController =
+        new TextEditingController(text: answer);
+
+>>>>>>> Stashed changes
     return Scaffold(
       body: SafeArea(
         child: Column(
@@ -169,8 +214,14 @@ class _ProfileIntrestLandingState extends State<ProfileIntrestLanding> {
               child: Stack(
                 alignment: Alignment.center,
                 children: [
+<<<<<<< Updated upstream
                   createQuestions((String answerText) {
                     setState(() {
+=======
+                  createQuestions((int id, String answerText) {
+                    setState(() {
+                      questionId = id;
+>>>>>>> Stashed changes
                       answer = answerText;
                     });
                   }, futureIntrests, id, buttonCarouselController),
@@ -224,8 +275,22 @@ class _ProfileIntrestLandingState extends State<ProfileIntrestLanding> {
                 children: [
                   Container(
                     margin: EdgeInsets.symmetric(horizontal: 50, vertical: 0),
+<<<<<<< Updated upstream
                     child: Text(
                       answer,
+=======
+                    child: TextField(
+                      controller: answerController,
+                      onSubmitted: (text) {
+                        submitAnswer(
+                            'me/interests/$id/update/',
+                            jsonEncode([
+                              {"question": questionId, "answer": text}
+                            ]));
+                        futureIntrests = changeIntrests(
+                            futureIntrests, id, questionId, text);
+                      },
+>>>>>>> Stashed changes
                       textAlign: TextAlign.center,
                       style: TextStyle(
                         fontSize: 20,
@@ -264,7 +329,9 @@ class _ProfileIntrestLandingState extends State<ProfileIntrestLanding> {
             ),
 
             GestureDetector(
-              onTap: () {},
+              onTap: () {
+                Navigator.of(context).pushNamed('/addUserIntrest');
+              },
               child: Container(
                 decoration: BoxDecoration(
                   color: Colors.black,
