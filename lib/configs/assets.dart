@@ -32,4 +32,18 @@ class Assets {
   static const edit = "assets/edits/edit.svg";
   static const me = "assets/tabs/meTab.svg";
   static const find = "assets/tabs/findTab.svg";
+  static const moods = {
+    "Happy": {
+      "avatar": "assets/mood/happy1.png",
+      "weather": "assets/mood/Sun.svg",
+    },
+    "Gloomy": {
+      "avatar": "assets/mood/gloomy1.png",
+      "weather": "assets/mood/Cloud.svg",
+    },
+    "Mysterious": {
+      "avatar": "assets/mood/mysterious1.png",
+      "weather": "assets/mood/Thunder.svg",
+    },
+  };
 }

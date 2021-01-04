@@ -57,6 +57,7 @@ flutter:
     - assets/traits/
     - assets/edits/
     - assets/tabs/
+    - assets/mood/
 
   fonts:
     - family: QuickSand

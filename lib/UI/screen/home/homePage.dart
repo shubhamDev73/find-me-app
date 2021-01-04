@@ -126,10 +126,19 @@ class _HomeScreenState extends State<HomeScreen> {
                 ],
               ),
             ),
-            Expanded(
-              flex: 7,
-              child: UserInfo(futureUser),
-            ),
+          //MY CODE HERE
+
+           GestureDetector(
+              onTap: () {
+                Navigator.of(context).pushNamed('/moodSet');
+              },
+              child: Expanded(
+                flex: 7,
+                child: UserInfo(futureUser),
+
+              ),
+           ),
+
             Expanded(
               flex: 4,
               child: Column(

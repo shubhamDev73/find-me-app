@@ -9,6 +9,8 @@ import 'UI/screen/profileIntrestLanding/profileIntrestLanding.dart';
 import 'UI/screen/profileLandingTrait/profileLandingTrait.dart';
 import 'UI/screen/registerPage/registerPage.dart';
 import 'UI/screen/profileIntrestLanding/addUserInterest.dart';
+import 'UI/screen/moodSet/moodSet.dart';
+import 'UI/screen/moodHistory/moodHistory.dart';
 
 import 'constant.dart';
 
@@ -82,6 +84,14 @@ class _MainState extends State<Main> {
           case '/addUserIntrest':
             return PageRouteBuilder(
                 pageBuilder: (_, a1, a2) => AddUserinterests(),
+                settings: settings);
+          case '/moodSet':
+            return PageRouteBuilder(
+                pageBuilder: (_, a1, a2) => MoodSet(),
+                settings: settings);
+          case '/moodHistory':
+            return PageRouteBuilder(
+                pageBuilder: (_, a1, a2) => MoodHistory(),
                 settings: settings);
           default:
             return CustomPageRoute.build(
