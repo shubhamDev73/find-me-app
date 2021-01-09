@@ -21,10 +21,11 @@ Future<List<Intrest>> fetchIntrests(Function callback) async {
   }
 }
 
-Future<List<Intrest>> changeIntrests(Future<List<Intrest>> futureIntrests, int intrestId, int questionId, String answerText) async {
+Future<List<Intrest>> changeIntrests(Future<List<Intrest>> futureIntrests,
+    int intrestId, int questionId, String answerText) async {
   List<Intrest> intrests = await futureIntrests;
   List<dynamic> questions = findIntrest(intrests, intrestId)?.questions;
-  for(int i = 0; i < questions.length; i++) {
+  for (int i = 0; i < questions.length; i++) {
     if (questions[i]['id'] == questionId) {
       questions[i]['answer'] = answerText;
       break;
@@ -33,14 +34,14 @@ Future<List<Intrest>> changeIntrests(Future<List<Intrest>> futureIntrests, int i
   return intrests;
 }
 
-void submitAnswer (String url, String body) async {
+void submitAnswer(String url, String body) async {
   final response = await POST(url, body, true);
 
   if (response.statusCode != 200)
     throw Exception('Failed to submit answer: ${response.statusCode}');
 }
 
-Intrest findIntrest (List<Intrest> intrests, int id) {
+Intrest findIntrest(List<Intrest> intrests, int id) {
   for (int i = 0; i < intrests.length; i++) {
     if (intrests[i].id == id) {
       return intrests[i];
@@ -87,9 +88,9 @@ FutureBuilder<List<Intrest>> createQuestions(
                 enlargeCenterPage: true,
                 aspectRatio: 2.0,
                 onPageChanged: (index, reason) {
-                  onPageChange(intrest.questions[index]['id'], intrest.questions[index]['answer']);
-                }
-            ),
+                  onPageChange(intrest.questions[index]['id'],
+                      intrest.questions[index]['answer']);
+                }),
           );
         } else {
           return Text("Interest not found");
@@ -104,29 +105,15 @@ FutureBuilder<List<Intrest>> createQuestions(
   );
 }
 
-FutureBuilder<List<Intrest>> createIntrests (Function onClick, Future<List<Intrest>> futureIntrests, int id) {
+FutureBuilder<List<Intrest>> createIntrests(
+    Function onClick, Future<List<Intrest>> futureIntrests, int id) {
   return FutureBuilder<List<Intrest>>(
     future: futureIntrests,
     builder: (context, snapshot) {
       if (snapshot.hasData) {
-        return ListView.builder(
-          itemCount: snapshot.data.length,
-          itemBuilder: (context, index) {
-            Intrest intrest = snapshot.data[index];
-            return Container(
-              color: Color(0xffE0F7FA),
-              margin: EdgeInsets.only(top: 5),
-              padding: EdgeInsets.symmetric(vertical: 10),
-              child: ActivityButton(
-                name: intrest.name,
-                function: () {
-                  onClick(intrest.id, intrest.questions[0]['answer']);
-                },
-                amount: intrest.amount,
-                selected: intrest.id == id,
-              ),
-            );
-          },
+        return Column(
+          children: getInterestList(snapshot.data),
+          mainAxisAlignment: MainAxisAlignment.center,
         );
       } else if (snapshot.hasError) {
         return Text("${snapshot.error}");
@@ -136,6 +123,70 @@ FutureBuilder<List<Intrest>> createIntrests (Function onClick, Future<List<Intre
       return CircularProgressIndicator();
     },
   );
+}
+
+List<Widget> getInterestList(List<Intrest> obj) {
+  int len_mod5 = obj.length ~/ 5;
+  int len_rem = obj.length - (len_mod5 * 5);
+  int render_lenght = len_mod5 * 2;
+
+  int len_counter = 3;
+  int list_item_counter = 0;
+
+  List<Widget> return_obj_col = [];
+  // return_obj_col.add(Padding(padding: null))
+  List<Widget> temp_row = [];
+
+  int item_counter = 0;
+
+  for (int i = 0; i < render_lenght; i++) {
+    print("above");
+    if (i % 2 == 0) {
+      len_counter = 2;
+      print(len_counter);
+    } else {
+      len_counter = 3;
+      print(len_counter);
+    }
+    for (int j = 0; j < len_counter; j++) {
+      dynamic intrest = obj[item_counter++];
+      dynamic temp_button = ActivityButton(
+        name: intrest.name,
+        function: () {},
+        amount: intrest.amount,
+        selected: false,
+      );
+
+      dynamic ob = Padding(
+        padding: const EdgeInsets.fromLTRB(12.0, 7.0, 0.0, 7.0),
+        child: temp_button,
+      );
+      temp_row.add(ob);
+    }
+    Row temp_row_obj = Row(
+      children: temp_row,
+      mainAxisAlignment: MainAxisAlignment.center,
+    );
+    return_obj_col.add(temp_row_obj);
+    temp_row = [];
+  }
+
+  // for (int i = item_counter; i < obj.length; i++) {
+  //   dynamic intrest = obj[item_counter++];
+  //   dynamic temp_button = ActivityButton(
+  //     name: intrest.name,
+  //     function: () {},
+  //     amount: intrest.amount,
+  //     selected: false,
+  //   );
+  //   temp_row.add(temp_button);
+  // }
+
+  // Row temp_row_obj = Row(children: temp_row);
+  // return_obj_col.add(temp_row_obj);
+  // temp_row = [];
+
+  return return_obj_col;
 }
 
 class ProfileIntrestLanding extends StatefulWidget {
@@ -153,10 +204,11 @@ class _ProfileIntrestLandingState extends State<ProfileIntrestLanding> {
   @override
   void initState() {
     super.initState();
-    futureIntrests = fetchIntrests((List<Intrest> intrests) {setState(() {
-      Intrest intrest = findIntrest(intrests, id);
-      questionId = intrest.questions[0]['id'];
-      answer = intrest.questions[0]['answer'];
+    futureIntrests = fetchIntrests((List<Intrest> intrests) {
+      setState(() {
+        Intrest intrest = findIntrest(intrests, id);
+        questionId = intrest.questions[0]['id'];
+        answer = intrest.questions[0]['answer'];
       });
     });
   }
@@ -170,7 +222,8 @@ class _ProfileIntrestLandingState extends State<ProfileIntrestLanding> {
     }
 
     CarouselController buttonCarouselController = CarouselController();
-    TextEditingController answerController = new TextEditingController(text: answer);
+    TextEditingController answerController =
+        new TextEditingController(text: answer);
 
     return Scaffold(
       body: SafeArea(
@@ -191,10 +244,12 @@ class _ProfileIntrestLandingState extends State<ProfileIntrestLanding> {
               child: Stack(
                 alignment: Alignment.center,
                 children: [
-                  createQuestions((int id, String answerText) {setState(() {
-                    questionId = id;
-                    answer = answerText;
-                  });}, futureIntrests, id, buttonCarouselController),
+                  createQuestions((int id, String answerText) {
+                    setState(() {
+                      questionId = id;
+                      answer = answerText;
+                    });
+                  }, futureIntrests, id, buttonCarouselController),
                   Positioned(
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -248,8 +303,13 @@ class _ProfileIntrestLandingState extends State<ProfileIntrestLanding> {
                     child: TextField(
                       controller: answerController,
                       onSubmitted: (text) {
-                        submitAnswer('me/interests/$id/update/', jsonEncode([{"question": questionId, "answer": text}]));
-                        futureIntrests = changeIntrests(futureIntrests, id, questionId, text);
+                        submitAnswer(
+                            'me/interests/$id/update/',
+                            jsonEncode([
+                              {"question": questionId, "answer": text}
+                            ]));
+                        futureIntrests = changeIntrests(
+                            futureIntrests, id, questionId, text);
                       },
                       textAlign: TextAlign.center,
                       style: TextStyle(
@@ -264,7 +324,6 @@ class _ProfileIntrestLandingState extends State<ProfileIntrestLanding> {
                 ],
               ),
             ),
-
             Expanded(
               flex: 6,
               child: Container(
@@ -277,7 +336,6 @@ class _ProfileIntrestLandingState extends State<ProfileIntrestLanding> {
                 }, futureIntrests, id),
               ),
             ),
-
             GestureDetector(
               onTap: () {
                 Navigator.of(context).pushNamed('/addUserIntrest');
