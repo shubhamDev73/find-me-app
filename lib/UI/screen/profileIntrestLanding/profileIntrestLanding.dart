@@ -105,16 +105,51 @@ FutureBuilder<List<Intrest>> createQuestions(
   );
 }
 
+// class CustomScroll extends StatelessWidget {
+//   const CustomScroll({
+//     Key key,
+//     @required ScrollController scrollController,
+//     @required this.itemList,
+//   })  : _scrollController = scrollController,
+//         super(key: key);
+
+//   final ScrollController _scrollController;
+//   final List<Intrest> itemList;
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return Scrollbar(
+//       thickness: 2,
+//       isAlwaysShown: true,
+//       controller: _scrollController,
+//       child: Column(
+//         children: getInterestList(itemList),
+//       ),
+//     );
+//   }
+// }
+
 FutureBuilder<List<Intrest>> createIntrests(
     Function onClick, Future<List<Intrest>> futureIntrests, int id) {
   return FutureBuilder<List<Intrest>>(
     future: futureIntrests,
     builder: (context, snapshot) {
       if (snapshot.hasData) {
-        return Column(
+        List<Widget> ap = getInterestList(snapshot.data);
+        print("Returned no. of rows - ");
+        print(ap.length);
+        // return Column(
+        //   children: getInterestList(snapshot.data),
+        //   mainAxisAlignment: MainAxisAlignment.center,
+        // );
+        return Scrollbar(
+            child: ListView(
           children: getInterestList(snapshot.data),
-          mainAxisAlignment: MainAxisAlignment.center,
-        );
+          padding: const EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 0.0),
+        ));
+        // final ScrollController _scrollController = ScrollController();
+        // return CustomScroll(
+        //     scrollController: _scrollController, itemList: snapshot.data);
       } else if (snapshot.hasError) {
         return Text("${snapshot.error}");
       }
@@ -126,6 +161,8 @@ FutureBuilder<List<Intrest>> createIntrests(
 }
 
 List<Widget> getInterestList(List<Intrest> obj) {
+  print("snapshot data lenght - ");
+  print(obj.length);
   int len_mod5 = obj.length ~/ 5;
   int len_rem = obj.length - (len_mod5 * 5);
   int render_lenght = len_mod5 * 2;
@@ -140,13 +177,10 @@ List<Widget> getInterestList(List<Intrest> obj) {
   int item_counter = 0;
 
   for (int i = 0; i < render_lenght; i++) {
-    print("above");
     if (i % 2 == 0) {
       len_counter = 2;
-      print(len_counter);
     } else {
       len_counter = 3;
-      print(len_counter);
     }
     for (int j = 0; j < len_counter; j++) {
       dynamic intrest = obj[item_counter++];
@@ -156,7 +190,6 @@ List<Widget> getInterestList(List<Intrest> obj) {
         amount: intrest.amount,
         selected: false,
       );
-
       dynamic ob = Padding(
         padding: const EdgeInsets.fromLTRB(12.0, 7.0, 0.0, 7.0),
         child: temp_button,
@@ -171,20 +204,27 @@ List<Widget> getInterestList(List<Intrest> obj) {
     temp_row = [];
   }
 
-  // for (int i = item_counter; i < obj.length; i++) {
-  //   dynamic intrest = obj[item_counter++];
-  //   dynamic temp_button = ActivityButton(
-  //     name: intrest.name,
-  //     function: () {},
-  //     amount: intrest.amount,
-  //     selected: false,
-  //   );
-  //   temp_row.add(temp_button);
-  // }
+  for (int i = item_counter; i < obj.length; i++) {
+    dynamic intrest = obj[item_counter++];
+    dynamic temp_button = ActivityButton(
+      name: intrest.name,
+      function: () {},
+      amount: intrest.amount,
+      selected: false,
+    );
+    dynamic ob = Padding(
+      padding: const EdgeInsets.fromLTRB(12.0, 7.0, 0.0, 7.0),
+      child: temp_button,
+    );
+    temp_row.add(ob);
+  }
 
-  // Row temp_row_obj = Row(children: temp_row);
-  // return_obj_col.add(temp_row_obj);
-  // temp_row = [];
+  Row temp_row_obj = Row(
+    children: temp_row,
+    mainAxisAlignment: MainAxisAlignment.center,
+  );
+  return_obj_col.add(temp_row_obj);
+  temp_row = [];
 
   return return_obj_col;
 }

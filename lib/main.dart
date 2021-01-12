@@ -37,6 +37,7 @@ class _MainState extends State<Main> {
       theme: ThemeData(
         primaryColor: MyColors.primaryColor,
         accentColor: MyColors.accentColor,
+        highlightColor: MyColors.accentColor,
         scaffoldBackgroundColor: Colors.white,
         appBarTheme: AppBarTheme().copyWith(
           iconTheme: IconThemeData(color: Colors.black),
@@ -87,12 +88,10 @@ class _MainState extends State<Main> {
                 settings: settings);
           case '/moodSet':
             return PageRouteBuilder(
-                pageBuilder: (_, a1, a2) => MoodSet(),
-                settings: settings);
+                pageBuilder: (_, a1, a2) => MoodSet(), settings: settings);
           case '/moodHistory':
             return PageRouteBuilder(
-                pageBuilder: (_, a1, a2) => MoodHistory(),
-                settings: settings);
+                pageBuilder: (_, a1, a2) => MoodHistory(), settings: settings);
           default:
             return CustomPageRoute.build(
                 builder: (_) => OnBoardingScreen(), settings: settings);

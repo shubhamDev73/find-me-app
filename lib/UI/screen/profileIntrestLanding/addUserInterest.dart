@@ -54,29 +54,47 @@ class AddUserinterests extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
             ),
             Expanded(
-              child: Scrollbar(
-                thickness: 3,
-                isAlwaysShown: true,
-                controller: _scrollController,
-                child: GridView(
-                    controller: _scrollController,
-                    shrinkWrap: true,
-                    scrollDirection: Axis.vertical,
-                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                      childAspectRatio: 3.3,
-                      mainAxisSpacing: 25,
-                      crossAxisCount: 3,
-                    ),
-                    children: itemList
-                        .map(
-                          (e) => CustomButton(e.title),
-                        )
-                        .toList()),
-              ),
+              child: CustomScroll(
+                  scrollController: _scrollController, itemList: itemList),
             ),
           ],
         ),
       ),
+    );
+  }
+}
+
+class CustomScroll extends StatelessWidget {
+  const CustomScroll({
+    Key key,
+    @required ScrollController scrollController,
+    @required this.itemList,
+  })  : _scrollController = scrollController,
+        super(key: key);
+
+  final ScrollController _scrollController;
+  final List itemList;
+
+  @override
+  Widget build(BuildContext context) {
+    return Scrollbar(
+      thickness: 3,
+      isAlwaysShown: true,
+      controller: _scrollController,
+      child: GridView(
+          controller: _scrollController,
+          shrinkWrap: true,
+          scrollDirection: Axis.vertical,
+          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+            childAspectRatio: 3.3,
+            mainAxisSpacing: 25,
+            crossAxisCount: 3,
+          ),
+          children: itemList
+              .map(
+                (e) => CustomButton(e.title),
+              )
+              .toList()),
     );
   }
 }
