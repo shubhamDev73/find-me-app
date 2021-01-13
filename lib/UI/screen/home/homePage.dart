@@ -22,14 +22,17 @@ Future<User> fetchUser() async {
   }
 }
 
-FutureBuilder<User> createTraits (Future<User> futureUser) {
+FutureBuilder<User> createTraits(Future<User> futureUser) {
   return FutureBuilder<User>(
     future: futureUser,
     builder: (context, snapshot) {
       if (snapshot.hasData) {
-        return TraitsElements(onClick: (String trait, Map<String, dynamic> personality) {
-          Navigator.pushNamed(context, "/profileLandingTrait", arguments: trait);
-        }, personality: snapshot.data.personality);
+        return TraitsElements(
+            onClick: (String trait, Map<String, dynamic> personality) {
+              Navigator.pushNamed(context, "/profileLandingTrait",
+                  arguments: trait);
+            },
+            personality: snapshot.data.personality);
       } else if (snapshot.hasError) {
         return Text("${snapshot.error}");
       }
@@ -40,7 +43,7 @@ FutureBuilder<User> createTraits (Future<User> futureUser) {
   );
 }
 
-FutureBuilder<User> createIntrest (Future<User> futureUser, int index) {
+FutureBuilder<User> createIntrest(Future<User> futureUser, int index) {
   return FutureBuilder<User>(
     future: futureUser,
     builder: (context, snapshot) {
@@ -82,7 +85,8 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
-    globals.token = 'e06df4fbae56e7ed03aadb66c233368a4b93fef115728896a220b60ed5e81ede';
+    globals.token =
+        'e06df4fbae56e7ed03aadb66c233368a4b93fef115728896a220b60ed5e81ede';
     futureUser = fetchUser();
   }
 
@@ -126,19 +130,15 @@ class _HomeScreenState extends State<HomeScreen> {
                 ],
               ),
             ),
-          //MY CODE HERE
-
-           GestureDetector(
+            GestureDetector(
               onTap: () {
                 Navigator.of(context).pushNamed('/moodSet');
               },
               child: Expanded(
                 flex: 7,
                 child: UserInfo(futureUser),
-
               ),
-           ),
-
+            ),
             Expanded(
               flex: 4,
               child: Column(

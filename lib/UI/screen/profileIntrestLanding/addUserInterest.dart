@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:findme/UI/Widgets/activityButtons.dart';
+import 'package:findme/UI/Widgets/addInterestsButton.dart';
 import 'package:findme/UI/Widgets/menuButton.dart';
 import 'package:findme/data/models/intrests.dart';
 import 'package:flutter/material.dart';
@@ -12,51 +13,124 @@ import 'package:findme/UI/Widgets/Button.dart';
 
 class AddUserinterests extends StatelessWidget {
   final ScrollController _scrollController = ScrollController();
+  List buttonNames = [
+    'APP',
+    'APP2',
+    'APP',
+    'APP',
+    'APP3',
+    'APP',
+    'APP',
+    'APP',
+    'APP6',
+    'APP',
+    'APP',
+    'APP',
+    'APP6',
+    'APP',
+    'APP',
+    'APP6',
+    'APP',
+    'APP',
+    'APP',
+    'APP6',
+    'APP9',
+    'APP',
+    'APP',
+    'APP',
+    'APP6',
+    'APP',
+    'APP',
+    'APP',
+    'APP6',
+    'APP',
+    'APP',
+    'APP6',
+    'APP',
+    'APP',
+    'APP',
+    'APP6',
+    'APP9'
+  ];
   @override
   Widget build(BuildContext context) {
     var itemList = Item().items;
+
     return Scaffold(
-      body: Padding(
-        padding: const EdgeInsets.only(
-          top: 0,
-          bottom: 0,
-          left: 25,
-          right: 15,
-        ),
+      body: SafeArea(
         child: Column(
-          mainAxisSize: MainAxisSize.min,
           children: [
-            SizedBox(
-              height: 50,
-            ),
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                SizedBox(
-                  width: 140,
-                ),
-                Column(
-                  children: [
-                    Text(
-                      'Button',
+            Container(
+              constraints: BoxConstraints(maxHeight: 67, minHeight: 67),
+              child: Stack(
+                children: [
+                  Container(
+                    padding: const EdgeInsets.all(12.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        Icon(Icons.more_vert),
+                      ],
+                    ),
+                  ),
+                  Container(
+                    child: Text(
+                      "Interests",
                       style: TextStyle(
+                        fontFamily: 'QuickSand',
+                        fontSize: 25,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    alignment: Alignment(0.0, 0.0),
+                  ),
+                  Container(
+                    child: Text(
+                      "tap and tap",
+                      style: TextStyle(
+                        fontFamily: 'QuickSand',
+                        fontSize: 11,
                         fontWeight: FontWeight.w700,
                       ),
                     ),
-                    Text('tap and tap'),
-                  ],
-                ),
-                SizedBox(
-                  width: 110,
-                ),
-                Icon(Icons.more_vert)
-              ],
-              mainAxisAlignment: MainAxisAlignment.center,
+                    alignment: Alignment(0.0, 0.75),
+                  ),
+                ],
+              ),
             ),
-            Expanded(
-              child: CustomScroll(
-                  scrollController: _scrollController, itemList: itemList),
+            Container(
+              padding: const EdgeInsets.fromLTRB(20.0, 0.0, 20.0, 0.0),
+              child: Container(
+                constraints: BoxConstraints(minWidth: 245, maxWidth: 245),
+                child: Scrollbar(
+                  thickness: 0,
+                  isAlwaysShown: true,
+                  controller: _scrollController,
+                  child: GridView(
+                      controller: _scrollController,
+                      shrinkWrap: true,
+                      scrollDirection: Axis.vertical,
+                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                        childAspectRatio: 3.3,
+                        mainAxisSpacing: 30,
+                        crossAxisSpacing: 9,
+                        crossAxisCount: 3,
+                      ),
+                      children: buttonNames
+                          .map(
+                            (e) => InterestButton(
+                              name: e,
+                              function: () {},
+                              amount: 2,
+                              selected: false,
+                            ),
+                          )
+                          .toList()),
+                ),
+              ),
+              constraints: BoxConstraints(maxHeight: 517, minWidth: 517),
             ),
+            MenuButton(),
           ],
         ),
       ),
