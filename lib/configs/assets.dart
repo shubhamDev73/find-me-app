@@ -33,9 +33,9 @@ class Assets {
   static const me = "assets/tabs/meTab.svg";
   static const find = "assets/tabs/findTab.svg";
   static const moods = {
-    "Happy": {
+    "Cheerful": {
       "avatar": "assets/mood/happy1.png",
-      "weather": "assets/mood/Sun.svg",
+      "weather": "assets/mood/Rainbow.svg",
     },
     "Gloomy": {
       "avatar": "assets/mood/gloomy1.png",
@@ -44,6 +44,10 @@ class Assets {
     "Mysterious": {
       "avatar": "assets/mood/mysterious1.png",
       "weather": "assets/mood/Thunder.svg",
+    },
+    "Angry": {
+      "avatar": "assets/mood/angry1.png",
+      "weather": "assets/mood/Sun.svg",
     },
   };
 }

@@ -25,6 +25,23 @@ Future<User> fetchUser() async {
   }
 }
 
+Future<List<dynamic>> fetchAvatars() async {
+  final response = await GET('avatars/2/');
+  //List<dynamic> avatarList=[];
+  if (response.statusCode == 200) {
+    var avatars = jsonDecode(response.body);
+    //callback(avatars);
+    List<dynamic>  avatarList=avatars!=null?List.from(avatars):null;
+    print(avatarList);
+    //callback(avatarList);
+    return avatars;
+  } else {
+    throw Exception('Failed to load avatars: ${response.statusCode}');
+  }
+}
+
+
+
 FutureBuilder<User> createUser (Future<User> futureUser) {
   return FutureBuilder<User>(
     future: futureUser,
@@ -51,26 +68,38 @@ FutureBuilder<User> createUser (Future<User> futureUser) {
 
 
 
-/*FutureBuilder<User> createAvatar (Future<User> futureUser) {
-  return FutureBuilder<User>(
-    future: futureUser,
-    builder: (context, snapshot) {
-      if (snapshot.hasData) {
-        return Image.network(
-          snapshot.data.avatar,
-          width: 250,
-          height: 250,
-        );
-      } else if (snapshot.hasError) {
-        return Text("${snapshot.error}");
-      }
+FutureBuilder<List<dynamic>> createAvatarList(Future<List<dynamic>> avatars, Function callback) {
+  return FutureBuilder<List<dynamic>>(
+      future: avatars,
+      builder: (context, snapshot) {
+        if(snapshot.hasData) {
+          return ListView(
+            scrollDirection: Axis.horizontal,
+            children: (snapshot.data)
+                .map((x) => Builder(
+              builder: (BuildContext context) {
+                return GestureDetector(
+                  child: Column(
+                    children: [
+                      Image.network(x["url"], width: 160,),
+                      Text(x["mood"])
+                    ],
+                  ),
+                  onTap: () => callback(x['mood']),
+                );
+              },
+            ))
+                .toList(),
 
-      // By default, show a loading spinner.
-      return CircularProgressIndicator();
-    },
-  );
+          );
+        }
+        else if (snapshot.hasError) {
+          return Text("${snapshot.error}");
+        }
+        return CircularProgressIndicator();
+      });
+
 }
-*/
 
 class HistoryItem extends StatelessWidget {
   HistoryItem({
@@ -102,10 +131,6 @@ class HistoryItem extends StatelessWidget {
             color: Colors.black,
           )
         ],
-      //),
-      //onTap: () => this.parent._setMood(mood),
-      //SvgPicture.asset(Assets.traits['Fire']['negative'],width: 160,),
-    //),
       );
   }
 }
@@ -119,8 +144,10 @@ class _MoodSetState extends State<MoodSet> {
   Future<User> futureUser;
   String mood = '';
   String currentmood = '';
-  var moodHistory=["Happy","Mysterious","Gloomy","Happy"];
-
+  var moodHistory=["Cheerful","Mysterious","Gloomy","Angry"];
+  // var avatarList =[];
+  List<dynamic> avatarList = [];
+  var avatars ;
   int set;
 
 
@@ -128,9 +155,13 @@ class _MoodSetState extends State<MoodSet> {
   void initState() {
     super.initState();
     futureUser = fetchUser();
-    mood='Happy'; //FIXME: Set and Get from futureUser
+    mood='Cheerful'; //FIXME: Set and Get from futureUser
     currentmood=mood;
     set=1;
+
+    avatars=fetchAvatars();
+    print(avatars);
+
 
   }
 
@@ -241,43 +272,12 @@ class _MoodSetState extends State<MoodSet> {
             Visibility(visible:set==1,
               child:Expanded(
                 flex: 4,
-                child: ListView(
-                  scrollDirection: Axis.horizontal,
-                  children: [ //<Widget>[
-                    GestureDetector(
-                      child: Column(
-                        children: [
-                          Image(image: AssetImage(
-                              Assets.moods['Happy']['avatar']), width: 160,),
-                          Text('Happy')
-                        ],
-                      ),
-                      onTap: () => _setMood('Happy'),
-                      //SvgPicture.asset(Assets.traits['Fire']['negative'],width: 160,),
-                    ),
-                    GestureDetector(
-                      child: Column(
-                        children: [
-                          Image(image: AssetImage(
-                              Assets.moods['Gloomy']['avatar']), width: 160,),
-                          Text('Gloomy')
-                        ],
-                      ),
-                      onTap: () => _setMood('Gloomy'),
-                    ),
-                    GestureDetector(
-                      child: Column(
-                        children: [
-                          Image(image: AssetImage(
-                              Assets.moods['Mysterious']['avatar']),
-                            width: 160,),
-                          Text('Mysterious')
-                        ],
-                      ),
-                      onTap: () => _setMood('Mysterious'),
-                    ),
-                  ], //],
-                ),
+                child: createAvatarList(avatars,
+                        (String newAvatarMood) {
+                      _setMood(newAvatarMood);
+                    }
+                )
+
               ),
             replacement: SizedBox(
               height: 200, // Some height
@@ -306,4 +306,6 @@ class _MoodSetState extends State<MoodSet> {
       
     );
   }
+
+
 }
