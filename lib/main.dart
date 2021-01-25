@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'UI/Widgets/custom_page_route.dart';
+import 'UI/screen/chat/chatLanding.dart';
 import 'UI/screen/home/homePage.dart';
 import 'UI/screen/login/loginPage.dart';
 import 'UI/screen/onBoardScreen/onBoardingPage.dart';
@@ -92,6 +93,10 @@ class _MainState extends State<Main> {
           case '/moodHistory':
             return PageRouteBuilder(
                 pageBuilder: (_, a1, a2) => MoodHistory(), settings: settings);
+          case '/chatLanding':
+            return PageRouteBuilder(
+                pageBuilder: (_, a1, a2) => ChatLandingPage(),
+                settings: settings);
           default:
             return CustomPageRoute.build(
                 builder: (_) => OnBoardingScreen(), settings: settings);

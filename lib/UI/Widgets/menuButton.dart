@@ -9,19 +9,29 @@ class MenuButton extends StatelessWidget {
       flex: 1,
       child: Row(
         children: [
-          menuButton(key: "Menu button 2", selected: true, icon: Assets.me),
-          menuButton(key: "Menu button 3", selected: false, icon: Assets.find),
+          menuButton(
+              key: "Menu button 2",
+              context: context,
+              selected: true,
+              icon: Assets.me),
+          menuButton(
+              key: "Menu button 3",
+              context: context,
+              selected: false,
+              icon: Assets.find),
         ],
       ),
     );
   }
 }
 
-Widget menuButton({key, scaffoldKey, selected, icon}) {
+Widget menuButton({key, context, scaffoldKey, selected, icon}) {
   return Expanded(
     flex: 2,
     child: InkWell(
-      onTap: () {},
+      onTap: () {
+        Navigator.of(context).pushNamed('/chatLanding');
+      },
       child: Container(
         padding: EdgeInsets.symmetric(horizontal: 40, vertical: 8),
         decoration: BoxDecoration(
