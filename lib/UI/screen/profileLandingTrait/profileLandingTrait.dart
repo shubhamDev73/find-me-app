@@ -277,7 +277,7 @@ class _ProfileLandingTraitState extends State<ProfileLandingTrait> {
                 child: Container(child: buildAdjCarouselSlider()),
               ),
             ),
-            MenuButton(),
+            MenuButton('me'),
           ],
         ),
       ),

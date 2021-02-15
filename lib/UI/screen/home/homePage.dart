@@ -161,7 +161,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 ],
               ),
             ),
-            MenuButton(),
+            MenuButton('me'),
           ],
         ),
       ),

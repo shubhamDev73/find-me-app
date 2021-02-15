@@ -172,7 +172,7 @@ class _MoodHistoryState extends State<MoodHistory> {
               flex: 2,
               child: Text('FIXME: comment goes here'),
             ),
-            MenuButton(),
+            MenuButton('me'),
           ],
         ),
       ),

@@ -121,7 +121,7 @@ class ChatLandingPage extends StatelessWidget {
               ),
               Container(
                 constraints: BoxConstraints(maxHeight: 42),
-                child: MenuButton(),
+                child: MenuButton('found'),
               ),
             ],
           ),

@@ -1,8 +1,14 @@
-import 'package:findme/configs/assets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
+import 'package:findme/configs/assets.dart';
+
 class MenuButton extends StatelessWidget {
+
+  final String tab;
+
+  MenuButton(this.tab);
+
   @override
   Widget build(BuildContext context) {
     return Expanded(
@@ -10,14 +16,14 @@ class MenuButton extends StatelessWidget {
       child: Row(
         children: [
           menuButton(
-              key: "Menu button 2",
+              key: "tab_me",
               context: context,
-              selected: true,
+              selected: tab == "me",
               icon: Assets.me),
           menuButton(
-              key: "Menu button 3",
+              key: "tab_found",
               context: context,
-              selected: false,
+              selected: tab == "found",
               icon: Assets.find),
         ],
       ),
@@ -30,7 +36,7 @@ Widget menuButton({key, context, scaffoldKey, selected, icon}) {
     flex: 2,
     child: InkWell(
       onTap: () {
-        Navigator.of(context).pushNamed('/chatLanding');
+        Navigator.of(context).pushNamed(key == "tab_found" ? '/chatLanding' : '/home');
       },
       child: Container(
         padding: EdgeInsets.symmetric(horizontal: 40, vertical: 8),

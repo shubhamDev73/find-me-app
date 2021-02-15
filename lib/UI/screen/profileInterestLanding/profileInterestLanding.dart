@@ -357,7 +357,7 @@ class _ProfileInterestLandingState extends State<ProfileInterestLanding> {
                 ),
               ),
             ),
-            MenuButton(),
+            MenuButton('me'),
           ],
         ),
       ),
