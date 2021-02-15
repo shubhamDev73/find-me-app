@@ -39,12 +39,11 @@ FutureBuilder<User> createInterest(Future<User> futureUser, int index) {
         Interest interest = snapshot.data.interests[index];
         return InterestButton(
           name: interest.name,
-          function: () {
+          onClick: () {
             Navigator.pushNamed(context, "/profileInterestLanding",
                 arguments: interest.id);
           },
           amount: interest.amount,
-          selected: false,
         );
       } else if (snapshot.hasError) {
         return Text("${snapshot.error}");

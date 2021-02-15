@@ -97,7 +97,7 @@ FutureBuilder<List<Interest>> createInterests(
     future: futureInterests,
     builder: (context, snapshot) {
       if (snapshot.hasData) {
-        List<Widget> ap = getInterestList(snapshot.data);
+        List<Widget> ap = getInterestList(snapshot.data, onClick, id);
         print("Returned no. of rows - ");
         print(ap.length);
         // return Column(
@@ -106,7 +106,7 @@ FutureBuilder<List<Interest>> createInterests(
         // );
         return Scrollbar(
             child: ListView(
-              children: getInterestList(snapshot.data),
+              children: getInterestList(snapshot.data, onClick, id),
               padding: const EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 0.0),
             ));
         // final ScrollController _scrollController = ScrollController();
@@ -122,7 +122,7 @@ FutureBuilder<List<Interest>> createInterests(
   );
 }
 
-List<Widget> getInterestList(List<Interest> obj) {
+List<Widget> getInterestList(List<Interest> obj, Function onClick, int id) {
   print("snapshot data lenght - ");
   print(obj.length);
   int len_mod5 = obj.length ~/ 5;
@@ -148,9 +148,9 @@ List<Widget> getInterestList(List<Interest> obj) {
       dynamic interest = obj[item_counter++];
       dynamic temp_button = InterestButton(
         name: interest.name,
-        function: () {},
+        onClick: () {onClick(interest.id, interest.questions[0]['answer']);},
         amount: interest.amount,
-        selected: false,
+        selected: interest.id == id,
       );
       dynamic ob = Padding(
         padding: const EdgeInsets.fromLTRB(12.0, 7.0, 0.0, 7.0),
@@ -170,9 +170,9 @@ List<Widget> getInterestList(List<Interest> obj) {
     dynamic interest = obj[item_counter++];
     dynamic temp_button = InterestButton(
       name: interest.name,
-      function: () {},
+      onClick: () {onClick(interest.id, interest.questions[0]['answer']);},
       amount: interest.amount,
-      selected: false,
+      selected: interest.id == id,
     );
     dynamic ob = Padding(
       padding: const EdgeInsets.fromLTRB(12.0, 7.0, 0.0, 7.0),

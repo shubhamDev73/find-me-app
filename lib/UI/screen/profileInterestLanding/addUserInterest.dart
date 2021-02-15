@@ -26,9 +26,11 @@ FutureBuilder<List<Interest>> createInterests (Future<List<Interest>> futureInte
             ),
             children: snapshot.data.map((Interest interest) => InterestButton(
               name: interest.name,
-              function: () {},
+              onClick: (amount) {
+                POST('me/interests/update/', jsonEncode([{"interest": interest.id, "amount": amount}]), true);
+              },
               amount: interest.amount,
-              selected: false,
+              canChangeAmount: true,
             ),
             ).toList());
       } else if (snapshot.hasError) {
