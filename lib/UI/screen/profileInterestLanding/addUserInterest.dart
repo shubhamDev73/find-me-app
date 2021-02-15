@@ -6,47 +6,58 @@ import 'package:findme/data/models/interests.dart';
 import 'package:flutter/material.dart';
 import 'package:findme/API.dart';
 
-class AddUserInterest extends StatelessWidget {
+FutureBuilder<List<Interest>> createInterests (Future<List<Interest>> futureInterests, ScrollController _scrollController) {
+  return FutureBuilder<List<Interest>>(
+    future: futureInterests,
+    builder: (context, snapshot) {
+      if(snapshot.hasData){
+        return GridView(
+            controller: _scrollController,
+            shrinkWrap: true,
+            scrollDirection: Axis.vertical,
+            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+              childAspectRatio: 3.3,
+              mainAxisSpacing: 30,
+              crossAxisSpacing: 9,
+              crossAxisCount: 3,
+            ),
+            children: snapshot.data.map((Interest interest) => InterestButton(
+              name: interest.name,
+              function: () {},
+              amount: interest.amount,
+              selected: false,
+            ),
+            ).toList());
+      } else if (snapshot.hasError) {
+        return Text("${snapshot.error}");
+      }
+
+      // By default, show a loading spinner.
+      return CircularProgressIndicator();
+    },
+  );
+}
+
+class AddUserInterest extends StatefulWidget {
+
+  @override
+  _AddUserInterestState createState() => _AddUserInterestState();
+}
+
+class _AddUserInterestState extends State<AddUserInterest> {
+
   final ScrollController _scrollController = ScrollController();
-  List buttonNames = [
-    'APP',
-    'APP2',
-    'APP',
-    'APP',
-    'APP3',
-    'APP',
-    'APP',
-    'APP',
-    'APP6',
-    'APP',
-    'APP',
-    'APP',
-    'APP6',
-    'APP',
-    'APP',
-    'APP6',
-    'APP',
-    'APP',
-    'APP',
-    'APP6',
-    'APP9',
-    'APP',
-    'APP',
-    'APP',
-    'APP6',
-    'APP',
-    'APP',
-    'APP',
-    'APP6',
-    'APP',
-    'APP',
-    'APP6',
-    'APP',
-    'APP',
-    'APP',
-    'APP6',
-    'APP9'
-  ];
+
+  Future<List<Interest>> futureInterests;
+
+  @override
+  void initState () {
+    super.initState();
+    futureInterests = GETResponse<List<Interest>>('interests/',
+      decoder: (result) => result.map<Interest>((item) => Interest.fromJson(item)).toList(),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -99,26 +110,7 @@ class AddUserInterest extends StatelessWidget {
                   thickness: 0,
                   isAlwaysShown: true,
                   controller: _scrollController,
-                  child: GridView(
-                      controller: _scrollController,
-                      shrinkWrap: true,
-                      scrollDirection: Axis.vertical,
-                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                        childAspectRatio: 3.3,
-                        mainAxisSpacing: 30,
-                        crossAxisSpacing: 9,
-                        crossAxisCount: 3,
-                      ),
-                      children: buttonNames
-                          .map(
-                            (e) => InterestButton(
-                          name: e,
-                          function: () {},
-                          amount: 2,
-                          selected: false,
-                        ),
-                      )
-                          .toList()),
+                  child: createInterests(futureInterests, _scrollController),
                 ),
               ),
               constraints: BoxConstraints(maxHeight: 517, minWidth: 517),
