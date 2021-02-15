@@ -7,20 +7,6 @@ import 'package:findme/data/models/interests.dart';
 import 'package:flutter/material.dart';
 import 'package:findme/API.dart';
 
-Future<List<Interest>> fetchInterests(Function callback) async {
-  final response = await GET('me/interests/');
-
-  if (response.statusCode == 200) {
-    List<Interest> interests = jsonDecode(response.body)
-        .map<Interest>((interest) => Interest.fromJson(interest))
-        .toList();
-    callback(interests);
-    return interests;
-  } else {
-    throw Exception('Failed to load interests: ${response.statusCode}');
-  }
-}
-
 Future<List<Interest>> changeInterests(Future<List<Interest>> futureInterests,
     int interestId, int questionId, String answerText) async {
   List<Interest> interests = await futureInterests;
@@ -220,12 +206,14 @@ class _ProfileInterestLandingState extends State<ProfileInterestLanding> {
   @override
   void initState() {
     super.initState();
-    futureInterests = fetchInterests((List<Interest> interests) {
-      setState(() {
-        Interest interest = findInterest(interests, id);
-        questionId = interest.questions[0]['id'];
-        answer = interest.questions[0]['answer'];
-      });
+    futureInterests = GETResponse<List<Interest>>('me/interests/',
+      decoder: (result) => result.map<Interest>((interest) => Interest.fromJson(interest)).toList(),
+      callback: (List<Interest> interests) {
+        setState(() {
+          Interest interest = findInterest(interests, id);
+          questionId = interest.questions[0]['id'];
+          answer = interest.questions[0]['answer'];
+        });
     });
   }
 

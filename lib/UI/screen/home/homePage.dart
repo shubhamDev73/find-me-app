@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 
 import 'package:findme/globals.dart' as globals;
@@ -11,16 +9,6 @@ import 'package:findme/UI/Widgets/activityButtons.dart';
 import 'package:findme/data/models/user.dart';
 import 'package:findme/data/models/interests.dart';
 import 'package:findme/API.dart';
-
-Future<User> fetchUser() async {
-  final response = await GET('me/');
-
-  if (response.statusCode == 200) {
-    return User.fromJson(jsonDecode(response.body));
-  } else {
-    throw Exception('Failed to load user: ${response.statusCode}');
-  }
-}
 
 FutureBuilder<User> createTraits(Future<User> futureUser) {
   return FutureBuilder<User>(
@@ -87,7 +75,7 @@ class _HomeScreenState extends State<HomeScreen> {
     super.initState();
     globals.token =
         'e06df4fbae56e7ed03aadb66c233368a4b93fef115728896a220b60ed5e81ede';
-    futureUser = fetchUser();
+    futureUser = GETResponse<User>('me/', decoder: (result) => User.fromJson(result));
   }
 
   @override

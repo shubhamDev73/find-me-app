@@ -1,28 +1,13 @@
-import 'dart:convert';
-
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:findme/UI/Widgets/addAdjListItems.dart';
 import 'package:findme/UI/Widgets/greetings.dart';
 import 'package:findme/UI/Widgets/menuButton.dart';
 import 'package:findme/UI/Widgets/traits.dart';
 import 'package:findme/configs/assets.dart';
-import 'package:findme/constant.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 import 'package:findme/API.dart';
-
-Future<Map<String, dynamic>> fetchPersonality(Function callback) async {
-  final response = await GET('me/personality/');
-
-  if (response.statusCode == 200) {
-    Map<String, dynamic> personality = jsonDecode(response.body);
-    callback(personality);
-    return personality;
-  } else {
-    throw Exception('Failed to load personality: ${response.statusCode}');
-  }
-}
 
 FutureBuilder<Map<String, dynamic>> createPersonality(Function callback,
     Future<Map<String, dynamic>> futurePersonality, String trait) {
@@ -76,11 +61,12 @@ class _ProfileLandingTraitState extends State<ProfileLandingTrait> {
   @override
   void initState() {
     super.initState();
-    futurePersonality = fetchPersonality((Map<String, dynamic> personality) {
-      setState(() {
-        value = personality[trait]['value'];
-        adjectives = personality[trait]['adjectives'];
-      });
+    futurePersonality = GETResponse<Map<String, dynamic>>('me/personality/',
+      callback: (Map<String, dynamic> personality) {
+        setState(() {
+          value = personality[trait]['value'];
+          adjectives = personality[trait]['adjectives'];
+        });
     });
   }
 
