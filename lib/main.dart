@@ -6,10 +6,10 @@ import 'UI/screen/chat/chatLanding.dart';
 import 'UI/screen/home/homePage.dart';
 import 'UI/screen/login/loginPage.dart';
 import 'UI/screen/onBoardScreen/onBoardingPage.dart';
-import 'UI/screen/profileIntrestLanding/profileIntrestLanding.dart';
+import 'UI/screen/profileInterestLanding/profileInterestLanding.dart';
 import 'UI/screen/profileLandingTrait/profileLandingTrait.dart';
 import 'UI/screen/registerPage/registerPage.dart';
-import 'UI/screen/profileIntrestLanding/addUserInterest.dart';
+import 'UI/screen/profileInterestLanding/addUserInterest.dart';
 import 'UI/screen/moodSet/moodSet.dart';
 import 'UI/screen/moodHistory/moodHistory.dart';
 
@@ -79,13 +79,13 @@ class _MainState extends State<Main> {
             return PageRouteBuilder(
                 pageBuilder: (_, a1, a2) => ProfileLandingTrait(),
                 settings: settings);
-          case '/profileIntrestLanding':
+          case '/profileInterestLanding':
             return PageRouteBuilder(
-                pageBuilder: (_, a1, a2) => ProfileIntrestLanding(),
+                pageBuilder: (_, a1, a2) => ProfileInterestLanding(),
                 settings: settings);
-          case '/addUserIntrest':
+          case '/addUserInterest':
             return PageRouteBuilder(
-                pageBuilder: (_, a1, a2) => AddUserinterests(),
+                pageBuilder: (_, a1, a2) => AddUserInterest(),
                 settings: settings);
           case '/moodSet':
             return PageRouteBuilder(

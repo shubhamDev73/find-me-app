@@ -1,19 +1,17 @@
-import 'dart:convert';
-
-import 'package:findme/data/models/intrests.dart';
+import 'package:findme/data/models/interests.dart';
 
 class User {
   String nick;
   String avatar;
   Map<String, dynamic> personality;
-  List<Intrest> intrests;
+  List<Interest> interests;
   String mood;
 
   User({
     this.nick,
     this.avatar,
     this.personality,
-    this.intrests,
+    this.interests,
     this.mood,
   });
 
@@ -21,7 +19,7 @@ class User {
     nick: json["nick"],
     avatar: json["avatar"],
     personality: json["personality"],
-    intrests: json["interests"].map<Intrest>((intrest) => Intrest.fromJson(intrest)).toList(),
+    interests: json["interests"].map<Interest>((interest) => Interest.fromJson(interest)).toList(),
     mood: json["mood"],
   );
 
@@ -30,7 +28,7 @@ class User {
         "nick": nick,
         "avatar": avatar,
         "personality": personality,
-        "interests": intrests.map((intrest) => intrest.toJson()).toList(),
+        "interests": interests.map((interest) => interest.toJson()).toList(),
         "mood": mood,
       };
 

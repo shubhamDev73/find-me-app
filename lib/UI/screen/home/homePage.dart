@@ -9,7 +9,7 @@ import 'package:findme/UI/Widgets/userInfo.dart';
 import 'package:findme/UI/Widgets/menuButton.dart';
 import 'package:findme/UI/Widgets/activityButtons.dart';
 import 'package:findme/data/models/user.dart';
-import 'package:findme/data/models/intrests.dart';
+import 'package:findme/data/models/interests.dart';
 import 'package:findme/API.dart';
 
 Future<User> fetchUser() async {
@@ -43,19 +43,19 @@ FutureBuilder<User> createTraits(Future<User> futureUser) {
   );
 }
 
-FutureBuilder<User> createIntrest(Future<User> futureUser, int index) {
+FutureBuilder<User> createInterest(Future<User> futureUser, int index) {
   return FutureBuilder<User>(
     future: futureUser,
     builder: (context, snapshot) {
       if (snapshot.hasData) {
-        Intrest intrest = snapshot.data.intrests[index];
+        Interest interest = snapshot.data.interests[index];
         return ActivityButton(
-          name: intrest.name,
+          name: interest.name,
           function: () {
-            Navigator.pushNamed(context, "/profileIntrestLanding",
-                arguments: intrest.id);
+            Navigator.pushNamed(context, "/profileInterestLanding",
+                arguments: interest.id);
           },
-          amount: intrest.amount,
+          amount: interest.amount,
           selected: false,
         );
       } else if (snapshot.hasError) {
@@ -146,11 +146,11 @@ class _HomeScreenState extends State<HomeScreen> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      createIntrest(futureUser, 0),
+                      createInterest(futureUser, 0),
                       SizedBox(
                         width: 12,
                       ),
-                      createIntrest(futureUser, 1),
+                      createInterest(futureUser, 1),
                     ],
                   ),
                   SizedBox(
@@ -160,15 +160,15 @@ class _HomeScreenState extends State<HomeScreen> {
                     mainAxisSize: MainAxisSize.max,
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      createIntrest(futureUser, 2),
+                      createInterest(futureUser, 2),
                       SizedBox(
                         width: 12,
                       ),
-                      createIntrest(futureUser, 3),
+                      createInterest(futureUser, 3),
                       SizedBox(
                         width: 12,
                       ),
-                      createIntrest(futureUser, 4),
+                      createInterest(futureUser, 4),
                     ],
                   )
                 ],

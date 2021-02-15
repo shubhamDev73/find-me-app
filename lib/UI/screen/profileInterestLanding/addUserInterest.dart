@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:findme/UI/Widgets/activityButtons.dart';
 import 'package:findme/UI/Widgets/addInterestsButton.dart';
 import 'package:findme/UI/Widgets/menuButton.dart';
-import 'package:findme/data/models/intrests.dart';
+import 'package:findme/data/models/interests.dart';
 import 'package:flutter/material.dart';
 import 'package:findme/API.dart';
 
@@ -11,7 +11,7 @@ import 'package:findme/Model/Item.dart';
 
 import 'package:findme/UI/Widgets/Button.dart';
 
-class AddUserinterests extends StatelessWidget {
+class AddUserInterest extends StatelessWidget {
   final ScrollController _scrollController = ScrollController();
   List buttonNames = [
     'APP',
@@ -119,12 +119,12 @@ class AddUserinterests extends StatelessWidget {
                       children: buttonNames
                           .map(
                             (e) => InterestButton(
-                              name: e,
-                              function: () {},
-                              amount: 2,
-                              selected: false,
-                            ),
-                          )
+                          name: e,
+                          function: () {},
+                          amount: 2,
+                          selected: false,
+                        ),
+                      )
                           .toList()),
                 ),
               ),
@@ -167,7 +167,7 @@ class CustomScroll extends StatelessWidget {
           children: itemList
               .map(
                 (e) => CustomButton(e.title),
-              )
+          )
               .toList()),
     );
   }
