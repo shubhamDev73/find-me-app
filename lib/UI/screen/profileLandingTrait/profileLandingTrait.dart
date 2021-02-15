@@ -2,7 +2,7 @@ import 'dart:convert';
 
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:findme/UI/Widgets/addAdjListItems.dart';
-import 'package:findme/UI/Widgets/greatings/greatings.dart';
+import 'package:findme/UI/Widgets/greetings.dart';
 import 'package:findme/UI/Widgets/menuButton.dart';
 import 'package:findme/UI/Widgets/traits.dart';
 import 'package:findme/configs/assets.dart';
@@ -34,7 +34,7 @@ FutureBuilder<Map<String, dynamic>> createPersonality(Function callback,
         return Stack(
           alignment: Alignment.topCenter,
           children: [
-            Greating(
+            Greeting(
               title: trait,
               desc: traitData['description'],
             ),

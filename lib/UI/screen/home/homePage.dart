@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 
 import 'package:findme/globals.dart' as globals;
-import 'package:findme/UI/Widgets/greatings/greatings.dart';
+import 'package:findme/UI/Widgets/greetings.dart';
 import 'package:findme/UI/Widgets/traits.dart';
 import 'package:findme/UI/Widgets/userInfo.dart';
 import 'package:findme/UI/Widgets/menuButton.dart';
@@ -118,7 +118,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     child: Stack(
                       alignment: Alignment.topCenter,
                       children: [
-                        Greating(
+                        Greeting(
                           title: "Konichiwa",
                           desc:
                               "Did you know the US armys traning bumbelbees to sniff out explosive?",

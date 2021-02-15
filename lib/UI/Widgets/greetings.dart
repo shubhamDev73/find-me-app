@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-class Greating extends StatelessWidget {
+class Greeting extends StatelessWidget {
   final String title;
   final String desc;
-  const Greating({Key key, this.title, this.desc}) : super(key: key);
+  const Greeting({Key key, this.title, this.desc}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
