@@ -1,9 +1,12 @@
 import 'dart:convert';
 
+import 'package:flutter/material.dart';
+
 import 'package:findme/UI/Widgets/interestButton.dart';
 import 'package:findme/UI/Widgets/menuButton.dart';
+
 import 'package:findme/data/models/interests.dart';
-import 'package:flutter/material.dart';
+import 'package:findme/constant.dart';
 import 'package:findme/API.dart';
 
 FutureBuilder<List<Interest>> createInterests (Future<List<Interest>> futureInterests, ScrollController _scrollController) {
@@ -65,6 +68,7 @@ class _AddUserInterestState extends State<AddUserInterest> {
         child: Column(
           children: [
             Container(
+              color: ThemeColors.lightColor,
               constraints: BoxConstraints(maxHeight: 67, minHeight: 67),
               child: Stack(
                 children: [
@@ -103,6 +107,7 @@ class _AddUserInterestState extends State<AddUserInterest> {
               ),
             ),
             Container(
+              color: ThemeColors.lightColor,
               padding: const EdgeInsets.fromLTRB(20.0, 0.0, 20.0, 0.0),
               child: Container(
                 constraints: BoxConstraints(minWidth: 245, maxWidth: 245),
