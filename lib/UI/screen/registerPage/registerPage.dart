@@ -33,7 +33,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
         body: Container(
       width: MediaQuery.of(context).size.width,
       decoration: new BoxDecoration(
-        color: MyColors.primaryColor,
+        color: ThemeColors.primaryColor,
       ),
       child: Column(
         children: [
@@ -120,7 +120,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                 Text(
                                   'Fly',
                                   textAlign: TextAlign.center,
-                                  style: TextStyle(color: MyColors.accentColor),
+                                  style: TextStyle(color: ThemeColors.accentColor),
                                 ),
                               ],
                             ),

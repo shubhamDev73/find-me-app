@@ -46,7 +46,7 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
           end: Alignment.bottomCenter,
           colors: [
             Colors.white,
-            MyColors.primaryColor,
+            ThemeColors.primaryColor,
           ],
         )),
         child: Column(
@@ -110,7 +110,7 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
                                     style: TextStyle(
                                       fontSize: 14,
                                       fontWeight: FontWeight.w500,
-                                      color: MyColors.primaryColor,
+                                      color: ThemeColors.primaryColor,
                                     ),
                                     textAlign: TextAlign.center,
                                   ),
@@ -133,7 +133,7 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
                                     style: TextStyle(
                                       fontSize: 14,
                                       fontWeight: FontWeight.w500,
-                                      color: MyColors.primaryColor,
+                                      color: ThemeColors.primaryColor,
                                     ),
                                     textAlign: TextAlign.center,
                                   ),

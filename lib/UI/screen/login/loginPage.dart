@@ -33,7 +33,7 @@ class _LoginScreenState extends State<LoginScreen> {
         body: Container(
       width: MediaQuery.of(context).size.width,
       decoration: new BoxDecoration(
-        color: MyColors.primaryColor,
+        color: ThemeColors.primaryColor,
       ),
       child: Column(
         children: [
@@ -115,7 +115,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                     'Fly',
                                     textAlign: TextAlign.center,
                                     style:
-                                        TextStyle(color: MyColors.accentColor),
+                                        TextStyle(color: ThemeColors.accentColor),
                                   ),
                                 ],
                               ),

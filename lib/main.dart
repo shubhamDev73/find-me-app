@@ -13,7 +13,7 @@ import 'UI/screen/profileInterestLanding/addUserInterest.dart';
 import 'UI/screen/moodSet/moodSet.dart';
 import 'UI/screen/moodHistory/moodHistory.dart';
 
-import 'constant.dart';
+import 'package:findme/constant.dart';
 
 void main() {
   runApp(Main());
@@ -28,7 +28,7 @@ class _MainState extends State<Main> {
   @override
   Widget build(BuildContext context) {
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
-      statusBarColor: MyColors.accentColor,
+      statusBarColor: ThemeColors.accentColor,
       statusBarBrightness: Brightness.dark,
     ));
     final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey();
@@ -36,9 +36,9 @@ class _MainState extends State<Main> {
       debugShowCheckedModeBanner: false,
       title: title,
       theme: ThemeData(
-        primaryColor: MyColors.primaryColor,
-        accentColor: MyColors.accentColor,
-        highlightColor: MyColors.accentColor,
+        primaryColor: ThemeColors.primaryColor,
+        accentColor: ThemeColors.accentColor,
+        highlightColor: ThemeColors.accentColor,
         scaffoldBackgroundColor: Colors.white,
         appBarTheme: AppBarTheme().copyWith(
           iconTheme: IconThemeData(color: Colors.black),
@@ -46,14 +46,17 @@ class _MainState extends State<Main> {
             headline6: Theme.of(context)
                 .primaryTextTheme
                 .headline6
-                .copyWith(color: MyColors.primaryColor),
+                .copyWith(color: ThemeColors.primaryColor),
           ),
         ),
         textTheme: TextTheme(
             headline1: TextStyle(fontSize: 72.0, fontWeight: FontWeight.bold),
             headline6: TextStyle(fontSize: 36.0, fontStyle: FontStyle.italic),
-            bodyText2:
-                GoogleFonts.quicksand(textStyle: TextStyle(fontSize: 14.0))),
+            bodyText2: GoogleFonts.quicksand(textStyle: TextStyle(fontSize: 14.0))
+        ),
+        inputDecorationTheme: InputDecorationTheme(
+            labelStyle: GoogleFonts.quicksand(textStyle: TextStyle(fontSize: 14.0))
+        ),
       ),
       initialRoute: '/home',
       onGenerateRoute: (RouteSettings settings) {

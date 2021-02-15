@@ -15,7 +15,7 @@ class InterestButton extends StatelessWidget {
       child: Container(
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(50),
-          color: MyColors.interestColors[amount],
+          color: ThemeColors.interestColors[amount],
           border: selected
               ? Border.all(
                   color: Colors.black,

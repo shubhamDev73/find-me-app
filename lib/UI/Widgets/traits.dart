@@ -26,7 +26,7 @@ class TraitsElements extends StatelessWidget {
       child: MoodIcons(
         icon: SvgPicture.asset(
           Assets.traits[trait]['icon'],
-          color: value >= 0 ? MyColors.positiveTraitColor : MyColors.negativeTraitColor,
+          color: value >= 0 ? ThemeColors.positiveTraitColor : ThemeColors.negativeTraitColor,
           width: selected ? 40 : 30,
           height: selected ? 40 : 30,
         ),
@@ -75,7 +75,7 @@ class MoodIcons extends StatelessWidget {
           height: selected ? 65 : 50,
           width: selected ? 65 : 50,
           child: CircleAvatar(
-            backgroundColor: MyColors.primaryColor,
+            backgroundColor: ThemeColors.primaryColor,
             child: icon,
           ),
         ),

@@ -28,7 +28,7 @@ Widget textFieldForRegistration({
         hintText: label,
         focusedBorder: UnderlineInputBorder(
           borderSide: BorderSide(
-            color: MyColors.accentColor,
+            color: ThemeColors.accentColor,
           ),
         ),
         labelText: label,
