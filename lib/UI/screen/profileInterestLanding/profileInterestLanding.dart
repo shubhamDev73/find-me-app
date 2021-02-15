@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 import 'package:carousel_slider/carousel_slider.dart';
-import 'package:findme/UI/Widgets/activityButtons.dart';
+import 'package:findme/UI/Widgets/interestButton.dart';
 import 'package:findme/UI/Widgets/menuButton.dart';
 import 'package:findme/data/models/interests.dart';
 import 'package:flutter/material.dart';
@@ -146,7 +146,7 @@ List<Widget> getInterestList(List<Interest> obj) {
     }
     for (int j = 0; j < len_counter; j++) {
       dynamic interest = obj[item_counter++];
-      dynamic temp_button = ActivityButton(
+      dynamic temp_button = InterestButton(
         name: interest.name,
         function: () {},
         amount: interest.amount,
@@ -168,7 +168,7 @@ List<Widget> getInterestList(List<Interest> obj) {
 
   for (int i = item_counter; i < obj.length; i++) {
     dynamic interest = obj[item_counter++];
-    dynamic temp_button = ActivityButton(
+    dynamic temp_button = InterestButton(
       name: interest.name,
       function: () {},
       amount: interest.amount,

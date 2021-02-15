@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:findme/constant.dart';
 
-class ActivityButton extends StatelessWidget {
+class InterestButton extends StatelessWidget {
   final Function function;
   final String name;
   final int amount;
   final bool selected;
 
-  ActivityButton({this.function, this.name, this.amount, this.selected});
+  InterestButton({this.function, this.name, this.amount, this.selected});
   @override
   Widget build(BuildContext context) {
     return InkWell(

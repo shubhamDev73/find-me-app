@@ -1,15 +1,10 @@
 import 'dart:convert';
 
-import 'package:findme/UI/Widgets/activityButtons.dart';
-import 'package:findme/UI/Widgets/addInterestsButton.dart';
+import 'package:findme/UI/Widgets/interestButton.dart';
 import 'package:findme/UI/Widgets/menuButton.dart';
 import 'package:findme/data/models/interests.dart';
 import 'package:flutter/material.dart';
 import 'package:findme/API.dart';
-
-import 'package:findme/Model/Item.dart';
-
-import 'package:findme/UI/Widgets/Button.dart';
 
 class AddUserInterest extends StatelessWidget {
   final ScrollController _scrollController = ScrollController();
@@ -54,8 +49,6 @@ class AddUserInterest extends StatelessWidget {
   ];
   @override
   Widget build(BuildContext context) {
-    var itemList = Item().items;
-
     return Scaffold(
       body: SafeArea(
         child: Column(
@@ -134,41 +127,6 @@ class AddUserInterest extends StatelessWidget {
           ],
         ),
       ),
-    );
-  }
-}
-
-class CustomScroll extends StatelessWidget {
-  const CustomScroll({
-    Key key,
-    @required ScrollController scrollController,
-    @required this.itemList,
-  })  : _scrollController = scrollController,
-        super(key: key);
-
-  final ScrollController _scrollController;
-  final List itemList;
-
-  @override
-  Widget build(BuildContext context) {
-    return Scrollbar(
-      thickness: 3,
-      isAlwaysShown: true,
-      controller: _scrollController,
-      child: GridView(
-          controller: _scrollController,
-          shrinkWrap: true,
-          scrollDirection: Axis.vertical,
-          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-            childAspectRatio: 3.3,
-            mainAxisSpacing: 25,
-            crossAxisCount: 3,
-          ),
-          children: itemList
-              .map(
-                (e) => CustomButton(e.title),
-          )
-              .toList()),
     );
   }
 }

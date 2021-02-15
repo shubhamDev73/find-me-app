@@ -5,7 +5,7 @@ import 'package:findme/UI/Widgets/greetings.dart';
 import 'package:findme/UI/Widgets/traits.dart';
 import 'package:findme/UI/Widgets/userInfo.dart';
 import 'package:findme/UI/Widgets/menuButton.dart';
-import 'package:findme/UI/Widgets/activityButtons.dart';
+import 'package:findme/UI/Widgets/interestButton.dart';
 import 'package:findme/data/models/user.dart';
 import 'package:findme/data/models/interests.dart';
 import 'package:findme/API.dart';
@@ -37,7 +37,7 @@ FutureBuilder<User> createInterest(Future<User> futureUser, int index) {
     builder: (context, snapshot) {
       if (snapshot.hasData) {
         Interest interest = snapshot.data.interests[index];
-        return ActivityButton(
+        return InterestButton(
           name: interest.name,
           function: () {
             Navigator.pushNamed(context, "/profileInterestLanding",
