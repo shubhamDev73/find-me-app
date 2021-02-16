@@ -12,14 +12,25 @@ import 'package:findme/data/models/interests.dart';
 FutureBuilder<User> createInterest(BuildContext context, int index) {
   return createFutureWidget<User>(globals.futureUser, (User user) {
     Interest interest = user.interests[index];
-    return InterestButton(
-      name: interest.name,
-      onClick: () {
-        Navigator.pushNamed(context, "/profileInterestLanding",
-            arguments: interest.id);
-      },
-      amount: interest.amount,
-    );
+    if(index == 4){
+      return InterestButton(
+        name: '+',
+        onClick: () {
+          Navigator.pushNamed(context, "/profileInterestLanding",
+              arguments: user.interests[0].id);
+        },
+        selected: true,
+      );
+    }else{
+      return InterestButton(
+        name: interest.name,
+        onClick: () {
+          Navigator.pushNamed(context, "/profileInterestLanding",
+              arguments: interest.id);
+        },
+        amount: interest.amount,
+      );
+    }
   });
 }
 
