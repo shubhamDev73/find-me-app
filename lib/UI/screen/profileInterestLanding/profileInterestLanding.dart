@@ -10,15 +10,6 @@ import 'package:findme/data/models/user.dart';
 import 'package:findme/API.dart';
 import 'package:findme/globals.dart' as globals;
 
-Interest findInterest(List<Interest> interests, int id) {
-  for (int i = 0; i < interests.length; i++) {
-    if (interests[i].id == id) {
-      return interests[i];
-    }
-  }
-  return null;
-}
-
 FutureBuilder<User> createQuestions(Function onPageChange, int interestId, CarouselController controller) {
   return createFutureWidget<User>(globals.futureUser, (User user) {
     Interest interest = findInterest(user.interests, interestId);

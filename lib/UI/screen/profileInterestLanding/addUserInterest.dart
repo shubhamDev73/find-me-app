@@ -8,6 +8,7 @@ import 'package:findme/UI/Widgets/misc.dart';
 import 'package:findme/data/models/interests.dart';
 import 'package:findme/constant.dart';
 import 'package:findme/API.dart';
+import 'package:findme/globals.dart' as globals;
 
 class AddUserInterest extends StatefulWidget {
 
@@ -19,14 +20,11 @@ class _AddUserInterestState extends State<AddUserInterest> {
 
   final ScrollController _scrollController = ScrollController();
 
-  Future<List<Interest>> futureInterests;
-
   @override
   void initState () {
     super.initState();
-    futureInterests = GETResponse<List<Interest>>('interests/',
-      decoder: (result) => result.map<Interest>((item) => Interest.fromJson(item)).toList(),
-    );
+    globals.getUser();
+    globals.getInterests();
   }
 
   @override
@@ -83,7 +81,7 @@ class _AddUserInterestState extends State<AddUserInterest> {
                   thickness: 0,
                   isAlwaysShown: true,
                   controller: _scrollController,
-                  child: createFutureWidget<List<Interest>>(futureInterests, (List<Interest> interests) => GridView(
+                  child: createFutureWidget<List<Interest>>(globals.futureInterests, (List<Interest> interests) => GridView(
                     controller: _scrollController,
                     shrinkWrap: true,
                     scrollDirection: Axis.vertical,
@@ -93,14 +91,27 @@ class _AddUserInterestState extends State<AddUserInterest> {
                       crossAxisSpacing: 9,
                       crossAxisCount: 3,
                     ),
-                    children: interests.map((Interest interest) => InterestButton(
+                    children: interests.map<Widget>((Interest interest) => InterestButton(
                       name: interest.name,
                       onClick: (amount) {
-                        POST('me/interests/update/', jsonEncode([{"interest": interest.id, "amount": amount}]), true);
+                        interest.amount = amount;
+                        findInterest(globals.interests, interest.id).amount = amount;
+
+                        POST('me/interests/update/', jsonEncode([{"interest": interest.id, "amount": interest.amount}]), true);
+
+                        Interest foundInterest = findInterest(globals.user.interests, interest.id);
+                        if(foundInterest == null){
+                          if(amount != 0) globals.user.interests.add(interest);
+                        }else{
+                          if(amount == 0) globals.user.interests.remove(foundInterest);
+                          else foundInterest.amount = amount;
+                        }
+
+                        globals.getUser();
                       },
                       amount: interest.amount,
                       canChangeAmount: true,
-                    )).toList()
+                    )).toList(),
                   )),
                 ),
               ),

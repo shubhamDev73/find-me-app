@@ -25,3 +25,12 @@ class Interest {
     "questions": questions,
   };
 }
+
+Interest findInterest(List<Interest> interests, int id) {
+  for (int i = 0; i < interests.length; i++) {
+    if (interests[i].id == id) {
+      return interests[i];
+    }
+  }
+  return null;
+}
