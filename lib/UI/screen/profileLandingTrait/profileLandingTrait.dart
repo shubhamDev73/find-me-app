@@ -4,10 +4,11 @@ import 'package:findme/UI/Widgets/greetings.dart';
 import 'package:findme/UI/Widgets/misc.dart';
 import 'package:findme/UI/Widgets/traits.dart';
 import 'package:findme/configs/assets.dart';
+import 'package:findme/data/models/user.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
-import 'package:findme/API.dart';
+import 'package:findme/globals.dart' as globals;
 
 class ProfileLandingTrait extends StatefulWidget {
   const ProfileLandingTrait({
@@ -23,18 +24,17 @@ class _ProfileLandingTraitState extends State<ProfileLandingTrait> {
   List adjectives = [];
   int _current = 0;
 
-  Future<Map<String, dynamic>> futurePersonality;
-
   @override
   void initState() {
     super.initState();
-    futurePersonality = GETResponse<Map<String, dynamic>>('me/personality/',
-      callback: (Map<String, dynamic> personality) {
+    globals.getUser(
+      callback: (User user) {
         setState(() {
-          value = personality[trait]['value'];
-          adjectives = personality[trait]['adjectives'];
+          value = user.personality[trait]['value'];
+          adjectives = user.personality[trait]['adjectives'];
         });
-    });
+      }
+    );
   }
 
   Container buildAdjCarouselSlider() {
@@ -170,8 +170,8 @@ class _ProfileLandingTraitState extends State<ProfileLandingTrait> {
                   ),
                   Container(
                     height: 180,
-                    child: createFutureWidget<Map<String, dynamic>>(futurePersonality, (Map<String, dynamic> personality) {
-                      Map<String, dynamic> traitData = personality[trait];
+                    child: createFutureWidget<User>(globals.futureUser, (User user) {
+                      Map<String, dynamic> traitData = user.personality[trait];
                       return Stack(
                         alignment: Alignment.topCenter,
                         children: [
@@ -187,7 +187,7 @@ class _ProfileLandingTraitState extends State<ProfileLandingTrait> {
                                 adjectives = traitData['adjectives'];
                               });
                             },
-                            personality: personality,
+                            personality: user.personality,
                             selectedElement: trait),
                         ],
                       );

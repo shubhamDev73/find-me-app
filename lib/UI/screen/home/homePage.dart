@@ -8,10 +8,9 @@ import 'package:findme/UI/Widgets/misc.dart';
 import 'package:findme/UI/Widgets/interestButton.dart';
 import 'package:findme/data/models/user.dart';
 import 'package:findme/data/models/interests.dart';
-import 'package:findme/API.dart';
 
-FutureBuilder<User> createInterest(Future<User> futureUser, int index, BuildContext context) {
-  return createFutureWidget<User>(futureUser, (User user) {
+FutureBuilder<User> createInterest(BuildContext context, int index) {
+  return createFutureWidget<User>(globals.futureUser, (User user) {
     Interest interest = user.interests[index];
     return InterestButton(
       name: interest.name,
@@ -36,14 +35,13 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  Future<User> futureUser;
 
   @override
   void initState() {
     super.initState();
     globals.token =
         'e06df4fbae56e7ed03aadb66c233368a4b93fef115728896a220b60ed5e81ede';
-    futureUser = GETResponse<User>('me/', decoder: (result) => User.fromJson(result));
+    globals.getUser();
   }
 
   @override
@@ -79,7 +77,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           desc:
                               "Did you know the US armys traning bumbelbees to sniff out explosive?",
                         ),
-                        createFutureWidget<User>(futureUser, (User user) => TraitsElements(
+                        createFutureWidget<User>(globals.futureUser, (User user) => TraitsElements(
                             onClick: (String trait, Map<String, dynamic> personality) {
                               Navigator.pushNamed(context, "/profileLandingTrait",
                                   arguments: trait);
@@ -97,7 +95,7 @@ class _HomeScreenState extends State<HomeScreen> {
               },
               child: Expanded(
                 flex: 7,
-                child: createFutureWidget<User>(futureUser, (User user) => UserInfo(user)),
+                child: createFutureWidget<User>(globals.futureUser, (User user) => UserInfo(user)),
               ),
             ),
             Expanded(
@@ -107,11 +105,11 @@ class _HomeScreenState extends State<HomeScreen> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      createInterest(futureUser, 0, context),
+                      createInterest(context, 0),
                       SizedBox(
                         width: 12,
                       ),
-                      createInterest(futureUser, 1, context),
+                      createInterest(context, 1),
                     ],
                   ),
                   SizedBox(
@@ -121,15 +119,15 @@ class _HomeScreenState extends State<HomeScreen> {
                     mainAxisSize: MainAxisSize.max,
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      createInterest(futureUser, 2, context),
+                      createInterest(context, 2),
                       SizedBox(
                         width: 12,
                       ),
-                      createInterest(futureUser, 3, context),
+                      createInterest(context, 3),
                       SizedBox(
                         width: 12,
                       ),
-                      createInterest(futureUser, 4, context),
+                      createInterest(context, 4),
                     ],
                   )
                 ],

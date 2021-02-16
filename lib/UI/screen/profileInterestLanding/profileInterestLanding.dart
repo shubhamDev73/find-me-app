@@ -4,8 +4,10 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:findme/UI/Widgets/interestButton.dart';
 import 'package:findme/UI/Widgets/misc.dart';
 import 'package:findme/data/models/interests.dart';
+import 'package:findme/data/models/user.dart';
 import 'package:flutter/material.dart';
 import 'package:findme/API.dart';
+import 'package:findme/globals.dart' as globals;
 
 Future<List<Interest>> changeInterests(Future<List<Interest>> futureInterests, int interestId, int questionId, String answerText) async {
   List<Interest> interests = await futureInterests;
@@ -35,9 +37,9 @@ Interest findInterest(List<Interest> interests, int id) {
   return null;
 }
 
-FutureBuilder<List<Interest>> createQuestions(Function onPageChange, Future<List<Interest>> futureInterests, int id, CarouselController controller) {
-  return createFutureWidget<List<Interest>>(futureInterests, (List<Interest> interests) {
-    Interest interest = findInterest(interests, id);
+FutureBuilder<User> createQuestions(Function onPageChange, int id, CarouselController controller) {
+  return createFutureWidget<User>(globals.futureUser, (User user) {
+    Interest interest = findInterest(user.interests, id);
     if (interest != null) {
       return CarouselSlider(
         carouselController: controller,
@@ -148,8 +150,6 @@ class ProfileInterestLanding extends StatefulWidget {
 }
 
 class _ProfileInterestLandingState extends State<ProfileInterestLanding> {
-  Future<List<Interest>> futureInterests;
-
   int id = -1;
   int questionId = -1;
   String answer = '';
@@ -157,15 +157,15 @@ class _ProfileInterestLandingState extends State<ProfileInterestLanding> {
   @override
   void initState() {
     super.initState();
-    futureInterests = GETResponse<List<Interest>>('me/interests/',
-      decoder: (result) => result.map<Interest>((interest) => Interest.fromJson(interest)).toList(),
-      callback: (List<Interest> interests) {
+    globals.getUser(
+      callback: (User user) {
         setState(() {
-          Interest interest = findInterest(interests, id);
+          Interest interest = findInterest(user.interests, id);
           questionId = interest.questions[0]['id'];
           answer = interest.questions[0]['answer'];
         });
-    });
+      }
+    );
   }
 
   @override
@@ -204,7 +204,7 @@ class _ProfileInterestLandingState extends State<ProfileInterestLanding> {
                       questionId = id;
                       answer = answerText;
                     });
-                  }, futureInterests, id, buttonCarouselController),
+                  }, id, buttonCarouselController),
                   Positioned(
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -263,8 +263,6 @@ class _ProfileInterestLandingState extends State<ProfileInterestLanding> {
                             jsonEncode([
                               {"question": questionId, "answer": text}
                             ]));
-                        futureInterests = changeInterests(
-                            futureInterests, id, questionId, text);
                       },
                       textAlign: TextAlign.center,
                       style: TextStyle(
@@ -283,9 +281,9 @@ class _ProfileInterestLandingState extends State<ProfileInterestLanding> {
               flex: 6,
               child: Container(
                 color: Color(0xfff0fbfd),
-                child: createFutureWidget<List<Interest>>(futureInterests, (List<Interest> interests) => Scrollbar(
+                child: createFutureWidget<User>(globals.futureUser, (User user) => Scrollbar(
                   child: ListView(
-                    children: getInterestList(interests, (int interestId, String answerText) {
+                    children: getInterestList(user.interests, (int interestId, String answerText) {
                       setState(() {
                         id = interestId;
                         answer = answerText;
