@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'UI/Widgets/custom_page_route.dart';
 import 'UI/screen/chat/chatLanding.dart';
+import 'UI/screen/chat/chatMessage.dart';
 import 'UI/screen/home/homePage.dart';
 import 'UI/screen/login/loginPage.dart';
 import 'UI/screen/onBoardScreen/onBoardingPage.dart';
@@ -99,6 +100,10 @@ class _MainState extends State<Main> {
           case '/chatLanding':
             return PageRouteBuilder(
                 pageBuilder: (_, a1, a2) => ChatLandingPage(),
+                settings: settings);
+          case '/chatMessage':
+            return PageRouteBuilder(
+                pageBuilder: (_, a1, a2) => ChatMessagePage(),
                 settings: settings);
           default:
             return CustomPageRoute.build(
