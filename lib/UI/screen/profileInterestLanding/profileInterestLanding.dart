@@ -2,13 +2,12 @@ import 'dart:convert';
 
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:findme/UI/Widgets/interestButton.dart';
-import 'package:findme/UI/Widgets/menuButton.dart';
+import 'package:findme/UI/Widgets/misc.dart';
 import 'package:findme/data/models/interests.dart';
 import 'package:flutter/material.dart';
 import 'package:findme/API.dart';
 
-Future<List<Interest>> changeInterests(Future<List<Interest>> futureInterests,
-    int interestId, int questionId, String answerText) async {
+Future<List<Interest>> changeInterests(Future<List<Interest>> futureInterests, int interestId, int questionId, String answerText) async {
   List<Interest> interests = await futureInterests;
   List<dynamic> questions = findInterest(interests, interestId)?.questions;
   for (int i = 0; i < questions.length; i++) {
@@ -36,90 +35,42 @@ Interest findInterest(List<Interest> interests, int id) {
   return null;
 }
 
-FutureBuilder<List<Interest>> createQuestions(
-    Function onPageChange,
-    Future<List<Interest>> futureInterests,
-    int id,
-    CarouselController buttonCarouselController) {
-  return FutureBuilder<List<Interest>>(
-    future: futureInterests,
-    builder: (context, snapshot) {
-      if (snapshot.hasData) {
-        Interest interest = findInterest(snapshot.data, id);
-        if (interest != null) {
-          return CarouselSlider(
-            carouselController: buttonCarouselController,
-            items: interest.questions
-                .map((question) => Builder(
-              builder: (BuildContext context) {
-                return Container(
-                  margin: EdgeInsets.symmetric(horizontal: 35),
-                  child: Center(
-                    child: Text(
-                      question['question'],
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        fontSize: 24,
-                        fontWeight: FontWeight.w700,
-                      ),
-                    ),
+FutureBuilder<List<Interest>> createQuestions(Function onPageChange, Future<List<Interest>> futureInterests, int id, CarouselController controller) {
+  return createFutureWidget<List<Interest>>(futureInterests, (List<Interest> interests) {
+    Interest interest = findInterest(interests, id);
+    if (interest != null) {
+      return CarouselSlider(
+        carouselController: controller,
+        items: interest.questions.map((question) => Builder(
+          builder: (BuildContext context) {
+            return Container(
+              margin: EdgeInsets.symmetric(horizontal: 35),
+              child: Center(
+                child: Text(
+                  question['question'],
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: 24,
+                    fontWeight: FontWeight.w700,
                   ),
-                );
-              },
-            ))
-                .toList(),
-            options: CarouselOptions(
-                initialPage: 0,
-                // autoPlay: true,
-                enlargeCenterPage: true,
-                aspectRatio: 2.0,
-                onPageChanged: (index, reason) {
-                  onPageChange(interest.questions[index]['id'],
-                      interest.questions[index]['answer']);
-                }),
-          );
-        } else {
-          return Text("Interest not found");
-        }
-      } else if (snapshot.hasError) {
-        return Text("${snapshot.error}");
-      }
-
-      // By default, show a loading spinner.
-      return CircularProgressIndicator();
-    },
-  );
-}
-
-FutureBuilder<List<Interest>> createInterests(
-    Function onClick, Future<List<Interest>> futureInterests, int id) {
-  return FutureBuilder<List<Interest>>(
-    future: futureInterests,
-    builder: (context, snapshot) {
-      if (snapshot.hasData) {
-        List<Widget> ap = getInterestList(snapshot.data, onClick, id);
-        print("Returned no. of rows - ");
-        print(ap.length);
-        // return Column(
-        //   children: getInterestList(snapshot.data),
-        //   mainAxisAlignment: MainAxisAlignment.center,
-        // );
-        return Scrollbar(
-            child: ListView(
-              children: getInterestList(snapshot.data, onClick, id),
-              padding: const EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 0.0),
-            ));
-        // final ScrollController _scrollController = ScrollController();
-        // return CustomScroll(
-        //     scrollController: _scrollController, itemList: snapshot.data);
-      } else if (snapshot.hasError) {
-        return Text("${snapshot.error}");
-      }
-
-      // By default, show a loading spinner.
-      return CircularProgressIndicator();
-    },
-  );
+                ),
+              ),
+            );
+          },
+        )).toList(),
+        options: CarouselOptions(
+          initialPage: 0,
+          enlargeCenterPage: true,
+          aspectRatio: 2.0,
+          onPageChanged: (index, reason) {
+            onPageChange(interest.questions[index]['id'],
+                interest.questions[index]['answer']);
+          }),
+      );
+    } else {
+      return Text("Interest not found");
+    }
+  });
 }
 
 List<Widget> getInterestList(List<Interest> obj, Function onClick, int id) {
@@ -332,12 +283,17 @@ class _ProfileInterestLandingState extends State<ProfileInterestLanding> {
               flex: 6,
               child: Container(
                 color: Color(0xfff0fbfd),
-                child: createInterests((int interestId, String answerText) {
-                  setState(() {
-                    id = interestId;
-                    answer = answerText;
-                  });
-                }, futureInterests, id),
+                child: createFutureWidget<List<Interest>>(futureInterests, (List<Interest> interests) => Scrollbar(
+                  child: ListView(
+                    children: getInterestList(interests, (int interestId, String answerText) {
+                      setState(() {
+                        id = interestId;
+                        answer = answerText;
+                      });
+                    }, id),
+                    padding: const EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 0.0),
+                  ),
+                )),
               ),
             ),
             GestureDetector(

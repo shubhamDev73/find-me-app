@@ -1,61 +1,15 @@
-import 'package:findme/configs/assets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
+
+import 'package:findme/configs/assets.dart';
 import 'package:findme/data/models/user.dart';
-
-FutureBuilder<User> createUser (Future<User> futureUser) {
-  return FutureBuilder<User>(
-    future: futureUser,
-    builder: (context, snapshot) {
-      if (snapshot.hasData) {
-        return Text(
-          snapshot.data.nick,
-          style: GoogleFonts.comfortaa(
-            textStyle: TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.w600,
-            ),
-          ),
-        );
-      } else if (snapshot.hasError) {
-        return Text("${snapshot.error}");
-      }
-
-      // By default, show a loading spinner.
-      return CircularProgressIndicator();
-    },
-  );
-}
-
-FutureBuilder<User> createAvatar (Future<User> futureUser) {
-  return FutureBuilder<User>(
-    future: futureUser,
-    builder: (context, snapshot) {
-      if (snapshot.hasData) {
-        return Image.network(
-          snapshot.data.avatar,
-          width: 300,
-          height: 300,
-        );
-      } else if (snapshot.hasError) {
-        return Text("${snapshot.error}");
-      }
-
-      // By default, show a loading spinner.
-      return CircularProgressIndicator();
-    },
-  );
-}
-
 
 class UserInfo extends StatelessWidget {
 
-  Future<User> user;
+  final User user;
 
-  UserInfo(Future<User> user) {
-    this.user = user;
-  }
+  UserInfo(this.user);
 
   @override
   Widget build(BuildContext context) {
@@ -69,7 +23,11 @@ class UserInfo extends StatelessWidget {
             children: [
               Container(
                 child: Center(
-                  child: createAvatar(this.user),
+                  child: Image.network(
+                    user.avatar,
+                    width: 300,
+                    height: 300,
+                  ),
                 ),
               ),
               Positioned(
@@ -96,7 +54,15 @@ class UserInfo extends StatelessWidget {
               SizedBox(
                 height: 18,
               ),
-              createUser(this.user),
+              Text(
+                user.nick,
+                style: GoogleFonts.comfortaa(
+                  textStyle: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ),
               SizedBox(
                 height: 8,
               ),

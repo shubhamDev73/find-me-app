@@ -3,45 +3,11 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 
 import 'package:findme/UI/Widgets/interestButton.dart';
-import 'package:findme/UI/Widgets/menuButton.dart';
+import 'package:findme/UI/Widgets/misc.dart';
 
 import 'package:findme/data/models/interests.dart';
 import 'package:findme/constant.dart';
 import 'package:findme/API.dart';
-
-FutureBuilder<List<Interest>> createInterests (Future<List<Interest>> futureInterests, ScrollController _scrollController) {
-  return FutureBuilder<List<Interest>>(
-    future: futureInterests,
-    builder: (context, snapshot) {
-      if(snapshot.hasData){
-        return GridView(
-            controller: _scrollController,
-            shrinkWrap: true,
-            scrollDirection: Axis.vertical,
-            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-              childAspectRatio: 3.3,
-              mainAxisSpacing: 30,
-              crossAxisSpacing: 9,
-              crossAxisCount: 3,
-            ),
-            children: snapshot.data.map((Interest interest) => InterestButton(
-              name: interest.name,
-              onClick: (amount) {
-                POST('me/interests/update/', jsonEncode([{"interest": interest.id, "amount": amount}]), true);
-              },
-              amount: interest.amount,
-              canChangeAmount: true,
-            ),
-            ).toList());
-      } else if (snapshot.hasError) {
-        return Text("${snapshot.error}");
-      }
-
-      // By default, show a loading spinner.
-      return CircularProgressIndicator();
-    },
-  );
-}
 
 class AddUserInterest extends StatefulWidget {
 
@@ -117,7 +83,25 @@ class _AddUserInterestState extends State<AddUserInterest> {
                   thickness: 0,
                   isAlwaysShown: true,
                   controller: _scrollController,
-                  child: createInterests(futureInterests, _scrollController),
+                  child: createFutureWidget<List<Interest>>(futureInterests, (List<Interest> interests) => GridView(
+                    controller: _scrollController,
+                    shrinkWrap: true,
+                    scrollDirection: Axis.vertical,
+                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                      childAspectRatio: 3.3,
+                      mainAxisSpacing: 30,
+                      crossAxisSpacing: 9,
+                      crossAxisCount: 3,
+                    ),
+                    children: interests.map((Interest interest) => InterestButton(
+                      name: interest.name,
+                      onClick: (amount) {
+                        POST('me/interests/update/', jsonEncode([{"interest": interest.id, "amount": amount}]), true);
+                      },
+                      amount: interest.amount,
+                      canChangeAmount: true,
+                    )).toList()
+                  )),
                 ),
               ),
               constraints: BoxConstraints(maxHeight: 517, minWidth: 517),

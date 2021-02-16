@@ -1,46 +1,13 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:findme/UI/Widgets/addAdjListItems.dart';
 import 'package:findme/UI/Widgets/greetings.dart';
-import 'package:findme/UI/Widgets/menuButton.dart';
+import 'package:findme/UI/Widgets/misc.dart';
 import 'package:findme/UI/Widgets/traits.dart';
 import 'package:findme/configs/assets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 import 'package:findme/API.dart';
-
-FutureBuilder<Map<String, dynamic>> createPersonality(Function callback,
-    Future<Map<String, dynamic>> futurePersonality, String trait) {
-  return FutureBuilder<Map<String, dynamic>>(
-    future: futurePersonality,
-    builder: (context, snapshot) {
-      if (snapshot.hasData) {
-        Map<String, dynamic> traitData = snapshot.data[trait];
-        return Stack(
-          alignment: Alignment.topCenter,
-          children: [
-            Greeting(
-              title: trait,
-              desc: traitData['description'],
-            ),
-            TraitsElements(
-                onClick:
-                    (String traitString, Map<String, dynamic> personality) {
-                  callback(traitString, personality);
-                },
-                personality: snapshot.data,
-                selectedElement: trait),
-          ],
-        );
-      } else if (snapshot.hasError) {
-        return Text("${snapshot.error}");
-      }
-
-      // By default, show a loading spinner.
-      return CircularProgressIndicator();
-    },
-  );
-}
 
 class ProfileLandingTrait extends StatefulWidget {
   const ProfileLandingTrait({
@@ -203,14 +170,28 @@ class _ProfileLandingTraitState extends State<ProfileLandingTrait> {
                   ),
                   Container(
                     height: 180,
-                    child: createPersonality(
-                        (String traitString, Map<String, dynamic> personality) {
-                      setState(() {
-                        trait = traitString;
-                        value = personality[trait]['value'];
-                        adjectives = personality[trait]['adjectives'];
-                      });
-                    }, futurePersonality, trait),
+                    child: createFutureWidget<Map<String, dynamic>>(futurePersonality, (Map<String, dynamic> personality) {
+                      Map<String, dynamic> traitData = personality[trait];
+                      return Stack(
+                        alignment: Alignment.topCenter,
+                        children: [
+                          Greeting(
+                            title: trait,
+                            desc: traitData['description'],
+                          ),
+                          TraitsElements(
+                            onClick: (String traitString, Map<String, dynamic> personality) {
+                              setState(() {
+                                trait = traitString;
+                                value = traitData['value'];
+                                adjectives = traitData['adjectives'];
+                              });
+                            },
+                            personality: personality,
+                            selectedElement: trait),
+                        ],
+                      );
+                    }),
                   ),
                 ],
               ),
