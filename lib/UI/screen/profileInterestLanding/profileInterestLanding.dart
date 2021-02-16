@@ -1,32 +1,14 @@
 import 'dart:convert';
 
+import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
+
 import 'package:findme/UI/Widgets/interestButton.dart';
 import 'package:findme/UI/Widgets/misc.dart';
 import 'package:findme/data/models/interests.dart';
 import 'package:findme/data/models/user.dart';
-import 'package:flutter/material.dart';
 import 'package:findme/API.dart';
 import 'package:findme/globals.dart' as globals;
-
-Future<List<Interest>> changeInterests(Future<List<Interest>> futureInterests, int interestId, int questionId, String answerText) async {
-  List<Interest> interests = await futureInterests;
-  List<dynamic> questions = findInterest(interests, interestId)?.questions;
-  for (int i = 0; i < questions.length; i++) {
-    if (questions[i]['id'] == questionId) {
-      questions[i]['answer'] = answerText;
-      break;
-    }
-  }
-  return interests;
-}
-
-void submitAnswer(String url, String body) async {
-  final response = await POST(url, body, true);
-
-  if (response.statusCode != 200)
-    throw Exception('Failed to submit answer: ${response.statusCode}');
-}
 
 Interest findInterest(List<Interest> interests, int id) {
   for (int i = 0; i < interests.length; i++) {
@@ -37,111 +19,105 @@ Interest findInterest(List<Interest> interests, int id) {
   return null;
 }
 
-FutureBuilder<User> createQuestions(Function onPageChange, int id, CarouselController controller) {
+FutureBuilder<User> createQuestions(Function onPageChange, int interestId, CarouselController controller) {
   return createFutureWidget<User>(globals.futureUser, (User user) {
-    Interest interest = findInterest(user.interests, id);
-    if (interest != null) {
-      return CarouselSlider(
-        carouselController: controller,
-        items: interest.questions.map((question) => Builder(
-          builder: (BuildContext context) {
-            return Container(
-              margin: EdgeInsets.symmetric(horizontal: 35),
-              child: Center(
-                child: Text(
-                  question['question'],
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontSize: 24,
-                    fontWeight: FontWeight.w700,
-                  ),
-                ),
-              ),
-            );
-          },
-        )).toList(),
-        options: CarouselOptions(
+    Interest interest = findInterest(user.interests, interestId);
+    return CarouselSlider(
+      carouselController: controller,
+      items: interest.questions.map((question) => Container(
+        margin: EdgeInsets.symmetric(horizontal: 35),
+        child: Center(
+          child: Text(
+            question['question'],
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              fontSize: 24,
+              fontWeight: FontWeight.w700,
+            ),
+          ),
+        ),
+      )).toList(),
+      options: CarouselOptions(
           initialPage: 0,
           enlargeCenterPage: true,
           aspectRatio: 2.0,
           onPageChanged: (index, reason) {
-            onPageChange(interest.questions[index]['id'],
-                interest.questions[index]['answer']);
+            onPageChange(interest.questions[index]);
           }),
-      );
-    } else {
-      return Text("Interest not found");
-    }
+    );
   });
 }
 
 List<Widget> getInterestList(List<Interest> obj, Function onClick, int id) {
-  print("snapshot data lenght - ");
-  print(obj.length);
-  int len_mod5 = obj.length ~/ 5;
-  int len_rem = obj.length - (len_mod5 * 5);
-  int render_lenght = len_mod5 * 2;
 
-  int len_counter = 3;
-  int list_item_counter = 0;
+  int lenMod5 = obj.length ~/ 5;
+  int renderLength = lenMod5 * 2;
 
-  List<Widget> return_obj_col = [];
-  // return_obj_col.add(Padding(padding: null))
-  List<Widget> temp_row = [];
+  List<Widget> widgetList = [];
+  List<Widget> tempRow = [];
 
-  int item_counter = 0;
+  int itemCounter = 0;
 
-  for (int i = 0; i < render_lenght; i++) {
-    if (i % 2 == 0) {
-      len_counter = 2;
-    } else {
-      len_counter = 3;
+  for (int i = 0; i < renderLength; i++) {
+    for (int j = 0; j < i % 2 + 2; j++) {
+      dynamic interest = obj[itemCounter++];
+      tempRow.add(Padding(
+        padding: const EdgeInsets.fromLTRB(12.0, 7.0, 0.0, 7.0),
+        child: InterestButton(
+          name: interest.name,
+          onClick: () {onClick(interest.id);},
+          amount: interest.amount,
+          selected: interest.id == id,
+        ),
+      ));
     }
-    for (int j = 0; j < len_counter; j++) {
-      dynamic interest = obj[item_counter++];
-      dynamic temp_button = InterestButton(
+
+    widgetList.add(Row(
+      children: tempRow,
+      mainAxisAlignment: MainAxisAlignment.center,
+    ));
+    tempRow = [];
+  }
+
+  for (int i = itemCounter; i < obj.length; i++) {
+    dynamic interest = obj[itemCounter++];
+    tempRow.add(Padding(
+      padding: const EdgeInsets.fromLTRB(12.0, 7.0, 0.0, 7.0),
+      child: InterestButton(
         name: interest.name,
-        onClick: () {onClick(interest.id, interest.questions[0]['answer']);},
+        onClick: () {onClick(interest.id);},
         amount: interest.amount,
         selected: interest.id == id,
-      );
-      dynamic ob = Padding(
-        padding: const EdgeInsets.fromLTRB(12.0, 7.0, 0.0, 7.0),
-        child: temp_button,
-      );
-      temp_row.add(ob);
-    }
-    Row temp_row_obj = Row(
-      children: temp_row,
-      mainAxisAlignment: MainAxisAlignment.center,
-    );
-    return_obj_col.add(temp_row_obj);
-    temp_row = [];
+      ),
+    ));
   }
 
-  for (int i = item_counter; i < obj.length; i++) {
-    dynamic interest = obj[item_counter++];
-    dynamic temp_button = InterestButton(
-      name: interest.name,
-      onClick: () {onClick(interest.id, interest.questions[0]['answer']);},
-      amount: interest.amount,
-      selected: interest.id == id,
-    );
-    dynamic ob = Padding(
-      padding: const EdgeInsets.fromLTRB(12.0, 7.0, 0.0, 7.0),
-      child: temp_button,
-    );
-    temp_row.add(ob);
-  }
-
-  Row temp_row_obj = Row(
-    children: temp_row,
+  widgetList.add(Row(
+    children: tempRow,
     mainAxisAlignment: MainAxisAlignment.center,
-  );
-  return_obj_col.add(temp_row_obj);
-  temp_row = [];
+  ));
 
-  return return_obj_col;
+  return widgetList;
+}
+
+void updateAnswer(int interestId, Map<String, dynamic> question, String answerText) async {
+  POST('me/interests/$interestId/update/', jsonEncode([{"question": question['id'], "answer": answerText}]), true);
+  int interestIndex;
+  for (int i = 0; i < globals.user.interests.length; i++) {
+    if (globals.user.interests[i].id == interestId) {
+      interestIndex = i;
+      break;
+    }
+  }
+  Interest interest = globals.user.interests[interestIndex];
+  for (int i = 0; i < interest.questions.length; i++) {
+    if (interest.questions[i]['id'] == question['id']) {
+      interest.questions[i]['answer'] = answerText;
+      break;
+    }
+  }
+  globals.user.interests[interestIndex] = interest;
+  globals.getUser();
 }
 
 class ProfileInterestLanding extends StatefulWidget {
@@ -150,35 +126,29 @@ class ProfileInterestLanding extends StatefulWidget {
 }
 
 class _ProfileInterestLandingState extends State<ProfileInterestLanding> {
-  int id = -1;
-  int questionId = -1;
-  String answer = '';
+  int interestId;
+  Map<String, dynamic> question;
 
   @override
   void initState() {
     super.initState();
-    globals.getUser(
-      callback: (User user) {
-        setState(() {
-          Interest interest = findInterest(user.interests, id);
-          questionId = interest.questions[0]['id'];
-          answer = interest.questions[0]['answer'];
-        });
-      }
-    );
+    globals.getUser(callback: (User user) {
+      Interest interest = findInterest(user.interests, interestId);
+      if(interest != null) setState(() {
+        question = interest.questions[0];
+      });
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    if (id == -1) {
-      setState(() {
-        id = ModalRoute.of(context).settings.arguments;
-      });
+    if (interestId == null) {
+      interestId = ModalRoute.of(context).settings.arguments;
+      if(globals.user != null) question = findInterest(globals.user.interests, interestId).questions[0];
     }
 
     CarouselController buttonCarouselController = CarouselController();
-    TextEditingController answerController =
-    new TextEditingController(text: answer);
+    TextEditingController answerController = new TextEditingController(text: question['answer']);
 
     return Scaffold(
       body: SafeArea(
@@ -199,12 +169,11 @@ class _ProfileInterestLandingState extends State<ProfileInterestLanding> {
               child: Stack(
                 alignment: Alignment.center,
                 children: [
-                  createQuestions((int id, String answerText) {
+                  createQuestions((Map<String, dynamic> newQuestion) {
                     setState(() {
-                      questionId = id;
-                      answer = answerText;
+                      question = newQuestion;
                     });
-                  }, id, buttonCarouselController),
+                  }, interestId, buttonCarouselController),
                   Positioned(
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -257,17 +226,11 @@ class _ProfileInterestLandingState extends State<ProfileInterestLanding> {
                     margin: EdgeInsets.symmetric(horizontal: 50, vertical: 0),
                     child: TextField(
                       controller: answerController,
-                      onSubmitted: (text) {
-                        submitAnswer(
-                            'me/interests/$id/update/',
-                            jsonEncode([
-                              {"question": questionId, "answer": text}
-                            ]));
-                      },
+                      onSubmitted: (text) {updateAnswer(interestId, question, text);},
                       textAlign: TextAlign.center,
                       style: TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.w500,
+                        fontSize: 21,
+                        fontWeight: FontWeight.w700,
                       ),
                     ),
                   ),
@@ -282,15 +245,15 @@ class _ProfileInterestLandingState extends State<ProfileInterestLanding> {
               child: Container(
                 color: Color(0xfff0fbfd),
                 child: createFutureWidget<User>(globals.futureUser, (User user) => Scrollbar(
-                  child: ListView(
-                    children: getInterestList(user.interests, (int interestId, String answerText) {
-                      setState(() {
-                        id = interestId;
-                        answer = answerText;
-                      });
-                    }, id),
-                    padding: const EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 0.0),
-                  ),
+                    child: ListView(
+                      children: getInterestList(user.interests, (int newInterestId) {
+                        setState(() {
+                          interestId = newInterestId;
+                          question = findInterest(globals.user.interests, interestId).questions[0];
+                        });
+                      }, interestId),
+                      padding: const EdgeInsets.fromLTRB(0.0, 5.0, 0.0, 0.0),
+                    )
                 )),
               ),
             ),
