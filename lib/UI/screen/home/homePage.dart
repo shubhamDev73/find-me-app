@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:findme/globals.dart' as globals;
 import 'package:findme/UI/Widgets/greetings.dart';
-import 'package:findme/UI/Widgets/traits.dart';
+import 'package:findme/UI/Widgets/traitBar.dart';
 import 'package:findme/UI/Widgets/userInfo.dart';
 import 'package:findme/UI/Widgets/misc.dart';
 import 'package:findme/UI/Widgets/interestButton.dart';

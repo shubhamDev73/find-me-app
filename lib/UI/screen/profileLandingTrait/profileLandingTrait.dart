@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 
-import 'package:findme/UI/Widgets/addAdjListItems.dart';
+import 'package:findme/UI/Widgets/adjectiveListItems.dart';
 import 'package:findme/UI/Widgets/greetings.dart';
 import 'package:findme/UI/Widgets/misc.dart';
-import 'package:findme/UI/Widgets/traits.dart';
+import 'package:findme/UI/Widgets/traitBar.dart';
 import 'package:findme/configs/assets.dart';
 import 'package:findme/data/models/user.dart';
 import 'package:findme/globals.dart' as globals;
@@ -53,8 +53,8 @@ class _ProfileLandingTraitState extends State<ProfileLandingTrait> {
               items: adjectives.map((adjective) => Builder(
                 builder: (BuildContext context) {
                   return AdjListItem(
-                    adj: adjective['name'],
-                    des: adjective['description'],
+                    name: adjective['name'],
+                    description: adjective['description'],
                   );
                 },
               )).toList(),

@@ -62,17 +62,14 @@ class TraitIcon extends StatelessWidget {
   final double progress;
   final bool selected;
 
-  const TraitIcon({Key key, this.icon, this.progress, this.selected})
-      : super(key: key);
+  const TraitIcon({Key key, this.icon, this.progress, this.selected}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return CustomPaint(
-      foregroundPainter: CircleProgress(progress), // this will add custom painter after child
+      foregroundPainter: CircleProgress(progress),
       child: Container(
-        decoration: BoxDecoration(
-          shape: BoxShape.circle,
-        ),
+        decoration: BoxDecoration(shape: BoxShape.circle),
         child: Container(
           height: selected ? 65 : 50,
           width: selected ? 65 : 50,
@@ -103,8 +100,7 @@ class CircleProgress extends CustomPainter {
     double angle = 2 * pi * currentProgress;
     Offset center = Offset(radius, radius);
 
-    canvas.drawArc(Rect.fromCircle(center: center, radius: radius + 2), pi / 2 - angle / 2,
-        angle, false, completeArc);
+    canvas.drawArc(Rect.fromCircle(center: center, radius: radius + 2), pi / 2 - angle / 2, angle, false, completeArc);
   }
 
   @override

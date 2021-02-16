@@ -3,12 +3,12 @@ import 'package:flutter/material.dart';
 class AdjListItem extends StatelessWidget {
   const AdjListItem({
     Key key,
-    @required this.adj,
-    @required this.des,
+    @required this.name,
+    @required this.description,
   }) : super(key: key);
 
-  final String adj;
-  final String des;
+  final String name;
+  final String description;
 
   @override
   Widget build(BuildContext context) {
@@ -19,21 +19,20 @@ class AdjListItem extends StatelessWidget {
           Positioned(
             top: 20,
             child: Container(
-              constraints: BoxConstraints(
-                  minWidth: 142, minHeight: 24, maxWidth: 142, maxHeight: 24),
+              constraints: BoxConstraints(minWidth: 142, minHeight: 24, maxWidth: 142, maxHeight: 24),
               child: Center(
                 child: Text(
-                  "$adj", // adjective title --  needs to be updated dynamically
+                  "$name",
                   style: TextStyle(
                       fontFamily: 'Quicksand',
                       fontSize: 18,
                       fontWeight: FontWeight.w900,
-                      color: Colors.black),
+                      color: Colors.black,
+                  ),
                 ),
               ),
             ),
           ),
-          ////////////////////////////////////////////////////////////////
           Positioned(
             top: 57,
             child: Padding(
@@ -47,21 +46,21 @@ class AdjListItem extends StatelessWidget {
               ),
             ),
           ),
-          ////////////////////////////////////////////////////////////////
           Positioned(
             top: 77,
             child: Container(
-                constraints: BoxConstraints(
-                    minWidth: 270, minHeight: 18, maxWidth: 270, maxHeight: 48),
+                constraints: BoxConstraints(minWidth: 270, minHeight: 18, maxWidth: 270, maxHeight: 48),
                 child: Text(
-                  '$des',
+                  '$description',
                   style: TextStyle(
                       fontFamily: 'Quicksand',
                       fontSize: 12,
                       fontWeight: FontWeight.w500,
-                      color: Colors.black),
+                      color: Colors.black,
+                  ),
                   textAlign: TextAlign.center,
-                )),
+                ),
+            ),
           ),
         ],
       ),
