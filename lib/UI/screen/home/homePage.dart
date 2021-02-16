@@ -89,7 +89,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               "Did you know the US armys traning bumbelbees to sniff out explosive?",
                         ),
                         createFutureWidget<User>(globals.futureUser, (User user) => TraitsElements(
-                            onClick: (String trait, Map<String, dynamic> personality) {
+                            onClick: (String trait) {
                               Navigator.pushNamed(context, "/profileLandingTrait",
                                   arguments: trait);
                             },

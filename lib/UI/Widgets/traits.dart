@@ -1,8 +1,10 @@
-import 'package:findme/configs/assets.dart';
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'dart:math';
-import '../../constant.dart';
+
+import 'package:findme/configs/assets.dart';
+import 'package:findme/constant.dart';
 
 class TraitsElements extends StatelessWidget {
 
@@ -21,9 +23,9 @@ class TraitsElements extends StatelessWidget {
     bool selected = selectedElement == trait;
     return GestureDetector(
       onTap: () {
-        onClick(trait, personality);
+        onClick(trait);
       },
-      child: MoodIcons(
+      child: TraitIcon(
         icon: SvgPicture.asset(
           Assets.traits[trait]['icon'],
           color: value >= 0 ? ThemeColors.positiveTraitColor : ThemeColors.negativeTraitColor,
@@ -55,12 +57,12 @@ class TraitsElements extends StatelessWidget {
   }
 }
 
-class MoodIcons extends StatelessWidget {
+class TraitIcon extends StatelessWidget {
   final Widget icon;
   final double progress;
   final bool selected;
 
-  const MoodIcons({Key key, this.icon, this.progress, this.selected})
+  const TraitIcon({Key key, this.icon, this.progress, this.selected})
       : super(key: key);
 
   @override
@@ -92,7 +94,7 @@ class CircleProgress extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     Paint completeArc = Paint()
-      ..strokeWidth = 1
+      ..strokeWidth = 1.5
       ..color = Colors.black
       ..style = PaintingStyle.stroke
       ..strokeCap = StrokeCap.round;
@@ -101,7 +103,7 @@ class CircleProgress extends CustomPainter {
     double angle = 2 * pi * currentProgress;
     Offset center = Offset(radius, radius);
 
-    canvas.drawArc(Rect.fromCircle(center: center, radius: radius + 1), pi / 2 - angle / 2,
+    canvas.drawArc(Rect.fromCircle(center: center, radius: radius + 2), pi / 2 - angle / 2,
         angle, false, completeArc);
   }
 
