@@ -1,21 +1,22 @@
 import 'package:flutter/material.dart';
 
+import 'package:findme/data/models/found.dart';
+
 class ChatList extends StatelessWidget {
 
-  final String nick;
-  final String avatar;
+  final Found found;
   final String date;
   final String lastMessage;
   final int index;
 
-  ChatList(this.nick, this.avatar, this.date, this.lastMessage, this.index);
+  ChatList({this.found, this.date = '-', this.lastMessage = '', this.index = 0});
 
   @override
   Widget build (BuildContext context) {
     return GestureDetector(
       onTap: () {
         Navigator.of(context).pushNamed('/chatMessage',
-            arguments: "TSutKf2S97jgRmcAp6uh");
+            arguments: found);
       },
       child: ColoredBox(
         color: index % 2 == 0 ? Colors.grey : Colors.white,
@@ -27,7 +28,7 @@ class ChatList extends StatelessWidget {
               Padding(
                 padding: const EdgeInsets.fromLTRB(
                     17.0, 17.0, 17.0, 14.0),
-                child: Image.network(avatar, height: 40),
+                child: Image.network(found.avatar, height: 40),
               ),
               Expanded(
                 child: Padding(
@@ -41,7 +42,7 @@ class ChatList extends StatelessWidget {
                         MainAxisAlignment.spaceBetween,
                         children: <Widget>[
                           Text(
-                            nick,
+                            found.nick,
                             style: TextStyle(
                                 fontWeight: FontWeight.w500,
                                 fontSize: 20.0),

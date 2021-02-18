@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_core/firebase_core.dart';
 
 import 'package:findme/UI/Widgets/chatListItems.dart';
 import 'package:findme/UI/Widgets/connectListItems.dart';
 import 'package:findme/UI/Widgets/misc.dart';
 import 'package:findme/data/models/user.dart';
+import 'package:findme/data/models/found.dart';
 import 'package:findme/constant.dart';
 import 'package:findme/API.dart';
 import 'package:findme/globals.dart' as globals;
@@ -17,12 +20,15 @@ class ChatLandingPage extends StatefulWidget {
 
 class _ChatLandingPageState extends State<ChatLandingPage> {
 
-  Future<dynamic> chats, connects;
+  Future<List<Found>> futureFound;
+  Future<dynamic> connects;
 
   @override
   void initState() {
     super.initState();
-    chats = GETResponse('found/');
+    futureFound = GETResponse<List<Found>>('found/',
+      decoder: (result) => result.map<Found>((found) => Found.fromJson(found)).toList(),
+    );
     connects = GETResponse('find/');
   }
 
@@ -69,13 +75,27 @@ class _ChatLandingPageState extends State<ChatLandingPage> {
                 child: Container(
                   constraints: BoxConstraints(minHeight: 463),
                   color: Colors.white,
-                  child: createFutureWidget<dynamic>(chats, (data) => ListView.builder(
-                    itemBuilder: (context, index) {
-                      var chatItem = data[index];
-                      return ChatList(chatItem['nick'], chatItem['avatar'], "11/02/2021", "last message", index);
-                    },
-                    itemCount: data.length,
-                  )),
+                  child: FutureBuilder<FirebaseApp>(
+                    future: Firebase.initializeApp(),
+                    builder: (context, snapshot) {
+                      FirebaseFirestore firestore = FirebaseFirestore.instance;
+                      if (snapshot.connectionState == ConnectionState.done) {
+                        return createFutureWidget<List<Found>>(futureFound, (foundList) => ListView.builder(
+                          itemBuilder: (context, index) {
+                            Found foundItem = foundList[index];
+                            Future<QuerySnapshot> lastMessage = firestore.collection('chats').doc(foundItem.chatId).collection('chats').orderBy('timestamp', descending: true).limit(1).get();
+                            return createFutureWidget<QuerySnapshot>(lastMessage, (QuerySnapshot message) => ChatList(
+                                found: foundItem,
+                                date: "${message.docs[0]['timestamp'].toDate()}",
+                                lastMessage: message.docs[0]['message'],
+                                index: index
+                              ));
+                          },
+                          itemCount: foundList.length,
+                        ));
+                      }
+                      return CircularProgressIndicator();
+                    }),
                 ),
               ),
               Container(
