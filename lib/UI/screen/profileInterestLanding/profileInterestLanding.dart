@@ -22,7 +22,7 @@ FutureBuilder<User> createQuestions(Function onPageChange, int interestId, Carou
             question['question'],
             textAlign: TextAlign.center,
             style: TextStyle(
-              fontSize: 24,
+              fontSize: 28,
               fontWeight: FontWeight.w700,
             ),
           ),
@@ -52,28 +52,28 @@ List<Widget> getInterestList(List<Interest> obj, Function onClick, int id) {
   for (int i = 0; i < renderLength; i++) {
     for (int j = 0; j < i % 2 + 2; j++) {
       dynamic interest = obj[itemCounter++];
-      tempRow.add(Padding(
-        padding: const EdgeInsets.fromLTRB(12.0, 7.0, 0.0, 7.0),
-        child: InterestButton(
-          name: interest.name,
-          onClick: () {onClick(interest.id);},
-          amount: interest.amount,
-          selected: interest.id == id,
-        ),
+      tempRow.add(InterestButton(
+        name: interest.name,
+        onClick: () {onClick(interest.id);},
+        amount: interest.amount,
+        selected: interest.id == id,
       ));
+      if(j != i % 2 + 1)
+        tempRow.add(SizedBox(width: 12));
     }
 
     widgetList.add(Row(
       children: tempRow,
       mainAxisAlignment: MainAxisAlignment.center,
     ));
+    widgetList.add(SizedBox(height: 20));
     tempRow = [];
   }
 
   for (int i = itemCounter; i < obj.length; i++) {
     dynamic interest = obj[itemCounter++];
     tempRow.add(Padding(
-      padding: const EdgeInsets.fromLTRB(12.0, 7.0, 0.0, 7.0),
+      padding: const EdgeInsets.fromLTRB(12.0, 10.0, 0.0, 7.0),
       child: InterestButton(
         name: interest.name,
         onClick: () {onClick(interest.id);},
@@ -208,32 +208,31 @@ class _ProfileInterestLandingState extends State<ProfileInterestLanding> {
               ),
             ),
             Expanded(
-              flex: 3,
+              flex: 5,
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Container(
-                    margin: EdgeInsets.symmetric(horizontal: 50, vertical: 0),
+                    margin: EdgeInsets.symmetric(horizontal: 80, vertical: 0),
                     child: TextField(
                       controller: answerController,
                       onSubmitted: (text) {updateAnswer(interestId, question, text);},
                       textAlign: TextAlign.center,
                       style: TextStyle(
-                        fontSize: 21,
+                        fontSize: 25,
                         fontWeight: FontWeight.w700,
                       ),
                     ),
                   ),
-                  SizedBox(
-                    height: 25,
-                  ),
+                  SizedBox(height: 27),
                 ],
               ),
             ),
             Expanded(
               flex: 6,
               child: Container(
+                padding: const EdgeInsets.fromLTRB(0.0, 17.0, 0.0, 0.0),
                 color: Color(0xfff0fbfd),
                 child: createFutureWidget<User>(globals.futureUser, (User user) => Scrollbar(
                     child: ListView(
@@ -243,7 +242,6 @@ class _ProfileInterestLandingState extends State<ProfileInterestLanding> {
                           question = findInterest(globals.user.interests, interestId).questions[0];
                         });
                       }, interestId),
-                      padding: const EdgeInsets.fromLTRB(0.0, 5.0, 0.0, 0.0),
                     )
                 )),
               ),
@@ -258,7 +256,7 @@ class _ProfileInterestLandingState extends State<ProfileInterestLanding> {
                   borderRadius: BorderRadius.circular(12),
                 ),
                 margin: EdgeInsets.symmetric(vertical: 10),
-                padding: EdgeInsets.symmetric(horizontal: 25, vertical: 10),
+                padding: EdgeInsets.symmetric(horizontal: 25, vertical: 7),
                 child: Text(
                   "+ Interests",
                   style: TextStyle(color: Colors.white),

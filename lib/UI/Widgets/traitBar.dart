@@ -29,8 +29,8 @@ class TraitsElements extends StatelessWidget {
         icon: SvgPicture.asset(
           Assets.traits[trait]['icon'],
           color: value >= 0 ? ThemeColors.positiveTraitColor : ThemeColors.negativeTraitColor,
-          width: selected ? 40 : 30,
-          height: selected ? 40 : 30,
+          width: selected ? 40 : 32,
+          height: selected ? 40 : 32,
         ),
         progress: value.abs(),
         selected: selected,
@@ -41,15 +41,15 @@ class TraitsElements extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Positioned(
-      top: 115,
+      top: selectedElement == null ? 115 : 110,
       child: Row(
         mainAxisSize: MainAxisSize.max,
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          createButton("Water"), SizedBox(width: 15),
-          createButton("Space"), SizedBox(width: 15),
-          createButton("Fire"), SizedBox(width: 15),
-          createButton("Earth"), SizedBox(width: 15),
+          createButton("Water"), SizedBox(width: 10),
+          createButton("Space"), SizedBox(width: 10),
+          createButton("Fire"), SizedBox(width: 10),
+          createButton("Earth"), SizedBox(width: 10),
           createButton("Air"),
         ],
       ),
@@ -71,8 +71,8 @@ class TraitIcon extends StatelessWidget {
       child: Container(
         decoration: BoxDecoration(shape: BoxShape.circle),
         child: Container(
-          height: selected ? 65 : 50,
-          width: selected ? 65 : 50,
+          height: selected ? 65 : 55,
+          width: selected ? 65 : 55,
           child: CircleAvatar(
             backgroundColor: ThemeColors.primaryColor,
             child: icon,

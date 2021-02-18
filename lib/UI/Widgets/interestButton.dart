@@ -1,14 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:findme/constant.dart';
+import 'package:flutter_svg/svg.dart';
 
 class InterestButton extends StatefulWidget {
   final Function onClick;
   final String name;
   final int amount;
   final bool selected;
+  final bool isSvg;
   final bool canChangeAmount;
 
-  InterestButton({this.onClick, this.name, this.amount = 0, this.selected = false, this.canChangeAmount = false});
+  InterestButton({this.onClick, this.name, this.amount = 0, this.selected = false, this.canChangeAmount = false, this.isSvg = false});
 
   @override
   _InterestButtonState createState() => _InterestButtonState();
@@ -43,13 +45,15 @@ class _InterestButtonState extends State<InterestButton> {
           ) : null,
         ),
         height: 35,
-        width: 95,
+        width: 100,
         child: Center(
-          child: Text(
+          child: widget.isSvg ? SvgPicture.asset(widget.name) :
+          Text(
             widget.name,
             style: TextStyle(
               color: Colors.black,
               fontSize: 13,
+              fontWeight: FontWeight.bold,
             ),
           ),
         ),

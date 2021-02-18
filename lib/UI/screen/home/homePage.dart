@@ -8,27 +8,29 @@ import 'package:findme/UI/Widgets/misc.dart';
 import 'package:findme/UI/Widgets/interestButton.dart';
 import 'package:findme/data/models/user.dart';
 import 'package:findme/data/models/interests.dart';
+import 'package:findme/configs/assets.dart';
 
 FutureBuilder<User> createInterest(BuildContext context, int index) {
   return createFutureWidget<User>(globals.futureUser, (User user) {
     Interest interest = user.interests[index];
     if(index == 4){
       return InterestButton(
-        name: '+',
+        name: Assets.plus,
+        isSvg: true,
+        selected: true,
         onClick: () {
           Navigator.pushNamed(context, "/profileInterestLanding",
               arguments: user.interests[0].id);
         },
-        selected: true,
       );
     }else{
       return InterestButton(
         name: interest.name,
+        amount: interest.amount,
         onClick: () {
           Navigator.pushNamed(context, "/profileInterestLanding",
               arguments: interest.id);
         },
-        amount: interest.amount,
       );
     }
   });
@@ -100,12 +102,12 @@ class _HomeScreenState extends State<HomeScreen> {
                 ],
               ),
             ),
-            GestureDetector(
-              onTap: () {
-                Navigator.of(context).pushNamed('/moodSet');
-              },
-              child: Expanded(
-                flex: 7,
+            Expanded(
+              flex: 7,
+              child: GestureDetector(
+                onTap: () {
+                  Navigator.of(context).pushNamed('/moodSet');
+                },
                 child: createFutureWidget<User>(globals.futureUser, (User user) => UserInfo(user)),
               ),
             ),
@@ -117,27 +119,21 @@ class _HomeScreenState extends State<HomeScreen> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       createInterest(context, 0),
-                      SizedBox(
-                        width: 12,
-                      ),
+                      SizedBox(width: 12),
                       createInterest(context, 1),
                     ],
                   ),
                   SizedBox(
-                    height: 12,
+                    height: 20,
                   ),
                   Row(
                     mainAxisSize: MainAxisSize.max,
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       createInterest(context, 2),
-                      SizedBox(
-                        width: 12,
-                      ),
+                      SizedBox(width: 12),
                       createInterest(context, 3),
-                      SizedBox(
-                        width: 12,
-                      ),
+                      SizedBox(width: 12),
                       createInterest(context, 4),
                     ],
                   )

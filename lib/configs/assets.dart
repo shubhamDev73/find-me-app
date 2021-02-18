@@ -50,4 +50,6 @@ class Assets {
       "weather": "assets/mood/Sun.svg",
     },
   };
+
+  static const plus = "assets/edits/plus.svg";
 }
