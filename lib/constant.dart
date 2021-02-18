@@ -3,15 +3,15 @@ import 'package:flutter/material.dart';
 const String title = "Find.me";
 
 class ThemeColors {
-  static const Color primaryColor = Color(0xff00ACC1);
-  static const Color accentColor = Color(0xff4FCBDA);
-  static const Color lightColor = Color(0xfff0fbfd);
-  static const Color positiveTraitColor = Color(0xffffffff);
-  static const Color negativeTraitColor = Color(0xff000000);
+  static const Color primaryColor = Color(0xFF00ACC1);
+  static const Color accentColor = Color(0xFF4FCBDA);
+  static const Color lightColor = Color(0xFFF0FBFD);
+  static const Color positiveTraitColor = Colors.white;
+  static const Color negativeTraitColor = Colors.black;
   static const Map<int, Color> interestColors = {
-    0: Color(0xffffffff),
-    1: Color(0xffb2ebf2),
-    2: Color(0xff4fcbda),
-    3: Color(0xff02a8bc),
+    0: Color(0xFFFFFFFF),
+    1: Color(0xFFB2EBF2),
+    2: Color(0xFF4FCBDA),
+    3: Color(0xFF02A8BC),
   };
 }

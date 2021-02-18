@@ -53,11 +53,11 @@ flutter:
 
   # To add assets to your application, add an assets section, like this:
   assets:
-    - assets/logo/
-    - assets/traits/
-    - assets/edits/
-    - assets/tabs/
+    - assets/icons/
     - assets/mood/
+    - assets/onBoarding/
+    - assets/tabs/
+    - assets/traits/
 
   fonts:
     - family: QuickSand

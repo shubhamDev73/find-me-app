@@ -1,5 +1,5 @@
-import 'package:findme/data/models/user.dart';
-import 'package:findme/data/models/interests.dart';
+import 'package:findme/models/user.dart';
+import 'package:findme/models/interests.dart';
 import 'package:findme/API.dart';
 
 String token = '';
