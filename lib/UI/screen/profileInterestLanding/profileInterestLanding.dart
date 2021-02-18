@@ -248,7 +248,7 @@ class _ProfileInterestLandingState extends State<ProfileInterestLanding> {
             ),
             GestureDetector(
               onTap: () {
-                Navigator.of(context).pushNamed('/addUserInterest');
+                Navigator.of(context).pushNamed('/interests/add');
               },
               child: Container(
                 decoration: BoxDecoration(
@@ -263,7 +263,6 @@ class _ProfileInterestLandingState extends State<ProfileInterestLanding> {
                 ),
               ),
             ),
-            MenuButton('me'),
           ],
         ),
       ),

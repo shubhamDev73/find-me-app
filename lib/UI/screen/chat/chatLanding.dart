@@ -98,10 +98,6 @@ class _ChatLandingPageState extends State<ChatLandingPage> {
                     }),
                 ),
               ),
-              Container(
-                constraints: BoxConstraints(maxHeight: 42),
-                child: MenuButton('found'),
-              ),
             ],
           ),
         ),

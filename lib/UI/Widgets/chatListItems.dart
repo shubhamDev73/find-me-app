@@ -15,7 +15,7 @@ class ChatList extends StatelessWidget {
   Widget build (BuildContext context) {
     return GestureDetector(
       onTap: () {
-        Navigator.of(context).pushNamed('/chatMessage',
+        Navigator.of(context).pushNamed('/message',
             arguments: found);
       },
       child: ColoredBox(

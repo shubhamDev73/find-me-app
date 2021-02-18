@@ -299,7 +299,6 @@ class _MoodSetState extends State<MoodSet> {
             ),
             ),
             ),
-            MenuButton('me'),
           ],
         ),
         )

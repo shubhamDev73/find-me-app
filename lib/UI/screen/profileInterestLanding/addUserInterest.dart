@@ -117,7 +117,6 @@ class _AddUserInterestState extends State<AddUserInterest> {
               ),
               constraints: BoxConstraints(maxHeight: 517, minWidth: 517),
             ),
-            MenuButton('me'),
           ],
         ),
       ),

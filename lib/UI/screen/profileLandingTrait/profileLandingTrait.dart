@@ -210,7 +210,6 @@ class _ProfileLandingTraitState extends State<ProfileLandingTrait> {
                 child: createFutureWidget<User>(globals.futureUser, (User user) => buildAdjCarouselSlider(user.personality[trait]['adjectives'])),
               ),
             ),
-            MenuButton('me'),
           ],
         ),
       ),

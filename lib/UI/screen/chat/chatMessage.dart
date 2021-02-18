@@ -123,7 +123,6 @@ class _ChatMessagePageState extends State<ChatMessagePage> {
                   ),
                 ),
               ),
-              MenuButton('found'),
             ],
           ),
         ),

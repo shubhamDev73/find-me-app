@@ -19,8 +19,7 @@ FutureBuilder<User> createInterest(BuildContext context, int index) {
         isSvg: true,
         selected: true,
         onClick: () {
-          Navigator.pushNamed(context, "/profileInterestLanding",
-              arguments: user.interests[0].id);
+          Navigator.of(context).pushNamed('/interests', arguments: user.interests[0].id);
         },
       );
     }else{
@@ -28,8 +27,7 @@ FutureBuilder<User> createInterest(BuildContext context, int index) {
         name: interest.name,
         amount: interest.amount,
         onClick: () {
-          Navigator.pushNamed(context, "/profileInterestLanding",
-              arguments: interest.id);
+          Navigator.of(context).pushNamed('/interests', arguments: interest.id);
         },
       );
     }
@@ -37,12 +35,6 @@ FutureBuilder<User> createInterest(BuildContext context, int index) {
 }
 
 class HomeScreen extends StatefulWidget {
-  final GlobalKey<ScaffoldState> scaffoldKey;
-  const HomeScreen({
-    Key key,
-    @required this.scaffoldKey,
-  }) : super(key: key);
-
   @override
   _HomeScreenState createState() => _HomeScreenState();
 }
@@ -60,7 +52,6 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      key: widget.scaffoldKey,
       body: SafeArea(
         child: Column(
           mainAxisSize: MainAxisSize.min,
@@ -87,15 +78,14 @@ class _HomeScreenState extends State<HomeScreen> {
                       children: [
                         Greeting(
                           title: "Konichiwa",
-                          desc:
-                              "Did you know the US armys traning bumbelbees to sniff out explosive?",
+                          desc: "Did you know the US armys traning bumbelbees to sniff out explosive?",
                         ),
                         createFutureWidget<User>(globals.futureUser, (User user) => TraitsElements(
-                            onClick: (String trait) {
-                              Navigator.pushNamed(context, "/profileLandingTrait",
-                                  arguments: trait);
-                            },
-                            personality: user.personality)),
+                          onClick: (String trait) {
+                            Navigator.of(context).pushNamed('/personality', arguments: trait);
+                          },
+                          personality: user.personality,
+                        )),
                       ],
                     ),
                   ),
@@ -106,7 +96,7 @@ class _HomeScreenState extends State<HomeScreen> {
               flex: 7,
               child: GestureDetector(
                 onTap: () {
-                  Navigator.of(context).pushNamed('/moodSet');
+                  Navigator.of(context).pushNamed('/mood');
                 },
                 child: createFutureWidget<User>(globals.futureUser, (User user) => UserInfo(user)),
               ),
@@ -136,11 +126,10 @@ class _HomeScreenState extends State<HomeScreen> {
                       SizedBox(width: 12),
                       createInterest(context, 4),
                     ],
-                  )
+                  ),
                 ],
               ),
             ),
-            MenuButton('me'),
           ],
         ),
       ),
