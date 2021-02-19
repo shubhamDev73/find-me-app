@@ -44,9 +44,15 @@ class _ChatMessageState extends State<ChatMessage> {
                 child: Container(
                   child: Column(
                     children: <Widget>[
-                      Padding(
-                        padding: const EdgeInsets.fromLTRB(12.0, 0.0, 12.0, 0.0),
-                        child: Image.network(found.avatar, height: 75),
+                      InkWell(
+                        onTap: () {
+                          globals.getAnotherUser('/found/${found.id}');
+                          Navigator.of(context).pushNamed('/user');
+                        },
+                        child: Padding(
+                          padding: const EdgeInsets.fromLTRB(12.0, 0.0, 12.0, 0.0),
+                          child: Image.network(found.avatar, height: 75),
+                        )
                       ),
                       Container(
                         height: 27,
