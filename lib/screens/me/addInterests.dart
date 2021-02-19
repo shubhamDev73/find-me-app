@@ -99,11 +99,11 @@ class _AddInterestsState extends State<AddInterests> {
 
                         POST('me/interests/update/', jsonEncode([{"interest": interest.id, "amount": interest.amount}]), true);
 
-                        Interest foundInterest = findInterest(globals.user.interests, interest.id);
+                        Interest foundInterest = findInterest(globals.meUser.interests, interest.id);
                         if(foundInterest == null){
-                          if(amount != 0) globals.user.interests.add(interest);
+                          if(amount != 0) globals.meUser.interests.add(interest);
                         }else{
-                          if(amount == 0) globals.user.interests.remove(foundInterest);
+                          if(amount == 0) globals.meUser.interests.remove(foundInterest);
                           else foundInterest.amount = amount;
                         }
 

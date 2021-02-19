@@ -20,12 +20,14 @@ class ChatList extends StatefulWidget {
 
 class _ChatListState extends State<ChatList> {
 
+  Future<User> futureUser;
   Future<List<Found>> futureFound;
   Future<dynamic> connects;
 
   @override
   void initState() {
     super.initState();
+    futureUser = globals.getUser();
     futureFound = GETResponse<List<Found>>('found/',
       decoder: (result) => result.map<Found>((found) => Found.fromJson(found)).toList(),
     );
@@ -48,7 +50,7 @@ class _ChatListState extends State<ChatList> {
                     children: <Widget>[
                       Padding(
                         padding: const EdgeInsets.fromLTRB(12.0, 0.0, 12.0, 0.0),
-                        child: createFutureWidget<User>(globals.futureUser, (User user) => Image.network(user.avatar, height: 75)),
+                        child: createFutureWidget<User>(futureUser, (User user) => Image.network(user.avatar, height: 75)),
                       ),
                       Container(
                           width: 7,
@@ -62,7 +64,8 @@ class _ChatListState extends State<ChatList> {
                         child: createFutureWidget<dynamic>(connects, (data) => ListView.builder(
                           scrollDirection: Axis.horizontal,
                           itemBuilder: (context, index) {
-                            return FindListItem(data['users'][index]['avatar']);
+                            dynamic user = data['users'][index];
+                            return FindListItem(id: user['id'], avatar: user['avatar']);
                           },
                           itemCount: data['users'].length,
                         )),
@@ -85,11 +88,11 @@ class _ChatListState extends State<ChatList> {
                             Found foundItem = foundList[index];
                             Future<QuerySnapshot> lastMessage = firestore.collection('chats').doc(foundItem.chatId).collection('chats').orderBy('timestamp', descending: true).limit(1).get();
                             return createFutureWidget<QuerySnapshot>(lastMessage, (QuerySnapshot message) => FoundListItem(
-                                found: foundItem,
-                                date: "${message.docs[0]['timestamp'].toDate()}",
-                                lastMessage: message.docs[0]['message'],
-                                index: index
-                              ));
+                              found: foundItem,
+                              date: "${message.docs[0]['timestamp'].toDate()}",
+                              lastMessage: message.docs[0]['message'],
+                              index: index
+                            ));
                           },
                           itemCount: foundList.length,
                         ));

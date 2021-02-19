@@ -11,21 +11,24 @@ import 'package:findme/models/user.dart';
 import 'package:findme/globals.dart' as globals;
 
 class Personality extends StatefulWidget {
-  const Personality({
-    Key key,
-  }) : super(key: key);
+
+  final bool me;
+  const Personality({this.me = true});
+
   @override
   _PersonalityState createState() => _PersonalityState();
 }
 
 class _PersonalityState extends State<Personality> {
+
+  Future<User> futureUser;
   String trait;
   int currentAdjIndex = 0;
 
   @override
   void initState() {
     super.initState();
-    globals.getUser();
+    futureUser = globals.getUser(me: widget.me);
   }
 
   Container buildAdjCarouselSlider(List adjectives) {
@@ -133,7 +136,7 @@ class _PersonalityState extends State<Personality> {
                   ),
                   Container(
                     height: 180,
-                    child: createFutureWidget<User>(globals.futureUser, (User user) => Stack(
+                    child: createFutureWidget<User>(futureUser, (User user) => Stack(
                       alignment: Alignment.topCenter,
                       children: [
                         Greeting(
@@ -172,7 +175,7 @@ class _PersonalityState extends State<Personality> {
                           thumbShape: RoundSliderThumbShape(enabledThumbRadius: 10.0),
                         ),
                         // ignore: missing_required_param
-                        child: createFutureWidget<User>(globals.futureUser, (User user) => Slider(
+                        child: createFutureWidget<User>(futureUser, (User user) => Slider(
                           value: user.personality[trait]['value'],
                           min: -1.0,
                           max: 1.0,
@@ -207,7 +210,7 @@ class _PersonalityState extends State<Personality> {
             Expanded(
               flex: 6,
               child: SizedBox(
-                child: createFutureWidget<User>(globals.futureUser, (User user) => buildAdjCarouselSlider(user.personality[trait]['adjectives'])),
+                child: createFutureWidget<User>(futureUser, (User user) => buildAdjCarouselSlider(user.personality[trait]['adjectives'])),
               ),
             ),
           ],

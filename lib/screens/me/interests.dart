@@ -10,8 +10,8 @@ import 'package:findme/models/user.dart';
 import 'package:findme/API.dart';
 import 'package:findme/globals.dart' as globals;
 
-FutureBuilder<User> createQuestions(Function onPageChange, int interestId, CarouselController controller) {
-  return createFutureWidget<User>(globals.futureUser, (User user) {
+FutureBuilder<User> createQuestions(Future<User> futureUser, Function onPageChange, int interestId, CarouselController controller) {
+  return createFutureWidget<User>(futureUser, (User user) {
     Interest interest = findInterest(user.interests, interestId);
     return CarouselSlider(
       carouselController: controller,
@@ -94,36 +94,42 @@ List<Widget> getInterestList(List<Interest> obj, Function onClick, int id) {
 void updateAnswer(int interestId, Map<String, dynamic> question, String answerText) async {
   POST('me/interests/$interestId/update/', jsonEncode([{"question": question['id'], "answer": answerText}]), true);
   int interestIndex;
-  for (int i = 0; i < globals.user.interests.length; i++) {
-    if (globals.user.interests[i].id == interestId) {
+  for (int i = 0; i < globals.meUser.interests.length; i++) {
+    if (globals.meUser.interests[i].id == interestId) {
       interestIndex = i;
       break;
     }
   }
-  Interest interest = globals.user.interests[interestIndex];
+  Interest interest = globals.meUser.interests[interestIndex];
   for (int i = 0; i < interest.questions.length; i++) {
     if (interest.questions[i]['id'] == question['id']) {
       interest.questions[i]['answer'] = answerText;
       break;
     }
   }
-  globals.user.interests[interestIndex] = interest;
+  globals.meUser.interests[interestIndex] = interest;
   globals.getUser();
 }
 
 class Interests extends StatefulWidget {
+
+  final bool me;
+  const Interests({this.me = true});
+
   @override
   _InterestsState createState() => _InterestsState();
 }
 
 class _InterestsState extends State<Interests> {
+
+  Future<User> futureUser;
   int interestId;
   Map<String, dynamic> question;
 
   @override
   void initState() {
     super.initState();
-    globals.getUser(callback: (User user) {
+    futureUser = globals.getUser(me: widget.me, callback: (User user) {
       Interest interest = findInterest(user.interests, interestId);
       if(interest != null) setState(() {
         question = interest.questions[0];
@@ -135,7 +141,8 @@ class _InterestsState extends State<Interests> {
   Widget build(BuildContext context) {
     if (interestId == null) {
       interestId = ModalRoute.of(context).settings.arguments;
-      if(globals.user != null) question = findInterest(globals.user.interests, interestId).questions[0];
+      User user = widget.me ? globals.meUser : globals.anotherUser;
+      if(user != null) question = findInterest(user.interests, interestId).questions[0];
     }
 
     CarouselController buttonCarouselController = CarouselController();
@@ -160,7 +167,7 @@ class _InterestsState extends State<Interests> {
               child: Stack(
                 alignment: Alignment.center,
                 children: [
-                  createQuestions((Map<String, dynamic> newQuestion) {
+                  createQuestions(futureUser, (Map<String, dynamic> newQuestion) {
                     setState(() {
                       question = newQuestion;
                     });
@@ -215,9 +222,18 @@ class _InterestsState extends State<Interests> {
                 children: [
                   Container(
                     margin: EdgeInsets.symmetric(horizontal: 80, vertical: 0),
-                    child: TextField(
+                    child: widget.me ?
+                    TextField(
                       controller: answerController,
                       onSubmitted: (text) {updateAnswer(interestId, question, text);},
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontSize: 25,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ) :
+                    Text(
+                      question['answer'],
                       textAlign: TextAlign.center,
                       style: TextStyle(
                         fontSize: 25,
@@ -234,19 +250,19 @@ class _InterestsState extends State<Interests> {
               child: Container(
                 padding: const EdgeInsets.fromLTRB(0.0, 17.0, 0.0, 0.0),
                 color: Color(0xfff0fbfd),
-                child: createFutureWidget<User>(globals.futureUser, (User user) => Scrollbar(
+                child: createFutureWidget<User>(futureUser, (User user) => Scrollbar(
                     child: ListView(
                       children: getInterestList(user.interests, (int newInterestId) {
                         setState(() {
                           interestId = newInterestId;
-                          question = findInterest(globals.user.interests, interestId).questions[0];
+                          question = findInterest(user.interests, interestId).questions[0];
                         });
                       }, interestId),
                     )
                 )),
               ),
             ),
-            GestureDetector(
+            widget.me ? GestureDetector(
               onTap: () {
                 Navigator.of(context).pushNamed('/interests/add');
               },
@@ -262,7 +278,8 @@ class _InterestsState extends State<Interests> {
                   style: TextStyle(color: Colors.white),
                 ),
               ),
-            ),
+            ) :
+            Container(),
           ],
         ),
       ),

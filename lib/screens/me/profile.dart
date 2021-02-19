@@ -10,9 +10,8 @@ import 'package:findme/models/user.dart';
 import 'package:findme/models/interests.dart';
 import 'package:findme/assets.dart';
 
-FutureBuilder<User> createInterest(BuildContext context, int index) {
-  return createFutureWidget<User>(globals.futureUser, (User user) {
-    Interest interest = user.interests[index];
+FutureBuilder<User> createInterest(futureUser, BuildContext context, int index) {
+  return createFutureWidget<User>(futureUser, (User user) {
     if(index == 4){
       return InterestButton(
         name: Assets.plus,
@@ -23,6 +22,7 @@ FutureBuilder<User> createInterest(BuildContext context, int index) {
         },
       );
     }else{
+      Interest interest = user.interests[index];
       return InterestButton(
         name: interest.name,
         amount: interest.amount,
@@ -35,18 +35,24 @@ FutureBuilder<User> createInterest(BuildContext context, int index) {
 }
 
 class Profile extends StatefulWidget {
+
+  final bool me;
+  const Profile({this.me = true});
+
   @override
   _ProfileState createState() => _ProfileState();
 }
 
 class _ProfileState extends State<Profile> {
 
+  Future<User> futureUser;
+
   @override
   void initState() {
     super.initState();
     globals.token =
         'e06df4fbae56e7ed03aadb66c233368a4b93fef115728896a220b60ed5e81ede';
-    globals.getUser();
+    futureUser = globals.getUser(me: widget.me);
   }
 
   @override
@@ -80,7 +86,7 @@ class _ProfileState extends State<Profile> {
                           title: "Konichiwa",
                           desc: "Did you know the US armys traning bumbelbees to sniff out explosive?",
                         ),
-                        createFutureWidget<User>(globals.futureUser, (User user) => TraitsElements(
+                        createFutureWidget<User>(futureUser, (User user) => TraitsElements(
                           onClick: (String trait) {
                             Navigator.of(context).pushNamed('/personality', arguments: trait);
                           },
@@ -98,7 +104,7 @@ class _ProfileState extends State<Profile> {
                 onTap: () {
                   Navigator.of(context).pushNamed('/mood');
                 },
-                child: createFutureWidget<User>(globals.futureUser, (User user) => UserInfo(user)),
+                child: createFutureWidget<User>(futureUser, (User user) => UserInfo(user)),
               ),
             ),
             Expanded(
@@ -108,9 +114,9 @@ class _ProfileState extends State<Profile> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      createInterest(context, 0),
+                      createInterest(futureUser, context, 0),
                       SizedBox(width: 12),
-                      createInterest(context, 1),
+                      createInterest(futureUser, context, 1),
                     ],
                   ),
                   SizedBox(
@@ -120,11 +126,11 @@ class _ProfileState extends State<Profile> {
                     mainAxisSize: MainAxisSize.max,
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      createInterest(context, 2),
+                      createInterest(futureUser, context, 2),
                       SizedBox(width: 12),
-                      createInterest(context, 3),
+                      createInterest(futureUser, context, 3),
                       SizedBox(width: 12),
-                      createInterest(context, 4),
+                      createInterest(futureUser, context, 4),
                     ],
                   ),
                 ],

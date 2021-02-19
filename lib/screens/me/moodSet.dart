@@ -136,6 +136,10 @@ class HistoryItem extends StatelessWidget {
 }
 
 class MoodSet extends StatefulWidget {
+
+  final bool me;
+  const MoodSet({this.me = true});
+
   @override
   _MoodSetState createState() => _MoodSetState();
 }
