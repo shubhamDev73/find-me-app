@@ -41,16 +41,13 @@ FutureBuilder<User> createQuestions(Future<User> futureUser, Function onPageChan
 
 List<Widget> getInterestList(List<Interest> obj, Function onClick, int id) {
 
-  int lenMod5 = obj.length ~/ 5;
-  int renderLength = lenMod5 * 2;
-
   List<Widget> widgetList = [];
-  List<Widget> tempRow = [];
-
   int itemCounter = 0;
 
-  for (int i = 0; i < renderLength; i++) {
+  for (int i = 0; i <= (obj.length ~/ 5) * 2; i++) {
+    List<Widget> tempRow = [];
     for (int j = 0; j < i % 2 + 2; j++) {
+      if(itemCounter >= obj.length) break;
       dynamic interest = obj[itemCounter++];
       tempRow.add(InterestButton(
         name: interest.name,
@@ -67,26 +64,7 @@ List<Widget> getInterestList(List<Interest> obj, Function onClick, int id) {
       mainAxisAlignment: MainAxisAlignment.center,
     ));
     widgetList.add(SizedBox(height: 20));
-    tempRow = [];
   }
-
-  for (int i = itemCounter; i < obj.length; i++) {
-    dynamic interest = obj[itemCounter++];
-    tempRow.add(Padding(
-      padding: const EdgeInsets.fromLTRB(12.0, 10.0, 0.0, 7.0),
-      child: InterestButton(
-        name: interest.name,
-        onClick: () {onClick(interest.id);},
-        amount: interest.amount,
-        selected: interest.id == id,
-      ),
-    ));
-  }
-
-  widgetList.add(Row(
-    children: tempRow,
-    mainAxisAlignment: MainAxisAlignment.center,
-  ));
 
   return widgetList;
 }
