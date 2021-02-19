@@ -41,7 +41,6 @@ class _ChatListState extends State<ChatList> {
     return SafeArea(
       child: Scaffold(
         body: Container(
-          // color: Colors.pink,
           child: Column(
             children: [
               Container(
@@ -62,7 +61,7 @@ class _ChatListState extends State<ChatList> {
                           ),
                       ),
                       Container(
-                        width: 100,
+                        width: 80,
                         child: createFutureWidget<List<dynamic>>(futureRequests, (data) => ListView.builder(
                           scrollDirection: Axis.horizontal,
                           itemBuilder: (context, index) {
@@ -111,7 +110,8 @@ class _ChatListState extends State<ChatList> {
                         ));
                       }
                       return CircularProgressIndicator();
-                    }),
+                    },
+                  ),
                 ),
               ),
             ],

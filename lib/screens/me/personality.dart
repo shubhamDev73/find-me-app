@@ -174,7 +174,6 @@ class _PersonalityState extends State<Personality> {
                           thumbColor: Colors.white,
                           thumbShape: RoundSliderThumbShape(enabledThumbRadius: 10.0),
                         ),
-                        // ignore: missing_required_param
                         child: createFutureWidget<User>(futureUser, (User user) => Slider(
                           value: user.personality[trait]['value'],
                           min: -1.0,
@@ -185,6 +184,7 @@ class _PersonalityState extends State<Personality> {
                       SvgPicture.asset(Assets.traits[trait]['positive']),
                     ],
                   ),
+                  widget.me ?
                   GestureDetector(
                     onTap: () {},
                     child: Container(
@@ -199,7 +199,8 @@ class _PersonalityState extends State<Personality> {
                         style: TextStyle(color: Colors.white),
                       ),
                     ),
-                  ),
+                  ) :
+                  Container(),
                   SizedBox(
                     height: 20,
                   ),
