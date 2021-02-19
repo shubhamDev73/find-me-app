@@ -22,7 +22,8 @@ class _ChatListState extends State<ChatList> {
 
   Future<User> futureUser;
   Future<List<Found>> futureFound;
-  Future<dynamic> connects;
+  Future<dynamic> futureFind;
+  Future<List<dynamic>> futureRequests;
 
   @override
   void initState() {
@@ -31,7 +32,8 @@ class _ChatListState extends State<ChatList> {
     futureFound = GETResponse<List<Found>>('found/',
       decoder: (result) => result.map<Found>((found) => Found.fromJson(found)).toList(),
     );
-    connects = GETResponse('find/');
+    futureFind = GETResponse('find/');
+    futureRequests = GETResponse<List<dynamic>>('requests/');
   }
 
   @override
@@ -57,11 +59,22 @@ class _ChatListState extends State<ChatList> {
                           decoration: BoxDecoration(
                             shape: BoxShape.circle,
                             color: Colors.black,
-                          )
+                          ),
+                      ),
+                      Container(
+                        width: 100,
+                        child: createFutureWidget<List<dynamic>>(futureRequests, (data) => ListView.builder(
+                          scrollDirection: Axis.horizontal,
+                          itemBuilder: (context, index) {
+                            dynamic user = data[index];
+                            return RequestListItem(id: user['id'], avatar: user['avatar']);
+                          },
+                          itemCount: data.length,
+                        )),
                       ),
                       Container(
                         width: 250,
-                        child: createFutureWidget<dynamic>(connects, (data) => ListView.builder(
+                        child: createFutureWidget<dynamic>(futureFind, (data) => ListView.builder(
                           scrollDirection: Axis.horizontal,
                           itemBuilder: (context, index) {
                             dynamic user = data['users'][index];
@@ -69,7 +82,7 @@ class _ChatListState extends State<ChatList> {
                           },
                           itemCount: data['users'].length,
                         )),
-                      )
+                      ),
                     ],
                   ),
                 ),
