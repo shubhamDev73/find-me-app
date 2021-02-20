@@ -89,7 +89,7 @@ class _ChatMessageState extends State<ChatMessage> {
                             return new ListView(
                               controller: scrollController,
                               children: snapshot.data.docs.map((DocumentSnapshot message) {
-                                var time = message['timestamp'].toDate();
+                                String time = formatDate(timestamp: message['timestamp']);
                                 return Container(
                                   decoration: BoxDecoration(
                                     color: message['user'] == found.me ? ThemeColors.lightColor : ThemeColors.primaryColor,

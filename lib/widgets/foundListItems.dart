@@ -19,23 +19,21 @@ class FoundListItem extends StatelessWidget {
             arguments: found);
       },
       child: ColoredBox(
-        color: index % 2 == 0 ? Colors.grey : Colors.white,
+        color: index % 2 == 0 ? Colors.grey[300] : Colors.white,
         child: Padding(
           padding: const EdgeInsets.all(0.0),
           child:
           Row(
             children: <Widget>[
               Padding(
-                padding: const EdgeInsets.fromLTRB(
-                    17.0, 17.0, 17.0, 14.0),
+                padding: const EdgeInsets.fromLTRB(17.0, 17.0, 17.0, 14.0),
                 child: Image.network(found.avatar, height: 40),
               ),
               Expanded(
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
+                child: Container(
+                  padding: const EdgeInsets.all(16.0),
                   child: Column(
-                    crossAxisAlignment:
-                    CrossAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
                       Row(
                         mainAxisAlignment:
@@ -44,24 +42,26 @@ class FoundListItem extends StatelessWidget {
                           Text(
                             found.nick,
                             style: TextStyle(
-                                fontWeight: FontWeight.w500,
-                                fontSize: 20.0),
+                              fontWeight: FontWeight.bold,
+                              fontSize: 20.0,
+                            ),
                           ),
                           Text(
                             date,
                             style: TextStyle(
-                                color: Colors.black45),
+                              color: Colors.black,
+                              fontSize: 12,
+                            ),
                           ),
                         ],
                       ),
-                      Padding(
-                        padding:
-                        const EdgeInsets.only(top: 2.0),
+                      Container(
                         child: Text(
                           lastMessage,
                           style: TextStyle(
-                              color: Colors.black45,
-                              fontSize: 16.0),
+                            color: Colors.black,
+                            fontSize: 14.0,
+                          ),
                         ),
                       )
                     ],

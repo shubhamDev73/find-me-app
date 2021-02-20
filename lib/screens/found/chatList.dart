@@ -44,43 +44,45 @@ class _ChatListState extends State<ChatList> {
           child: Column(
             children: [
               Container(
-                height: 125,
+                height: 150,
                 color: ThemeColors.primaryColor,
                 child: Container(
                   child: Row(
                     children: <Widget>[
-                      Padding(
-                        padding: const EdgeInsets.fromLTRB(12.0, 0.0, 12.0, 0.0),
+                      Expanded(
+                        flex: 3,
                         child: createFutureWidget<User>(futureUser, (User user) => Image.network(user.avatar, height: 75)),
                       ),
                       Container(
-                          width: 7,
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            color: Colors.black,
+                        width: 7,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: Colors.black,
+                        ),
+                      ),
+                      Expanded(
+                        flex: 7,
+                        child: Center(
+                          child: createFutureWidget<List<dynamic>>(futureRequests, (requests) =>
+                            createFutureWidget<dynamic>(futureFind, (find) {
+                              List<dynamic> users = [...requests, ...find['users']];
+                              int numRequests = requests.length;
+                              return ListView.builder(
+                                scrollDirection: Axis.horizontal,
+                                itemBuilder: (context, index) {
+                                  dynamic user = users[index];
+                                  return FindListItem(
+                                    id: user['id'],
+                                    avatar: user['avatar'],
+                                    nick: user['nick'],
+                                    isRequest: index < numRequests
+                                  );
+                                },
+                                itemCount: users.length,
+                              );
+                            })
                           ),
-                      ),
-                      Container(
-                        width: 80,
-                        child: createFutureWidget<List<dynamic>>(futureRequests, (data) => ListView.builder(
-                          scrollDirection: Axis.horizontal,
-                          itemBuilder: (context, index) {
-                            dynamic user = data[index];
-                            return RequestListItem(id: user['id'], avatar: user['avatar']);
-                          },
-                          itemCount: data.length,
-                        )),
-                      ),
-                      Container(
-                        width: 250,
-                        child: createFutureWidget<dynamic>(futureFind, (data) => ListView.builder(
-                          scrollDirection: Axis.horizontal,
-                          itemBuilder: (context, index) {
-                            dynamic user = data['users'][index];
-                            return FindListItem(id: user['id'], avatar: user['avatar']);
-                          },
-                          itemCount: data['users'].length,
-                        )),
+                        ),
                       ),
                     ],
                   ),
@@ -101,7 +103,7 @@ class _ChatListState extends State<ChatList> {
                             Future<QuerySnapshot> lastMessage = firestore.collection('chats').doc(foundItem.chatId).collection('chats').orderBy('timestamp', descending: true).limit(1).get();
                             return createFutureWidget<QuerySnapshot>(lastMessage, (QuerySnapshot message) => FoundListItem(
                               found: foundItem,
-                              date: "${message.docs[0]['timestamp'].toDate()}",
+                              date: formatDate(endDate: message.docs[0]['timestamp'].toDate()),
                               lastMessage: message.docs[0]['message'],
                               index: index
                             ));
