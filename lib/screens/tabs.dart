@@ -57,9 +57,15 @@ class _TabbedScreenState extends State<TabbedScreen> {
               tabButton(icon: tabIcon[Tab.found], selected: _currentTab == Tab.found),
             ],
             currentIndex: Tab.values.indexOf(_currentTab),
-            onTap: (index) => setState(() {
-              _currentTab = Tab.values[index];
-            }),
+            onTap: (index) {
+              Tab newTab = Tab.values[index];
+              if(newTab == _currentTab && _currentTab == Tab.found)
+                navigatorKeys[_currentTab].currentState.popUntil(ModalRoute.withName('/'));
+
+              setState(() {
+                _currentTab = newTab;
+              });
+            },
 
             showSelectedLabels: false,
             showUnselectedLabels: false,
