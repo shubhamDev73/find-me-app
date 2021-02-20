@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 
 import 'package:findme/widgets/interestButton.dart';
 import 'package:findme/widgets/misc.dart';
+import 'package:findme/widgets/topBox.dart';
 
 import 'package:findme/models/interests.dart';
 import 'package:findme/constant.dart';
@@ -30,53 +31,21 @@ class _AddInterestsState extends State<AddInterests> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: ThemeColors.lightColor,
       body: SafeArea(
         child: Column(
           children: [
-            Container(
-              color: ThemeColors.lightColor,
-              constraints: BoxConstraints(maxHeight: 67, minHeight: 67),
-              child: Stack(
-                children: [
-                  Container(
-                    padding: const EdgeInsets.all(12.0),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        Icon(Icons.more_vert),
-                      ],
-                    ),
-                  ),
-                  Container(
-                    child: Text(
-                      "Interests",
-                      style: TextStyle(
-                        fontFamily: 'QuickSand',
-                        fontSize: 25,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    alignment: Alignment(0.0, 0.0),
-                  ),
-                  Container(
-                    child: Text(
-                      "tap and tap",
-                      style: TextStyle(
-                        fontFamily: 'QuickSand',
-                        fontSize: 11,
-                        fontWeight: FontWeight.w700,
-                      ),
-                    ),
-                    alignment: Alignment(0.0, 0.75),
-                  ),
-                ],
+            Expanded(
+              flex: 2,
+              child: TopBox(
+                title: "Interests",
+                desc: "tap and tap",
               ),
             ),
-            Container(
-              color: ThemeColors.lightColor,
-              padding: const EdgeInsets.fromLTRB(20.0, 0.0, 20.0, 0.0),
+            Expanded(
+              flex: 9,
               child: Container(
-                constraints: BoxConstraints(minWidth: 245, maxWidth: 245),
+                margin: EdgeInsets.symmetric(horizontal: 20),
                 child: Scrollbar(
                   thickness: 0,
                   isAlwaysShown: true,
@@ -88,7 +57,7 @@ class _AddInterestsState extends State<AddInterests> {
                     gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                       childAspectRatio: 3.3,
                       mainAxisSpacing: 30,
-                      crossAxisSpacing: 9,
+                      crossAxisSpacing: 10,
                       crossAxisCount: 3,
                     ),
                     children: interests.map<Widget>((Interest interest) => InterestButton(
@@ -115,8 +84,8 @@ class _AddInterestsState extends State<AddInterests> {
                   )),
                 ),
               ),
-              constraints: BoxConstraints(maxHeight: 517, minWidth: 517),
             ),
+            SizedBox(height: 10),
           ],
         ),
       ),

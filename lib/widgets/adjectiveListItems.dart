@@ -54,7 +54,7 @@ class AdjListItem extends StatelessWidget {
                   '$description',
                   style: TextStyle(
                       fontFamily: 'Quicksand',
-                      fontSize: 12,
+                      fontSize: 15,
                       fontWeight: FontWeight.w500,
                       color: Colors.black,
                   ),

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:findme/globals.dart' as globals;
-import 'package:findme/widgets/greetings.dart';
+import 'package:findme/widgets/topBox.dart';
 import 'package:findme/widgets/traitBar.dart';
 import 'package:findme/widgets/userInfo.dart';
 import 'package:findme/widgets/misc.dart';
@@ -65,41 +65,19 @@ class _ProfileState extends State<Profile> {
           children: <Widget>[
             Expanded(
               flex: 7,
-              child: Column(
-                children: [
-                  Container(
-                    color: Color(0xffE0F7FA),
-                    padding: const EdgeInsets.all(12.0),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        Icon(Icons.more_vert),
-                      ],
-                    ),
-                  ),
-                  Container(
-                    height: 180,
-                    child: Stack(
-                      alignment: Alignment.topCenter,
-                      children: [
-                        Greeting(
-                          title: "Konichiwa",
-                          desc: "Did you know the US armys traning bumbelbees to sniff out explosive?",
-                        ),
-                        createFutureWidget<User>(futureUser, (User user) => TraitsElements(
-                          onClick: (String trait) {
-                            Navigator.of(context).pushNamed('/personality', arguments: trait);
-                          },
-                          personality: user.personality,
-                        )),
-                      ],
-                    ),
-                  ),
-                ],
+              child: TopBox(
+                title: "Konichiwa",
+                desc: "Did you know the US armys traning bumbelbees to sniff out explosive?",
+                widget: createFutureWidget<User>(futureUser, (User user) => TraitsElements(
+                  onClick: (String trait) {
+                    Navigator.of(context).pushNamed('/personality', arguments: trait);
+                  },
+                  personality: user.personality,
+                )),
               ),
             ),
             Expanded(
-              flex: 7,
+              flex: 8,
               child: GestureDetector(
                 onTap: () {
                   Navigator.of(context).pushNamed('/mood');

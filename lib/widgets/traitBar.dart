@@ -18,22 +18,25 @@ class TraitsElements extends StatelessWidget {
     this.onClick,
   });
 
-  GestureDetector createButton (String trait) {
+  Widget createButton (String trait) {
     double value = personality[trait] is double ? personality[trait] : personality[trait]['value'];
     bool selected = selectedElement == trait;
     return GestureDetector(
       onTap: () {
         onClick(trait);
       },
-      child: TraitIcon(
-        icon: SvgPicture.asset(
-          Assets.traits[trait]['icon'],
-          color: value >= 0 ? ThemeColors.positiveTraitColor : ThemeColors.negativeTraitColor,
-          width: selected ? 40 : 32,
-          height: selected ? 40 : 32,
+      child: Container(
+        padding: EdgeInsets.symmetric(horizontal: selected ? 0.0 : 5.0),
+        child: TraitIcon(
+          icon: SvgPicture.asset(
+            Assets.traits[trait]['icon'],
+            color: value >= 0 ? ThemeColors.positiveTraitColor : ThemeColors.negativeTraitColor,
+            width: selected ? 40 : 32,
+            height: selected ? 40 : 32,
+          ),
+          progress: value.abs(),
+          iconSize: selected ? 70 : 55,
         ),
-        progress: value.abs(),
-        selected: selected,
       ),
     );
   }
@@ -41,15 +44,15 @@ class TraitsElements extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Positioned(
-      top: selectedElement == null ? 115 : 110,
+      top: selectedElement == null ? 115 : 115,
       child: Row(
         mainAxisSize: MainAxisSize.max,
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          createButton("Water"), SizedBox(width: 10),
-          createButton("Space"), SizedBox(width: 10),
-          createButton("Fire"), SizedBox(width: 10),
-          createButton("Earth"), SizedBox(width: 10),
+          createButton("Water"),
+          createButton("Space"),
+          createButton("Fire"),
+          createButton("Earth"),
           createButton("Air"),
         ],
       ),
@@ -60,9 +63,9 @@ class TraitsElements extends StatelessWidget {
 class TraitIcon extends StatelessWidget {
   final Widget icon;
   final double progress;
-  final bool selected;
+  final double iconSize;
 
-  const TraitIcon({Key key, this.icon, this.progress, this.selected}) : super(key: key);
+  const TraitIcon({Key key, this.icon, this.progress, this.iconSize}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -71,8 +74,8 @@ class TraitIcon extends StatelessWidget {
       child: Container(
         decoration: BoxDecoration(shape: BoxShape.circle),
         child: Container(
-          height: selected ? 65 : 55,
-          width: selected ? 65 : 55,
+          height: iconSize,
+          width: iconSize,
           child: CircleAvatar(
             backgroundColor: ThemeColors.primaryColor,
             child: icon,

@@ -240,6 +240,9 @@ class _InterestsState extends State<Interests> {
                 )),
               ),
             ),
+            SizedBox(
+              height: 10,
+            ),
             widget.me ? GestureDetector(
               onTap: () {
                 Navigator.of(context).pushNamed('/interests/add');
@@ -258,6 +261,9 @@ class _InterestsState extends State<Interests> {
               ),
             ) :
             Container(),
+            SizedBox(
+              height: 15,
+            ),
           ],
         ),
       ),
