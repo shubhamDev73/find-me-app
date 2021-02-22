@@ -2,8 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
 
-import 'package:findme/widgets/foundListItems.dart';
-import 'package:findme/widgets/findListItems.dart';
+import 'package:findme/widgets/chatItems.dart';
 import 'package:findme/widgets/misc.dart';
 import 'package:findme/models/user.dart';
 import 'package:findme/models/found.dart';

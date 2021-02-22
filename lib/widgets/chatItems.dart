@@ -1,5 +1,125 @@
 import 'package:flutter/material.dart';
 
+import 'package:findme/models/found.dart';
+import 'package:findme/globals.dart' as globals;
+
+class FindListItem extends StatelessWidget {
+
+  final int id;
+  final String avatar;
+  final String nick;
+  final bool isRequest;
+
+  FindListItem({this.id, this.avatar, this.nick, this.isRequest = false});
+
+  @override
+  Widget build (BuildContext context) {
+    return InkWell(
+      onTap: () {
+        String baseUrl = isRequest ? 'requests' : 'find';
+        globals.getAnotherUser('/$baseUrl/$id');
+        Navigator.of(context).pushNamed('/user');
+      },
+      child: Container(
+        margin: EdgeInsets.symmetric(vertical: 32, horizontal: 8),
+        child: Column(
+          children: [
+            Container(
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: isRequest ? Colors.white : Colors.transparent,
+                border: Border.all(color: Colors.white),
+              ),
+              margin: EdgeInsets.symmetric(vertical: 5),
+              padding: const EdgeInsets.fromLTRB(12.0, 7.0, 0.0, 0.0),
+              child: Image.network(avatar, width: 50),
+            ),
+            Text(
+              nick,
+              style: TextStyle(color: Colors.white, fontSize: 13),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+}
+
+class FoundListItem extends StatelessWidget {
+
+  final Found found;
+  final String date;
+  final String lastMessage;
+  final int index;
+
+  FoundListItem({this.found, this.date = '-', this.lastMessage = '', this.index = 0});
+
+  @override
+  Widget build (BuildContext context) {
+    return GestureDetector(
+      onTap: () {
+        Navigator.of(context).pushNamed('/message',
+            arguments: found);
+      },
+      child: ColoredBox(
+        color: index % 2 == 0 ? Colors.grey[300] : Colors.white,
+        child: Padding(
+          padding: const EdgeInsets.all(0.0),
+          child:
+          Row(
+            children: <Widget>[
+              Padding(
+                padding: const EdgeInsets.fromLTRB(17.0, 17.0, 17.0, 14.0),
+                child: Image.network(found.avatar, height: 40),
+              ),
+              Expanded(
+                child: Container(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      Row(
+                        mainAxisAlignment:
+                        MainAxisAlignment.spaceBetween,
+                        children: <Widget>[
+                          Text(
+                            found.nick,
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 20.0,
+                            ),
+                          ),
+                          Text(
+                            date,
+                            style: TextStyle(
+                              color: Colors.black,
+                              fontSize: 12,
+                            ),
+                          ),
+                        ],
+                      ),
+                      Container(
+                        child: Text(
+                          lastMessage,
+                          style: TextStyle(
+                            color: Colors.black,
+                            fontSize: 14.0,
+                          ),
+                        ),
+                      )
+                    ],
+                  ),
+                ),
+              )
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
 class ChatMessageItem extends StatelessWidget {
 
   final String message;
