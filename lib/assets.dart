@@ -4,6 +4,7 @@ class Assets {
 
   static const edit = "assets/icons/edit.svg";
   static const plus = "assets/icons/plus.svg";
+  static const chatArrow = "assets/icons/chatArrow.svg";
 
   static const onBoardingOne = "assets/onBoarding/onBoardingOne.svg";
   static const onBoardingTwo = "assets/onBoarding/onBoardingTwo.svg";
