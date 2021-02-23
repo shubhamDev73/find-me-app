@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
@@ -11,29 +10,26 @@ import 'package:findme/constant.dart';
 import 'package:findme/assets.dart';
 import 'package:findme/globals.dart' as globals;
 
-class ChatMessage extends StatefulWidget {
-  const ChatMessage({Key key}) : super(key: key);
+class ChatMessage extends StatelessWidget {
 
-  @override
-  _ChatMessageState createState() => _ChatMessageState();
-}
-
-class _ChatMessageState extends State<ChatMessage> {
-
-  FirebaseFirestore firestore;
-  Found found;
-  String message = '';
-
-  @override
-  void initState() {
-    super.initState();
-  }
+  final int messageLimit = 50;
+  final TextEditingController messageController = new TextEditingController();
 
   @override
   Widget build(BuildContext context) {
-    if (found == null) found = ModalRoute.of(context).settings.arguments as Found;
+    Found found = ModalRoute.of(context).settings.arguments as Found;
+    Stream<QuerySnapshot> stream = FirebaseFirestore.instance
+      .collection('chats')
+      .doc(found.chatId)
+      .collection('chats')
+      .orderBy('timestamp', descending: true)
+      .limit(messageLimit)
+      .snapshots();
 
-    TextEditingController messageController = new TextEditingController(text: message);
+    ScrollController scrollController = ScrollController();
+    SchedulerBinding.instance.addPostFrameCallback((_) {
+      scrollController.jumpTo(scrollController.position.maxScrollExtent);
+    });
 
     return SafeArea(
       child: Scaffold(
@@ -102,56 +98,28 @@ class _ChatMessageState extends State<ChatMessage> {
                   decoration: BoxDecoration(
                     image: DecorationImage(image: AssetImage("assets/mood/gloomy_bg.png"), fit: BoxFit.cover),
                   ),
-                  child: FutureBuilder<FirebaseApp>(
-                    future: Firebase.initializeApp(),
-                    builder: (context, snapshot) {
-                      firestore = FirebaseFirestore.instance;
-                      if(snapshot.connectionState == ConnectionState.done){
-                        CollectionReference chats = firestore.collection('chats');
-                        return StreamBuilder<QuerySnapshot>(
-                          stream: chats.doc(found.chatId).collection('chats').orderBy('timestamp').limit(50).snapshots(),
-                          builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
-                            if (snapshot.hasError) {
-                              return Text('Something went wrong');
-                            }
-
-                            if (snapshot.connectionState == ConnectionState.waiting) {
-                              return Text("Loading");
-                            }
-
-                            ScrollController scrollController = ScrollController();
-                            SchedulerBinding.instance.addPostFrameCallback((_) {
-                              scrollController.jumpTo(scrollController.position.maxScrollExtent);
-                            });
-
-                            List<DocumentSnapshot> messages = snapshot.data.docs;
-                            return Container(
-                              margin: EdgeInsets.symmetric(horizontal: 10),
-                              child: ListView.builder(
-                                controller: scrollController,
-                                itemCount: messages.length,
-                                itemBuilder: (BuildContext context, int index) {
-                                  DocumentSnapshot message = messages[index];
-                                  int borderState = 0;
-                                  if(index == 0 || messages[index - 1]['user'] != message['user'])
-                                    borderState = 1;
-                                  else if(index == messages.length - 1 || messages[index + 1]['user'] != message['user'])
-                                    borderState = 2;
-                                  return ChatMessageItem(
-                                    message: message['message'],
-                                    time: formatDate(timestamp: message['timestamp']),
-                                    me: message['user'] == found.me,
-                                    borderState: borderState,
-                                  );
-                                },
-                              ),
-                            );
-                          },
-                        );
-                      }else if (snapshot.hasError) return Text("${snapshot.error}");
-                      return CircularProgressIndicator();
-                    },
-                  ),
+                  child: createFirebaseStreamWidget(stream, (List<DocumentSnapshot> messages) {
+                    return Container(
+                      margin: EdgeInsets.symmetric(horizontal: 10),
+                      child: ListView.builder(
+                        reverse: true,
+                        controller: scrollController,
+                        itemCount: messages.length,
+                        itemBuilder: (BuildContext context, int index) {
+                          DocumentSnapshot message = messages[index];
+                          int borderState = 0;
+                          if(index == messages.length - 1 || messages[index + 1]['user'] != message['user']) borderState = 1;
+                          else if(index == 0 || messages[index - 1]['user'] != message['user']) borderState = 2;
+                          return ChatMessageItem(
+                            message: message['message'],
+                            time: formatDate(timestamp: message['timestamp']),
+                            me: message['user'] == found.me,
+                            borderState: borderState,
+                          );
+                        },
+                      ),
+                    );
+                  }),
                 ),
               ),
               Container(
@@ -165,7 +133,7 @@ class _ChatMessageState extends State<ChatMessage> {
                 child: Row(
                   children: <Widget>[
                     Expanded(
-                    child: Container(
+                      child: Container(
                         padding: EdgeInsets.symmetric(horizontal: 12.0),
                         decoration: BoxDecoration(
                           color: Colors.white,
@@ -173,7 +141,7 @@ class _ChatMessageState extends State<ChatMessage> {
                         ),
                         child: TextField(
                           controller: messageController,
-                          onSubmitted: submitChat,
+                          onSubmitted: (text) => submitChat(text, found),
                           style: TextStyle(
                             fontSize: 15,
                           ),
@@ -187,7 +155,7 @@ class _ChatMessageState extends State<ChatMessage> {
                       width: 30,
                       child: InkWell(
                         onTap: () {
-                          submitChat(messageController.text);
+                          submitChat(messageController.text, found);
                           FocusScope.of(context).unfocus();
                         },
                         child: SvgPicture.asset(Assets.chatArrow),
@@ -203,15 +171,13 @@ class _ChatMessageState extends State<ChatMessage> {
     );
   }
 
-  void submitChat (String text) {
-    firestore.collection('chats').doc(found.chatId).collection('chats').add({
+  void submitChat (String text, Found found) {
+    FirebaseFirestore.instance.collection('chats').doc(found.chatId).collection('chats').add({
       'message': text,
       'user': found.me,
       'timestamp': FieldValue.serverTimestamp(),
     });
-    setState(() {
-      message = '';
-    });
+    messageController.clear();
   }
 
 }

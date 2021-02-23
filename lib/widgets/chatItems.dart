@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 import 'package:findme/models/found.dart';
+import 'package:findme/widgets/misc.dart';
+import 'package:findme/constant.dart';
 import 'package:findme/globals.dart' as globals;
 
 class FindListItem extends StatelessWidget {
@@ -49,15 +52,14 @@ class FindListItem extends StatelessWidget {
 class FoundListItem extends StatelessWidget {
 
   final Found found;
-  final String date;
-  final String lastMessage;
   final int index;
+  final Stream<QuerySnapshot> lastMessage;
 
-  FoundListItem({this.found, this.date = '-', this.lastMessage = '', this.index = 0});
+  FoundListItem({this.found, this.index = 0, this.lastMessage});
 
   @override
   Widget build (BuildContext context) {
-    return GestureDetector(
+    return createFirebaseStreamWidget(lastMessage, (List<DocumentSnapshot> messages) => GestureDetector(
       onTap: () {
         Navigator.of(context).pushNamed('/message',
             arguments: found);
@@ -66,57 +68,73 @@ class FoundListItem extends StatelessWidget {
         color: index % 2 == 0 ? Colors.grey[300] : Colors.white,
         child: Padding(
           padding: const EdgeInsets.all(0.0),
-          child:
-          Row(
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: <Widget>[
-              Padding(
-                padding: const EdgeInsets.fromLTRB(17.0, 17.0, 17.0, 14.0),
-                child: Image.network(found.avatar, height: 40),
-              ),
-              Expanded(
-                child: Container(
-                  padding: const EdgeInsets.all(16.0),
-                  child: Column(
+              Row(
+                children: <Widget>[
+                  Container(
+                    padding: const EdgeInsets.fromLTRB(17.0, 17.0, 17.0, 14.0),
+                    child: Image.network(found.avatar, height: 40),
+                  ),
+                  Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
-                      Row(
-                        mainAxisAlignment:
-                        MainAxisAlignment.spaceBetween,
-                        children: <Widget>[
-                          Text(
-                            found.nick,
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 20.0,
-                            ),
-                          ),
-                          Text(
-                            date,
-                            style: TextStyle(
-                              color: Colors.black,
-                              fontSize: 12,
-                            ),
-                          ),
-                        ],
+                      Text(
+                        found.nick,
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 20.0,
+                        ),
                       ),
                       Container(
+                        constraints: BoxConstraints(maxWidth: 200, maxHeight: 20),
                         child: Text(
-                          lastMessage,
+                          messages[0]['message'],
                           style: TextStyle(
                             color: Colors.black,
                             fontSize: 14.0,
                           ),
                         ),
-                      )
+                      ),
                     ],
                   ),
+                ]
+              ),
+              Container(
+                margin: EdgeInsets.symmetric(horizontal: 10.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: <Widget>[
+                    Text(
+                      formatDate(endDate: messages[0]['timestamp'].toDate()),
+                      style: TextStyle(
+                        color: Colors.black,
+                        fontSize: 12,
+                      ),
+                    ),
+                    Container(
+                      padding: EdgeInsets.all(7.0),
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: ThemeColors.primaryColor,
+                      ),
+                      child: Text(
+                        "5",
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 14.0,
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
-              )
+              ),
             ],
           ),
         ),
       ),
-    );
+    ));
   }
 }
 

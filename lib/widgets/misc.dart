@@ -14,6 +14,19 @@ FutureBuilder<T> createFutureWidget<T>(Future<T> futureObj, Function widgetCreat
   );
 }
 
+StreamBuilder<QuerySnapshot> createFirebaseStreamWidget(Stream<QuerySnapshot> streamObj, Function widgetCreator) {
+  return StreamBuilder<QuerySnapshot>(
+    stream: streamObj,
+    builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+      if (snapshot.hasData){
+        List<DocumentSnapshot> messages = snapshot.data.docs;
+        return widgetCreator(messages);
+      } else if (snapshot.hasError) return Text("${snapshot.error}");
+      return CircularProgressIndicator();
+    },
+  );
+}
+
 String formatDate ({Timestamp timestamp, DateTime endDate}) {
   var format = DateFormat('yyyy-MM-dd H:m');
 
@@ -32,4 +45,5 @@ String formatDate ({Timestamp timestamp, DateTime endDate}) {
     }
     return "$num $type${num > 1 ? 's' : ''} ago";
   }
+  return '';
 }
