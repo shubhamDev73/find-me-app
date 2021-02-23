@@ -49,7 +49,7 @@ class FindListItem extends StatelessWidget {
 
 }
 
-class FoundListItem extends StatelessWidget {
+class FoundListItem extends StatefulWidget {
 
   final Found found;
   final int index;
@@ -58,77 +58,114 @@ class FoundListItem extends StatelessWidget {
   FoundListItem({this.found, this.index = 0, this.lastMessage});
 
   @override
+  _FoundListItemState createState() => _FoundListItemState();
+}
+
+class _FoundListItemState extends State<FoundListItem> {
+
+  Stream<QuerySnapshot> unreadDocsStream;
+
+  @override
+  void initState () {
+    super.initState();
+    updateStream();
+    globals.onTimeChanges[widget.found.chatId] = () {
+      setState((){updateStream();});
+    };
+  }
+
+  @override
+  void dispose () {
+    super.dispose();
+    globals.onTimeChanges.remove(widget.found.chatId);
+  }
+
+  void updateStream () {
+    unreadDocsStream = FirebaseFirestore.instance
+        .collection('chats')
+        .doc(widget.found.chatId)
+        .collection('chats')
+        .where('user', isEqualTo: 3 - widget.found.me)
+        .where('timestamp', isGreaterThanOrEqualTo: new Timestamp.fromMillisecondsSinceEpoch(globals.lastReadTimes[widget.found.chatId]))
+        .snapshots();
+  }
+
+  @override
   Widget build (BuildContext context) {
-    return createFirebaseStreamWidget(lastMessage, (List<DocumentSnapshot> messages) => GestureDetector(
+    return createFirebaseStreamWidget(widget.lastMessage, (List<DocumentSnapshot> messages) => GestureDetector(
       onTap: () {
         Navigator.of(context).pushNamed('/message',
-            arguments: found);
+            arguments: widget.found);
       },
       child: ColoredBox(
-        color: index % 2 == 0 ? Colors.grey[300] : Colors.white,
+        color: widget.index % 2 == 0 ? Colors.grey[300] : Colors.white,
         child: Padding(
           padding: const EdgeInsets.all(0.0),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: <Widget>[
               Row(
-                children: <Widget>[
-                  Container(
-                    padding: const EdgeInsets.fromLTRB(17.0, 17.0, 17.0, 14.0),
-                    child: Image.network(found.avatar, height: 40),
-                  ),
+                  children: <Widget>[
+                    Container(
+                      padding: const EdgeInsets.fromLTRB(17.0, 17.0, 17.0, 14.0),
+                      child: Image.network(widget.found.avatar, height: 40),
+                    ),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        Text(
+                          widget.found.nick,
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 20.0,
+                          ),
+                        ),
+                        Container(
+                          constraints: BoxConstraints(maxWidth: 200, maxHeight: 20),
+                          child: Text(
+                            messages[0]['message'],
+                            style: TextStyle(
+                              color: Colors.black,
+                              fontSize: 14.0,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ]
+              ),
+              Container(
+                margin: EdgeInsets.symmetric(horizontal: 10.0),
+                child: createFirebaseStreamWidget(unreadDocsStream, (List<DocumentSnapshot> unreadMessages) {
+                  int num = unreadMessages.length;
+                  return num > 0 ?
                   Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.end,
                     children: <Widget>[
                       Text(
-                        found.nick,
+                        formatDate(endDate: messages[0]['timestamp'].toDate()),
                         style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 20.0,
+                          color: Colors.black,
+                          fontSize: 12,
                         ),
                       ),
                       Container(
-                        constraints: BoxConstraints(maxWidth: 200, maxHeight: 20),
+                        padding: EdgeInsets.all(7.0),
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: ThemeColors.primaryColor,
+                        ),
                         child: Text(
-                          messages[0]['message'],
+                          "$num",
                           style: TextStyle(
-                            color: Colors.black,
+                            color: Colors.white,
                             fontSize: 14.0,
                           ),
                         ),
                       ),
                     ],
-                  ),
-                ]
-              ),
-              Container(
-                margin: EdgeInsets.symmetric(horizontal: 10.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  children: <Widget>[
-                    Text(
-                      formatDate(endDate: messages[0]['timestamp'].toDate()),
-                      style: TextStyle(
-                        color: Colors.black,
-                        fontSize: 12,
-                      ),
-                    ),
-                    Container(
-                      padding: EdgeInsets.all(7.0),
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        color: ThemeColors.primaryColor,
-                      ),
-                      child: Text(
-                        "5",
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 14.0,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
+                  ) : Container();
+                }),
               ),
             ],
           ),

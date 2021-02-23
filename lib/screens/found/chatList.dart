@@ -22,6 +22,7 @@ class ChatList extends StatelessWidget {
     Future<dynamic> futureFind = GETResponse('find/');
     Future<List<dynamic>> futureRequests = GETResponse<List<dynamic>>('requests/');
     Map<String, Stream<QuerySnapshot>> lastMessages = {};
+    Future<Map<String, dynamic>> futureTimes = globals.getLastReadTimes();
 
     return SafeArea(
       child: Scaffold(
@@ -77,26 +78,31 @@ class ChatList extends StatelessWidget {
                 child: Container(
                   constraints: BoxConstraints(minHeight: 463),
                   color: Colors.white,
-                  child: createFutureWidget<List<Found>>(futureFound, (foundList) => ListView.builder(
-                    itemBuilder: (context, index) {
-                      Found found = foundList[index];
-                      if(!lastMessages.containsKey(found.chatId))
-                        lastMessages[found.chatId] = FirebaseFirestore.instance
-                          .collection('chats')
-                          .doc(found.chatId)
-                          .collection('chats')
-                          .orderBy('timestamp', descending: true)
-                          .limit(1)
-                          .snapshots();
+                  child: createFutureWidget<List<Found>>(futureFound, (foundList) =>
+                    createFutureWidget<Map<String, dynamic>>(futureTimes, (times) => ListView.builder(
+                      itemBuilder: (context, index) {
+                        Found found = foundList[index];
+                        if(!lastMessages.containsKey(found.chatId))
+                          lastMessages[found.chatId] = FirebaseFirestore.instance
+                            .collection('chats')
+                            .doc(found.chatId)
+                            .collection('chats')
+                            .orderBy('timestamp', descending: true)
+                            .limit(1)
+                            .snapshots();
 
-                      return FoundListItem(
-                        found: found,
-                        lastMessage: lastMessages[found.chatId],
-                        index: index
-                      );
-                    },
-                    itemCount: foundList.length,
-                  )),
+                        if(!globals.lastReadTimes.containsKey(found.chatId))
+                          globals.setLastReadTimes(chatId: found.chatId, now: false);
+
+                        return FoundListItem(
+                          found: found,
+                          lastMessage: lastMessages[found.chatId],
+                          index: index
+                        );
+                      },
+                      itemCount: foundList.length,
+                    ))
+                  ),
                 ),
               ),
             ],

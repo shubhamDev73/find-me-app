@@ -99,6 +99,7 @@ class ChatMessage extends StatelessWidget {
                     image: DecorationImage(image: AssetImage("assets/mood/gloomy_bg.png"), fit: BoxFit.cover),
                   ),
                   child: createFirebaseStreamWidget(stream, (List<DocumentSnapshot> messages) {
+                    globals.setLastReadTimes(chatId: found.chatId);
                     return Container(
                       margin: EdgeInsets.symmetric(horizontal: 10),
                       child: ListView.builder(

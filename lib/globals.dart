@@ -1,3 +1,7 @@
+import 'dart:io';
+import 'dart:convert';
+import 'package:path_provider/path_provider.dart';
+
 import 'package:findme/models/user.dart';
 import 'package:findme/models/interests.dart';
 import 'package:findme/API.dart';
@@ -53,4 +57,34 @@ void getInterests ({Function callback}) async {
     futureInterests = returnAsFuture<List<Interest>>(interests);
     if(callback != null) callback(interests);
   }
+}
+
+Map<String, dynamic> lastReadTimes = {};
+Map<String, Function> onTimeChanges = {};
+
+Future<File> getFile () async {
+  final directory = await getApplicationDocumentsDirectory();
+  return File('${directory.path}/times.json');
+}
+
+Future<Map<String, dynamic>> getLastReadTimes () async {
+  try {
+    File file = await getFile();
+    String timesString = await file.readAsString();
+    lastReadTimes = jsonDecode(timesString);
+  }catch(OSError) {
+    lastReadTimes = {};
+  }
+  return lastReadTimes;
+}
+
+void setLastReadTimes ({String chatId, bool now = true}) async {
+  if(now)
+    lastReadTimes[chatId] = DateTime.now().millisecondsSinceEpoch;
+  else
+    lastReadTimes[chatId] = 0;
+  File file = await getFile();
+  String timesString = jsonEncode(lastReadTimes);
+  await file.writeAsString(timesString);
+  onTimeChanges.forEach((key, value) => value());
 }
