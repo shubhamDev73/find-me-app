@@ -3,6 +3,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 import 'package:findme/widgets/chatItems.dart';
+import 'package:findme/widgets/chatListItems.dart';
 import 'package:findme/widgets/misc.dart';
 import 'package:findme/models/user.dart';
 import 'package:findme/models/found.dart';
@@ -94,7 +95,7 @@ class ChatList extends StatelessWidget {
                         if(!globals.lastReadTimes.containsKey(found.chatId))
                           globals.setLastReadTimes(chatId: found.chatId, now: false);
 
-                        return FoundListItem(
+                        return ChatListItem(
                           found: found,
                           lastMessage: lastMessages[found.chatId],
                           index: index
