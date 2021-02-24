@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
@@ -99,13 +101,7 @@ class _ChatListItemState extends State<ChatListItem> {
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.end,
                     children: <Widget>[
-                      Text(
-                        formatDate(endDate: messages[0]['timestamp'].toDate()),
-                        style: TextStyle(
-                          color: Colors.black,
-                          fontSize: 12,
-                        ),
-                      ),
+                      DateWidget(endDate: messages[0]['timestamp'].toDate()),
                       Container(
                         padding: EdgeInsets.all(7.0),
                         decoration: BoxDecoration(
@@ -132,3 +128,41 @@ class _ChatListItemState extends State<ChatListItem> {
   }
 }
 
+class DateWidget extends StatefulWidget {
+
+  final DateTime endDate;
+
+  DateWidget({this.endDate});
+
+  @override
+  _DateWidgetState createState() => _DateWidgetState();
+}
+
+class _DateWidgetState extends State<DateWidget> {
+
+  Timer timer;
+
+  @override
+  void initState () {
+    super.initState();
+    timer = Timer.periodic(new Duration(minutes: 1), (timer) {setState(() {});});
+  }
+
+  @override
+  Widget build (BuildContext context) {
+    return Text(
+      formatDate(endDate: widget.endDate),
+      style: TextStyle(
+        color: Colors.black,
+        fontSize: 12,
+      ),
+    );
+  }
+
+  @override
+  void dispose () {
+    super.dispose();
+    timer.cancel();
+  }
+
+}
