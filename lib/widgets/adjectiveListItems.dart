@@ -24,10 +24,8 @@ class AdjListItem extends StatelessWidget {
                 child: Text(
                   "$name",
                   style: TextStyle(
-                      fontFamily: 'Quicksand',
-                      fontSize: 18,
-                      fontWeight: FontWeight.w900,
-                      color: Colors.black,
+                    fontSize: 18,
+                    fontWeight: FontWeight.w900,
                   ),
                 ),
               ),
@@ -53,10 +51,8 @@ class AdjListItem extends StatelessWidget {
                 child: Text(
                   '$description',
                   style: TextStyle(
-                      fontFamily: 'Quicksand',
-                      fontSize: 15,
-                      fontWeight: FontWeight.w500,
-                      color: Colors.black,
+                    fontSize: 15,
+                    fontWeight: FontWeight.w500,
                   ),
                   textAlign: TextAlign.center,
                 ),

@@ -1,3 +1,4 @@
+import 'package:findme/constant.dart';
 import 'package:flutter/material.dart';
 
 class TopBox extends StatelessWidget {
@@ -6,14 +7,14 @@ class TopBox extends StatelessWidget {
   final String desc;
   final Widget widget;
 
-  const TopBox({Key key, this.title, this.desc = '', this.widget}) : super(key: key);
+  const TopBox({this.title, this.desc = '', this.widget});
 
   @override
   Widget build(BuildContext context) {
     return Column(
       children: [
         Container(
-          color: Color(0xffE0F7FA),
+          color: ThemeColors.boxColor,
           padding: const EdgeInsets.all(12.0),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.end,

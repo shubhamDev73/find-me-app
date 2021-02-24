@@ -8,6 +8,7 @@ import 'package:findme/widgets/misc.dart';
 import 'package:findme/widgets/traitBar.dart';
 import 'package:findme/assets.dart';
 import 'package:findme/models/user.dart';
+import 'package:findme/constant.dart';
 import 'package:findme/globals.dart' as globals;
 
 class Personality extends StatefulWidget {
@@ -36,7 +37,7 @@ class _PersonalityState extends State<Personality> {
       height: 206,
       width: 340,
       decoration: BoxDecoration(
-        color: const Color(0xFFE0F7FA),
+        color: ThemeColors.boxColor,
         borderRadius: BorderRadius.circular(15)),
       margin: EdgeInsets.fromLTRB(10.0, 0.0, 10.0, 0.0),
       child: Column(
@@ -120,27 +121,36 @@ class _PersonalityState extends State<Personality> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Container(
+                        padding: EdgeInsets.symmetric(horizontal: 10.0),
                         child: SvgPicture.asset(Assets.traits[trait]['negative']),
                       ),
                       Container(
-                        width: 250,
-                        child: SliderTheme(
-                          data: SliderTheme.of(context).copyWith(
-                            activeTrackColor: Colors.black,
-                            inactiveTrackColor: Colors.black,
-                            trackHeight: 1.0,
-                            thumbColor: Colors.white,
-                            thumbShape: RoundSliderThumbShape(enabledThumbRadius: 10.0),
-                          ),
-                          child: createFutureWidget<User>(futureUser, (User user) => Slider(
-                            value: user.personality[trait]['value'],
-                            min: -1.0,
-                            max: 1.0,
-                            inactiveColor: Color(0xFF8D8E98),
-                          )),
+                        width: 220,
+                        child: Stack(
+                          overflow: Overflow.visible,
+                          children: <Widget>[
+                            Divider(
+                              color: Colors.black,
+                              height: 20,
+                              thickness: 1,
+                            ),
+                            createFutureWidget<User>(futureUser, (User user) => Positioned(
+                              left: ((user.personality[trait]['value'] + 1) / 2) * 220 - 4,
+                              child: Container(
+                                height: 20,
+                                width: 8,
+                                decoration: BoxDecoration(
+                                  color: ThemeColors.boxColor,
+                                  border: Border.all(),
+                                  borderRadius: BorderRadius.circular(12.0),
+                                ),
+                              ),
+                            )),
+                          ],
                         ),
                       ),
                       Container(
+                        padding: EdgeInsets.symmetric(horizontal: 10.0),
                         child: SvgPicture.asset(Assets.traits[trait]['positive']),
                       ),
                     ],
