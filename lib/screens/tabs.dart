@@ -81,13 +81,12 @@ class _TabbedScreenState extends State<TabbedScreen> {
 
   BottomNavigationBarItem tabButton({String icon, bool selected = false}) {
     return BottomNavigationBarItem(
-      label: "",
+      label: '',
       icon: Container(
         padding: EdgeInsets.symmetric(vertical: 6),
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.only(
-            topLeft: selected ? Radius.circular(0.0) : Radius.circular(6.0),
-            topRight: selected ? Radius.circular(0.0) : Radius.circular(6.0),
+          borderRadius: BorderRadius.vertical(
+            top: selected ? Radius.circular(0.0) : Radius.circular(6.0),
           ),
           color: selected ? Colors.white : ThemeColors.primaryColor,
           ),

@@ -1,36 +1,28 @@
-import 'package:findme/widgets/textFields.dart';
-import 'package:findme/assets.dart';
-import 'package:findme/constant.dart';
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 
-class Register extends StatefulWidget {
-  @override
-  _RegisterState createState() => _RegisterState();
-}
+import 'package:findme/widgets/textFields.dart';
+import 'package:findme/assets.dart';
+import 'package:findme/constant.dart';
+import 'package:findme/API.dart';
+import 'package:findme/globals.dart' as globals;
 
-class _RegisterState extends State<Register> {
-  final _formKey = GlobalKey<FormState>();
-  RegisterController _registerController;
-  @override
-  void initState() {
-    _registerController = RegisterController();
-    _registerController.init();
+class Register extends StatelessWidget {
 
-    super.initState();
-  }
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
-  @override
-  void dispose() {
-    _registerController.dispose();
-    super.dispose();
-  }
+  final TextEditingController usernameController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
+  final TextEditingController phoneController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        body: Container(
-      width: MediaQuery.of(context).size.width,
+      key: _scaffoldKey,
+      body: Container(
       decoration: new BoxDecoration(
         color: ThemeColors.primaryColor,
       ),
@@ -77,47 +69,43 @@ class _RegisterState extends State<Register> {
                   child: Column(
                     children: [
                       textFieldForRegistration(
-                          editingController:
-                              _registerController.userNameController,
-                          keyType: TextInputType.name,
-                          label: "UserName",
-                          errMsg: "Please Enter your UserName."),
+                        editingController: usernameController,
+                        keyType: TextInputType.name,
+                        label: "UserName",
+                        errMsg: "Please enter your Username.",
+                      ),
                       textFieldForRegistration(
-                          editingController:
-                              _registerController.phoneController,
-                          keyType: TextInputType.number,
-                          isPhone: true,
-                          label: "Phone",
-                          errMsg: "Please Enter your Phone."),
+                        editingController: phoneController,
+                        keyType: TextInputType.number,
+                        isPhone: true,
+                        label: "Phone",
+                        errMsg: "Please enter your Phone.",
+                      ),
                       textFieldForRegistration(
-                          editingController:
-                              _registerController.passwordController,
-                          keyType: TextInputType.visiblePassword,
-                          label: "Password",
-                          errMsg: "Please Enter your Password."),
+                        editingController: passwordController,
+                        keyType: TextInputType.visiblePassword,
+                        label: "Password",
+                        errMsg: "Please enter your Password.",
+                      ),
                       Container(
-                        margin: const EdgeInsets.symmetric(
-                            horizontal: 20, vertical: 10),
+                        margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
                         constraints: const BoxConstraints(maxWidth: 500),
                         child: RaisedButton(
                           onPressed: () {
-                            // if (_formKey.currentState.validate())
-                            //   _loginController.submitForm();
-
-                            // if (_loginController.loading) showLoading();
+                             if (_formKey.currentState.validate())
+                               submitForm(_scaffoldKey);
                           },
                           color: Colors.white,
-                          shape: const RoundedRectangleBorder(
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(14))),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(14),
+                          ),
                           child: Container(
-                            padding: const EdgeInsets.symmetric(
-                                vertical: 4, horizontal: 8),
+                            padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: <Widget>[
                                 Text(
-                                  'Fly',
+                                  'Register',
                                   textAlign: TextAlign.center,
                                   style: TextStyle(color: ThemeColors.accentColor),
                                 ),
@@ -146,22 +134,18 @@ class _RegisterState extends State<Register> {
       ),
     ));
   }
-}
 
-class RegisterController {
-  TextEditingController userNameController;
-  TextEditingController passwordController;
-  TextEditingController phoneController;
+  void submitForm (GlobalKey<ScaffoldState> scaffoldKey) async {
+    String username = usernameController.text;
+    String password = passwordController.text;
 
-  void init() {
-    userNameController = TextEditingController();
-    passwordController = TextEditingController();
-    phoneController = TextEditingController();
+    final response = await POST('register/', jsonEncode({"username": username, "password": password}), useToken: false);
+
+    Map<String, dynamic> json = jsonDecode(response.body);
+    if (response.statusCode == 200 && json.containsKey('token'))
+      globals.setToken(json['token']);
+    else
+      scaffoldKey.currentState.showSnackBar(SnackBar(content: Text("${json['error']}")));
   }
 
-  void dispose() {
-    userNameController.dispose();
-    passwordController.dispose();
-    phoneController.dispose();
-  }
 }

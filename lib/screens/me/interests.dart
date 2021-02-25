@@ -70,7 +70,7 @@ List<Widget> getInterestList(List<Interest> obj, Function onClick, int id) {
 }
 
 void updateAnswer(int interestId, Map<String, dynamic> question, String answerText) async {
-  POST('me/interests/$interestId/update/', jsonEncode([{"question": question['id'], "answer": answerText}]), true);
+  POST('me/interests/$interestId/update/', jsonEncode([{"question": question['id'], "answer": answerText}]));
   int interestIndex;
   for (int i = 0; i < globals.meUser.interests.length; i++) {
     if (globals.meUser.interests[i].id == interestId) {

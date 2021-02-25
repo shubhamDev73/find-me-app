@@ -50,8 +50,6 @@ class _ProfileState extends State<Profile> {
   @override
   void initState() {
     super.initState();
-    globals.token =
-        'e06df4fbae56e7ed03aadb66c233368a4b93fef115728896a220b60ed5e81ede';
     futureUser = globals.getUser(me: widget.me);
   }
 

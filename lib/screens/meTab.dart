@@ -21,11 +21,10 @@ class MeTab extends StatelessWidget {
     '/mood': (BuildContext _) => MoodSet(me: me),
     };
   }
-  Map<String, WidgetBuilder> routes;
 
   @override
   Widget build(BuildContext context) {
-    if(routes == null) routes = createRoutes();
+    Map<String, WidgetBuilder> routes = createRoutes();
     return Navigator(
       key: navigatorKey,
       initialRoute: '/',

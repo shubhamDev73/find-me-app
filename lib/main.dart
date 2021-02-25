@@ -2,8 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-import 'package:findme/screens/tabs.dart';
-
+import 'package:findme/screens/app.dart';
 import 'package:findme/constant.dart';
 
 void main() {
@@ -44,7 +43,7 @@ class Main extends StatelessWidget {
           labelStyle: GoogleFonts.quicksand(textStyle: TextStyle(fontSize: 14.0))
         ),
       ),
-      home: TabbedScreen(),
+      home: App(),
     );
   }
 }

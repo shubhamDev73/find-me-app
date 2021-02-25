@@ -1,5 +1,6 @@
-import 'package:findme/constant.dart';
 import 'package:flutter/material.dart';
+
+import 'package:findme/constant.dart';
 
 Widget textFieldForRegistration({
   TextEditingController editingController,
@@ -7,6 +8,7 @@ Widget textFieldForRegistration({
   bool isPhone = false,
   bool showCursor = true,
   bool readOnly = false,
+  bool obscureText = false,
   String errMsg,
   String label,
 }) {
@@ -15,6 +17,7 @@ Widget textFieldForRegistration({
     maxLength: isPhone ? 10 : null,
     controller: editingController,
     keyboardType: keyType,
+    obscureText: obscureText,
     validator: (value) {
       if (value == null || value.isEmpty) {
         return errMsg;
@@ -25,14 +28,13 @@ Widget textFieldForRegistration({
       showHint = true;
     },
     decoration: InputDecoration(
-        hintText: label,
-        focusedBorder: UnderlineInputBorder(
-          borderSide: BorderSide(
-            color: ThemeColors.accentColor,
-          ),
+      focusedBorder: UnderlineInputBorder(
+        borderSide: BorderSide(
+          color: ThemeColors.accentColor,
         ),
-        labelText: label,
-        helperStyle: TextStyle(color: Colors.white),
-        labelStyle: TextStyle(color: Colors.white)),
+      ),
+      labelText: label,
+      labelStyle: TextStyle(color: Colors.white),
+    ),
   );
 }

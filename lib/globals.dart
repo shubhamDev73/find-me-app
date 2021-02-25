@@ -62,14 +62,14 @@ void getInterests ({Function callback}) async {
 Map<String, dynamic> lastReadTimes = {};
 Map<String, Function> onTimeChanges = {};
 
-Future<File> getFile () async {
+Future<File> getFile (String file) async {
   final directory = await getApplicationDocumentsDirectory();
-  return File('${directory.path}/times.json');
+  return File('${directory.path}/$file');
 }
 
 Future<Map<String, dynamic>> getLastReadTimes () async {
   try {
-    File file = await getFile();
+    File file = await getFile('times.json');
     String timesString = await file.readAsString();
     lastReadTimes = jsonDecode(timesString);
   }catch(OSError) {
@@ -83,8 +83,30 @@ void setLastReadTimes ({String chatId, bool now = true}) async {
     lastReadTimes[chatId] = DateTime.now().millisecondsSinceEpoch;
   else
     lastReadTimes[chatId] = 0;
-  File file = await getFile();
+  File file = await getFile('times.json');
   String timesString = jsonEncode(lastReadTimes);
   await file.writeAsString(timesString);
   onTimeChanges.forEach((key, value) => value());
+}
+
+Function onLogin, onLogout;
+
+Future<String> getToken () async {
+  if(token != '') return token;
+  try {
+    File file = await getFile('token.txt');
+    token = await file.readAsString();
+  }catch(OSError) {
+    token = '';
+  }
+  return token;
+}
+
+Future<void> setToken (String newToken) async {
+  token = newToken;
+  if(token == '') onLogout();
+  else onLogin();
+
+  File file = await getFile('token.txt');
+  await file.writeAsString(token);
 }
