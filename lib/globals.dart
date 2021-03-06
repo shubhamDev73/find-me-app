@@ -11,8 +11,8 @@ String userUrl;
 
 User meUser, anotherUser;
 
-Future<List<Interest>> futureInterests;
-List<Interest> interests;
+Future<Map<int, Interest>> futureInterests;
+Map<int, Interest> interests;
 
 Future<T> returnAsFuture<T> (T data) async {
   return data;
@@ -46,15 +46,19 @@ Future<User> getUser ({bool me = true, Function callback}) async {
 
 void getInterests ({Function callback}) async {
   if(interests == null){
-    futureInterests = GETResponse<List<Interest>>('interests/',
-      decoder: (dynamic data) => data.map<Interest>((item) => Interest.fromJson(item)).toList(),
-      callback: (List<Interest> retrievedInterests) {
+    futureInterests = GETResponse<Map<int, Interest>>('interests/',
+      decoder: (dynamic data) =>
+        Map<int, Interest>.fromIterable(data,
+            key: (interest) => interest['id'],
+            value: (interest) => Interest.fromJson(interest)
+        ),
+      callback: (Map<int, Interest> retrievedInterests) {
         interests = retrievedInterests;
         if(callback != null) callback(interests);
       }
     );
   }else{
-    futureInterests = returnAsFuture<List<Interest>>(interests);
+    futureInterests = returnAsFuture<Map<int, Interest>>(interests);
     if(callback != null) callback(interests);
   }
 }

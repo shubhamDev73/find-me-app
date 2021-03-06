@@ -50,7 +50,7 @@ class _AddInterestsState extends State<AddInterests> {
                   thickness: 0,
                   isAlwaysShown: true,
                   controller: _scrollController,
-                  child: createFutureWidget<List<Interest>>(globals.futureInterests, (List<Interest> interests) => GridView(
+                  child: createFutureWidget<Map<int, Interest>>(globals.futureInterests, (Map<int, Interest> interests) => GridView(
                     controller: _scrollController,
                     shrinkWrap: true,
                     scrollDirection: Axis.vertical,
@@ -60,17 +60,17 @@ class _AddInterestsState extends State<AddInterests> {
                       crossAxisSpacing: 10,
                       crossAxisCount: 3,
                     ),
-                    children: interests.map<Widget>((Interest interest) => InterestButton(
+                    children: interests.values.map<Widget>((Interest interest) => InterestButton(
                       name: interest.name,
                       onClick: (amount) {
                         interest.amount = amount;
-                        findInterest(globals.interests, interest.id).amount = amount;
+                        globals.interests[interest.id].amount = amount;
 
                         POST('me/interests/update/', jsonEncode([{"interest": interest.id, "amount": interest.amount}]));
 
-                        Interest foundInterest = findInterest(globals.meUser.interests, interest.id);
+                        Interest foundInterest = globals.meUser.interests[interest.id];
                         if(foundInterest == null){
-                          if(amount != 0) globals.meUser.interests.add(interest);
+                          if(amount != 0) globals.meUser.interests[interest.id] = interest;
                         }else{
                           if(amount == 0) globals.meUser.interests.remove(foundInterest);
                           else foundInterest.amount = amount;

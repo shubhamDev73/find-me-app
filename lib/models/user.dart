@@ -4,7 +4,7 @@ class User {
   String nick;
   String avatar;
   Map<String, dynamic> personality;
-  List<Interest> interests;
+  Map<int, Interest> interests;
   String mood;
 
   User({
@@ -19,7 +19,7 @@ class User {
     nick: json["nick"],
     avatar: json["avatar"],
     personality: json["personality"],
-    interests: json["interests"].map<Interest>((interest) => Interest.fromJson(interest)).toList(),
+    interests: Map.fromIterable(json["interests"], key: (interest) => interest['id'], value: (interest) => Interest.fromJson(interest)),
     mood: json["mood"],
   );
 
@@ -28,7 +28,7 @@ class User {
       "nick": nick,
       "avatar": avatar,
       "personality": personality,
-      "interests": interests.map((interest) => interest.toJson()).toList(),
+      "interests": interests.entries.map((entry) => entry.value.toJson()).toList(),
       "mood": mood,
     };
 

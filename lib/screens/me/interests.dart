@@ -12,7 +12,7 @@ import 'package:findme/globals.dart' as globals;
 
 FutureBuilder<User> createQuestions(Future<User> futureUser, Function onPageChange, int interestId, CarouselController controller) {
   return createFutureWidget<User>(futureUser, (User user) {
-    Interest interest = findInterest(user.interests, interestId);
+    Interest interest = user.interests[interestId];
     return CarouselSlider(
       carouselController: controller,
       items: interest.questions.map((question) => Container(
@@ -71,21 +71,14 @@ List<Widget> getInterestList(List<Interest> obj, Function onClick, int id) {
 
 void updateAnswer(int interestId, Map<String, dynamic> question, String answerText) async {
   POST('me/interests/$interestId/update/', jsonEncode([{"question": question['id'], "answer": answerText}]));
-  int interestIndex;
-  for (int i = 0; i < globals.meUser.interests.length; i++) {
-    if (globals.meUser.interests[i].id == interestId) {
-      interestIndex = i;
-      break;
-    }
-  }
-  Interest interest = globals.meUser.interests[interestIndex];
+  Interest interest = globals.meUser.interests[interestId];
   for (int i = 0; i < interest.questions.length; i++) {
     if (interest.questions[i]['id'] == question['id']) {
       interest.questions[i]['answer'] = answerText;
       break;
     }
   }
-  globals.meUser.interests[interestIndex] = interest;
+  globals.meUser.interests[interestId] = interest;
   globals.getUser();
 }
 
@@ -108,9 +101,8 @@ class _InterestsState extends State<Interests> {
   void initState() {
     super.initState();
     futureUser = globals.getUser(me: widget.me, callback: (User user) {
-      Interest interest = findInterest(user.interests, interestId);
-      if(interest != null) setState(() {
-        question = interest.questions[0];
+      if(interestId != null) setState(() {
+        question = user.interests[interestId].questions[0];
       });
     });
   }
@@ -120,7 +112,7 @@ class _InterestsState extends State<Interests> {
     if (interestId == null) {
       interestId = ModalRoute.of(context).settings.arguments;
       User user = widget.me ? globals.meUser : globals.anotherUser;
-      if(user != null) question = findInterest(user.interests, interestId).questions[0];
+      question = user?.interests[interestId].questions[0];
     }
 
     CarouselController buttonCarouselController = CarouselController();
@@ -230,10 +222,10 @@ class _InterestsState extends State<Interests> {
                 color: Color(0xfff0fbfd),
                 child: createFutureWidget<User>(futureUser, (User user) => Scrollbar(
                     child: ListView(
-                      children: getInterestList(user.interests, (int newInterestId) {
+                      children: getInterestList(user.interests.entries.map<Interest>((entry) => entry.value).toList(), (int newInterestId) {
                         setState(() {
                           interestId = newInterestId;
-                          question = findInterest(user.interests, interestId).questions[0];
+                          question = user.interests[interestId].questions[0];
                         });
                       }, interestId),
                     )

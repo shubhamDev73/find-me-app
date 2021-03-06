@@ -12,17 +12,18 @@ import 'package:findme/assets.dart';
 
 FutureBuilder<User> createInterest(futureUser, BuildContext context, int index) {
   return createFutureWidget<User>(futureUser, (User user) {
+    List<Interest> interests = user.interests.values.toList();
     if(index == 4){
       return InterestButton(
         name: Assets.plus,
         isSvg: true,
         selected: true,
         onClick: () {
-          Navigator.of(context).pushNamed('/interests', arguments: user.interests[0].id);
+          Navigator.of(context).pushNamed('/interests', arguments: interests[0].id);
         },
       );
     }else{
-      Interest interest = user.interests[index];
+      Interest interest = interests[index];
       return InterestButton(
         name: interest.name,
         amount: interest.amount,
