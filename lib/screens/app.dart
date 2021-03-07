@@ -29,7 +29,7 @@ class _AppState extends State<App> {
   @override
   Widget build(BuildContext context) {
     if(isLoggedIn == null)
-      return createFutureWidget(globals.getToken(), (String token) {
+      return createFutureWidget(globals.token.get(), (String token) {
         isLoggedIn = token != '';
         return isLoggedIn ? TabbedScreen() : LoginScreens();
       });

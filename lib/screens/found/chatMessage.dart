@@ -46,7 +46,7 @@ class ChatMessage extends StatelessWidget {
                         flex: 2,
                         child: InkWell(
                           onTap: () {
-                            globals.getAnotherUser('/found/${found.id}');
+                            globals.setAnotherUser('/found/${found.id}');
                             Navigator.of(context).pushNamed('/user');
                           },
                           child: Container(
@@ -99,7 +99,7 @@ class ChatMessage extends StatelessWidget {
                     image: DecorationImage(image: AssetImage("assets/mood/gloomy_bg.png"), fit: BoxFit.cover),
                   ),
                   child: createFirebaseStreamWidget(stream, (List<DocumentSnapshot> messages) {
-                    globals.setLastReadTimes(chatId: found.chatId);
+                    globals.lastReadTimes.mappedSet(found.chatId, DateTime.now().millisecondsSinceEpoch);
                     return Container(
                       margin: EdgeInsets.symmetric(horizontal: 10),
                       child: ListView.builder(

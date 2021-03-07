@@ -43,7 +43,7 @@ String formatDate ({Timestamp timestamp, DateTime endDate}) {
       num = diff.inHours;
       type = 'hour';
     }
-    return "$num $type${num > 1 ? 's' : ''} ago";
+    return num == 0 ? "just now" : "$num $type${num > 1 ? 's' : ''} ago";
   }
   return '';
 }

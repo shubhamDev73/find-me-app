@@ -23,7 +23,7 @@ class ChatList extends StatelessWidget {
     Future<dynamic> futureFind = GETResponse('find/');
     Future<List<dynamic>> futureRequests = GETResponse<List<dynamic>>('requests/');
     Map<String, Stream<QuerySnapshot>> lastMessages = {};
-    Future<Map<String, dynamic>> futureTimes = globals.getLastReadTimes();
+    Future<Map<String, int>> futureTimes = globals.lastReadTimes.get();
 
     return SafeArea(
       child: Scaffold(
@@ -92,8 +92,8 @@ class ChatList extends StatelessWidget {
                             .limit(1)
                             .snapshots();
 
-                        if(!globals.lastReadTimes.containsKey(found.chatId))
-                          globals.setLastReadTimes(chatId: found.chatId, now: false);
+                        if(!globals.lastReadTimes.getValue().containsKey(found.chatId))
+                          globals.lastReadTimes.mappedSet(found.chatId, 0);
 
                         return ChatListItem(
                           found: found,

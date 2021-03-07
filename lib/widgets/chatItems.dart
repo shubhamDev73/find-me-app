@@ -16,7 +16,7 @@ class FindListItem extends StatelessWidget {
     return InkWell(
       onTap: () {
         String baseUrl = isRequest ? 'requests' : 'find';
-        globals.getAnotherUser('/$baseUrl/$id');
+        globals.setAnotherUser('/$baseUrl/$id');
         Navigator.of(context).pushNamed('/user');
       },
       child: Container(

@@ -28,7 +28,7 @@ class _ChatListItemState extends State<ChatListItem> {
   void initState () {
     super.initState();
     updateStream();
-    globals.onTimeChanges[widget.found.chatId] = () {
+    globals.onTimeChanged[widget.found.chatId] = () {
       setState((){updateStream();});
     };
   }
@@ -36,16 +36,17 @@ class _ChatListItemState extends State<ChatListItem> {
   @override
   void dispose () {
     super.dispose();
-    globals.onTimeChanges.remove(widget.found.chatId);
+    globals.onTimeChanged.remove(widget.found.chatId);
   }
 
   void updateStream () {
+    int timestamp = globals.lastReadTimes.mappedGetValue(widget.found.chatId);
     unreadDocsStream = FirebaseFirestore.instance
         .collection('chats')
         .doc(widget.found.chatId)
         .collection('chats')
         .where('user', isEqualTo: 3 - widget.found.me)
-        .where('timestamp', isGreaterThanOrEqualTo: new Timestamp.fromMillisecondsSinceEpoch(globals.lastReadTimes[widget.found.chatId]))
+        .where('timestamp', isGreaterThanOrEqualTo: new Timestamp.fromMillisecondsSinceEpoch(timestamp))
         .snapshots();
   }
 

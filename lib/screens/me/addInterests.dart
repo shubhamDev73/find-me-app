@@ -6,6 +6,7 @@ import 'package:findme/widgets/interestButton.dart';
 import 'package:findme/widgets/misc.dart';
 import 'package:findme/widgets/topBox.dart';
 
+import 'package:findme/models/user.dart';
 import 'package:findme/models/interests.dart';
 import 'package:findme/constant.dart';
 import 'package:findme/API.dart';
@@ -13,19 +14,21 @@ import 'package:findme/globals.dart' as globals;
 
 class AddInterests extends StatefulWidget {
 
+  final ScrollController scrollController = ScrollController();
+
   @override
   _AddInterestsState createState() => _AddInterestsState();
 }
 
 class _AddInterestsState extends State<AddInterests> {
 
-  final ScrollController _scrollController = ScrollController();
+  Future<Map<int, Interest>> futureInterests;
 
   @override
   void initState () {
     super.initState();
     globals.getUser();
-    globals.getInterests();
+    futureInterests = globals.interests.get();
   }
 
   @override
@@ -49,9 +52,9 @@ class _AddInterestsState extends State<AddInterests> {
                 child: Scrollbar(
                   thickness: 0,
                   isAlwaysShown: true,
-                  controller: _scrollController,
-                  child: createFutureWidget<Map<int, Interest>>(globals.futureInterests, (Map<int, Interest> interests) => GridView(
-                    controller: _scrollController,
+                  controller: widget.scrollController,
+                  child: createFutureWidget<Map<int, Interest>>(futureInterests, (Map<int, Interest> interests) => GridView(
+                    controller: widget.scrollController,
                     shrinkWrap: true,
                     scrollDirection: Axis.vertical,
                     gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
@@ -64,19 +67,18 @@ class _AddInterestsState extends State<AddInterests> {
                       name: interest.name,
                       onClick: (amount) {
                         interest.amount = amount;
-                        globals.interests[interest.id].amount = amount;
+                        globals.interests.mappedSet(interest.id, interest);
 
                         POST('me/interests/update/', jsonEncode([{"interest": interest.id, "amount": interest.amount}]));
 
-                        Interest foundInterest = globals.meUser.interests[interest.id];
-                        if(foundInterest == null){
-                          if(amount != 0) globals.meUser.interests[interest.id] = interest;
+                        User user = globals.meUser.getValue();
+                        if(user.interests.containsKey(interest.id)){
+                          if(amount == 0) user.interests.remove(interest.id);
+                          else user.interests[interest.id].amount = amount;
                         }else{
-                          if(amount == 0) globals.meUser.interests.remove(foundInterest);
-                          else foundInterest.amount = amount;
+                          if(amount != 0) user.interests[interest.id] = interest;
                         }
-
-                        globals.getUser();
+                        globals.meUser.set(user);
                       },
                       amount: interest.amount,
                       canChangeAmount: true,

@@ -143,7 +143,7 @@ class Register extends StatelessWidget {
 
     Map<String, dynamic> json = jsonDecode(response.body);
     if (response.statusCode == 200 && json.containsKey('token'))
-      globals.setToken(json['token']);
+      globals.token.set(json['token']);
     else
       scaffoldKey.currentState.showSnackBar(SnackBar(content: Text("${json['error']}")));
   }

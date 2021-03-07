@@ -69,17 +69,19 @@ List<Widget> getInterestList(List<Interest> obj, Function onClick, int id) {
   return widgetList;
 }
 
-void updateAnswer(int interestId, Map<String, dynamic> question, String answerText) async {
-  POST('me/interests/$interestId/update/', jsonEncode([{"question": question['id'], "answer": answerText}]));
-  Interest interest = globals.meUser.interests[interestId];
+void updateAnswer(int interestId, int questionId, String answer) {
+  POST('me/interests/$interestId/update/', jsonEncode([{"question": questionId, "answer": answer}]));
+
+  User user = globals.meUser.getValue();
+  Interest interest = user.interests[interestId];
   for (int i = 0; i < interest.questions.length; i++) {
-    if (interest.questions[i]['id'] == question['id']) {
-      interest.questions[i]['answer'] = answerText;
+    if (interest.questions[i]['id'] == questionId) {
+      interest.questions[i]['answer'] = answer;
       break;
     }
   }
-  globals.meUser.interests[interestId] = interest;
-  globals.getUser();
+  user.interests[interestId] = interest;
+  globals.meUser.set(user);
 }
 
 class Interests extends StatefulWidget {
@@ -111,8 +113,7 @@ class _InterestsState extends State<Interests> {
   Widget build(BuildContext context) {
     if (interestId == null) {
       interestId = ModalRoute.of(context).settings.arguments;
-      User user = widget.me ? globals.meUser : globals.anotherUser;
-      question = user?.interests[interestId].questions[0];
+      question = globals.getUserValue(me: widget.me)?.interests[interestId].questions[0];
     }
 
     CarouselController buttonCarouselController = CarouselController();
@@ -195,7 +196,7 @@ class _InterestsState extends State<Interests> {
                     child: widget.me ?
                     TextField(
                       controller: answerController,
-                      onSubmitted: (text) {updateAnswer(interestId, question, text);},
+                      onSubmitted: (text) {updateAnswer(interestId, question['id'], text);},
                       textAlign: TextAlign.center,
                       style: TextStyle(
                         fontSize: 25,
