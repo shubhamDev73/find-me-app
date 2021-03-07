@@ -14,11 +14,11 @@ class MeTab extends StatelessWidget {
   Map<String, WidgetBuilder> createRoutes() {
     bool me = navigatorKey != null;
     return {
-    '/': (BuildContext _) => Profile(me: me),
-    '/personality': (BuildContext _) => Personality(me: me),
-    '/interests': (BuildContext _) => Interests(me: me),
-    '/interests/add': (BuildContext _) => AddInterests(),
-    '/mood': (BuildContext _) => MoodSet(me: me),
+      '/': (BuildContext _) => Profile(me: me),
+      '/personality': (BuildContext _) => Personality(me: me),
+      '/interests': (BuildContext _) => Interests(me: me),
+      '/mood': (BuildContext _) => MoodSet(me: me),
+      '/interests/add': (BuildContext _) => AddInterests(),
     };
   }
 
@@ -28,7 +28,8 @@ class MeTab extends StatelessWidget {
     return Navigator(
       key: navigatorKey,
       initialRoute: '/',
-      onGenerateRoute: (RouteSettings settings) =>  MaterialPageRoute(builder: routes[settings.name], settings: settings),
+      onGenerateRoute: (RouteSettings settings) =>
+          MaterialPageRoute(builder: routes[settings.name], settings: settings),
     );
   }
 

@@ -10,53 +10,37 @@ import 'package:findme/models/user.dart';
 import 'package:findme/models/interests.dart';
 import 'package:findme/assets.dart';
 
-FutureBuilder<User> createInterest(futureUser, BuildContext context, int index) {
-  return createFutureWidget<User>(futureUser, (User user) {
-    List<Interest> interests = user.interests.values.toList();
-    if(index == 4){
-      return InterestButton(
-        name: Assets.plus,
-        isSvg: true,
-        selected: true,
-        onClick: () {
-          Navigator.of(context).pushNamed('/interests', arguments: interests[0].id);
-        },
-      );
-    }else{
-      Interest interest = interests[index];
-      return InterestButton(
-        name: interest.name,
-        amount: interest.amount,
-        onClick: () {
-          Navigator.of(context).pushNamed('/interests', arguments: interest.id);
-        },
-      );
-    }
-  });
+Widget createInterest(User user, BuildContext context, int index) {
+  List<Interest> interests = user.interests.values.toList();
+  if(index == 4){
+    return InterestButton(
+      name: Assets.plus,
+      isSvg: true,
+      selected: true,
+      onClick: () {
+        Navigator.of(context).pushNamed('/interests', arguments: interests[0].id);
+      },
+    );
+  }else{
+    Interest interest = interests[index];
+    return InterestButton(
+      name: interest.name,
+      amount: interest.amount,
+      onClick: () {
+        Navigator.of(context).pushNamed('/interests', arguments: interest.id);
+      },
+    );
+  }
 }
 
-class Profile extends StatefulWidget {
+class Profile extends StatelessWidget {
 
   final bool me;
   const Profile({this.me = true});
 
   @override
-  _ProfileState createState() => _ProfileState();
-}
-
-class _ProfileState extends State<Profile> {
-
-  Future<User> futureUser;
-
-  @override
-  void initState() {
-    super.initState();
-    futureUser = globals.getUser(me: widget.me);
-  }
-
-  @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return createFutureWidget<User>(globals.getUser(me: me), (User user) => Scaffold(
       body: SafeArea(
         child: Column(
           mainAxisSize: MainAxisSize.min,
@@ -67,12 +51,12 @@ class _ProfileState extends State<Profile> {
               child: TopBox(
                 title: "Konichiwa",
                 desc: "Did you know the US armys traning bumbelbees to sniff out explosive?",
-                widget: createFutureWidget<User>(futureUser, (User user) => TraitsElements(
+                widget: TraitsElements(
                   onClick: (String trait) {
                     Navigator.of(context).pushNamed('/personality', arguments: trait);
                   },
                   personality: user.personality,
-                )),
+                ),
               ),
             ),
             Expanded(
@@ -81,7 +65,7 @@ class _ProfileState extends State<Profile> {
                 onTap: () {
                   Navigator.of(context).pushNamed('/mood');
                 },
-                child: createFutureWidget<User>(futureUser, (User user) => UserInfo(user)),
+                child: UserInfo(user),
               ),
             ),
             Expanded(
@@ -91,9 +75,9 @@ class _ProfileState extends State<Profile> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      createInterest(futureUser, context, 0),
+                      createInterest(user, context, 0),
                       SizedBox(width: 12),
-                      createInterest(futureUser, context, 1),
+                      createInterest(user, context, 1),
                     ],
                   ),
                   SizedBox(
@@ -103,11 +87,11 @@ class _ProfileState extends State<Profile> {
                     mainAxisSize: MainAxisSize.max,
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      createInterest(futureUser, context, 2),
+                      createInterest(user, context, 2),
                       SizedBox(width: 12),
-                      createInterest(futureUser, context, 3),
+                      createInterest(user, context, 3),
                       SizedBox(width: 12),
-                      createInterest(futureUser, context, 4),
+                      createInterest(user, context, 4),
                     ],
                   ),
                 ],
@@ -116,6 +100,6 @@ class _ProfileState extends State<Profile> {
           ],
         ),
       ),
-    );
+    ));
   }
 }

@@ -22,15 +22,8 @@ class Personality extends StatefulWidget {
 
 class _PersonalityState extends State<Personality> {
 
-  Future<User> futureUser;
   String trait;
   int currentAdjIndex = 0;
-
-  @override
-  void initState() {
-    super.initState();
-    futureUser = globals.getUser(me: widget.me);
-  }
 
   Container buildAdjCarouselSlider(List adjectives) {
     return Container(
@@ -93,7 +86,7 @@ class _PersonalityState extends State<Personality> {
   Widget build(BuildContext context) {
     if (trait == null) trait = ModalRoute.of(context).settings.arguments;
 
-    return Scaffold(
+    return createFutureWidget<User>(globals.getUser(me: widget.me), (User user) => Scaffold(
       body: SafeArea(
         child: Column(
           mainAxisSize: MainAxisSize.min,
@@ -101,7 +94,7 @@ class _PersonalityState extends State<Personality> {
           children: <Widget>[
             Expanded(
               flex: 9,
-              child: createFutureWidget<User>(futureUser, (User user) => TopBox(
+              child: TopBox(
                 title: trait,
                 desc: user.personality[trait]['description'],
                 widget: TraitsElements(
@@ -113,7 +106,7 @@ class _PersonalityState extends State<Personality> {
                   personality: user.personality,
                   selectedElement: trait,
                 ),
-              )),
+              ),
             ),
             Expanded(
               flex: 4,
@@ -134,7 +127,7 @@ class _PersonalityState extends State<Personality> {
                               height: 20,
                               thickness: 1,
                             ),
-                            createFutureWidget<User>(futureUser, (User user) => Positioned(
+                            Positioned(
                               left: ((user.personality[trait]['value'] + 1) / 2) * 220 - 4,
                               child: Container(
                                 height: 20,
@@ -145,7 +138,7 @@ class _PersonalityState extends State<Personality> {
                                   borderRadius: BorderRadius.circular(12.0),
                                 ),
                               ),
-                            )),
+                            ),
                           ],
                         ),
                       ),
@@ -188,7 +181,7 @@ class _PersonalityState extends State<Personality> {
                 style: TextStyle(fontSize: 17),
               ),
             ),
-            createFutureWidget<User>(futureUser, (User user) => buildAdjCarouselSlider(user.personality[trait]['adjectives'])),
+            buildAdjCarouselSlider(user.personality[trait]['adjectives']),
             Expanded(
               flex: 1,
               child: Container(),
@@ -219,6 +212,6 @@ class _PersonalityState extends State<Personality> {
           ],
         ),
       ),
-    );
+    ));
   }
 }

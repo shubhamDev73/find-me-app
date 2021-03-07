@@ -10,33 +10,31 @@ import 'package:findme/models/user.dart';
 import 'package:findme/API.dart';
 import 'package:findme/globals.dart' as globals;
 
-FutureBuilder<User> createQuestions(Future<User> futureUser, Function onPageChange, int interestId, CarouselController controller) {
-  return createFutureWidget<User>(futureUser, (User user) {
-    Interest interest = user.interests[interestId];
-    return CarouselSlider(
-      carouselController: controller,
-      items: interest.questions.map((question) => Container(
-        margin: EdgeInsets.symmetric(horizontal: 35),
-        child: Center(
-          child: Text(
-            question['question'],
-            textAlign: TextAlign.center,
-            style: TextStyle(
-              fontSize: 28,
-              fontWeight: FontWeight.w700,
-            ),
+Widget createQuestions(User user, Function onPageChange, int interestId, CarouselController controller) {
+  Interest interest = user.interests[interestId];
+  return CarouselSlider(
+    carouselController: controller,
+    items: interest.questions.map((question) => Container(
+      margin: EdgeInsets.symmetric(horizontal: 35),
+      child: Center(
+        child: Text(
+          question['question'],
+          textAlign: TextAlign.center,
+          style: TextStyle(
+            fontSize: 28,
+            fontWeight: FontWeight.w700,
           ),
         ),
-      )).toList(),
-      options: CarouselOptions(
-          initialPage: 0,
-          enlargeCenterPage: true,
-          aspectRatio: 2.0,
-          onPageChanged: (index, reason) {
-            onPageChange(interest.questions[index]);
-          }),
-    );
-  });
+      ),
+    )).toList(),
+    options: CarouselOptions(
+        initialPage: 0,
+        enlargeCenterPage: true,
+        aspectRatio: 2.0,
+        onPageChanged: (index, reason) {
+          onPageChange(interest.questions[index]);
+        }),
+  );
 }
 
 List<Widget> getInterestList(List<Interest> obj, Function onClick, int id) {
@@ -69,21 +67,6 @@ List<Widget> getInterestList(List<Interest> obj, Function onClick, int id) {
   return widgetList;
 }
 
-void updateAnswer(int interestId, int questionId, String answer) {
-  POST('me/interests/$interestId/update/', jsonEncode([{"question": questionId, "answer": answer}]));
-
-  User user = globals.meUser.getValue();
-  Interest interest = user.interests[interestId];
-  for (int i = 0; i < interest.questions.length; i++) {
-    if (interest.questions[i]['id'] == questionId) {
-      interest.questions[i]['answer'] = answer;
-      break;
-    }
-  }
-  user.interests[interestId] = interest;
-  globals.meUser.set(user);
-}
-
 class Interests extends StatefulWidget {
 
   final bool me;
@@ -95,18 +78,22 @@ class Interests extends StatefulWidget {
 
 class _InterestsState extends State<Interests> {
 
-  Future<User> futureUser;
   int interestId;
   Map<String, dynamic> question;
 
-  @override
-  void initState() {
-    super.initState();
-    futureUser = globals.getUser(me: widget.me, callback: (User user) {
-      if(interestId != null) setState(() {
-        question = user.interests[interestId].questions[0];
-      });
-    });
+  void updateAnswer(int interestId, int questionId, String answer) {
+    POST('me/interests/$interestId/update/', jsonEncode([{"question": questionId, "answer": answer}]));
+
+    User user = globals.getUserValue();
+    Interest interest = user.interests[interestId];
+    for (int i = 0; i < interest.questions.length; i++) {
+      if (interest.questions[i]['id'] == questionId) {
+        interest.questions[i]['answer'] = answer;
+        break;
+      }
+    }
+    user.interests[interestId] = interest;
+    globals.meUser.set(user);
   }
 
   @override
@@ -119,7 +106,7 @@ class _InterestsState extends State<Interests> {
     CarouselController buttonCarouselController = CarouselController();
     TextEditingController answerController = new TextEditingController(text: question['answer']);
 
-    return Scaffold(
+    return createFutureWidget<User>(globals.getUser(me: widget.me), (User user) => Scaffold(
       body: SafeArea(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -138,7 +125,7 @@ class _InterestsState extends State<Interests> {
               child: Stack(
                 alignment: Alignment.center,
                 children: [
-                  createQuestions(futureUser, (Map<String, dynamic> newQuestion) {
+                  createQuestions(user, (Map<String, dynamic> newQuestion) {
                     setState(() {
                       question = newQuestion;
                     });
@@ -193,8 +180,7 @@ class _InterestsState extends State<Interests> {
                 children: [
                   Container(
                     margin: EdgeInsets.symmetric(horizontal: 80, vertical: 0),
-                    child: widget.me ?
-                    TextField(
+                    child: widget.me ? TextField(
                       controller: answerController,
                       onSubmitted: (text) {updateAnswer(interestId, question['id'], text);},
                       textAlign: TextAlign.center,
@@ -221,7 +207,7 @@ class _InterestsState extends State<Interests> {
               child: Container(
                 padding: const EdgeInsets.fromLTRB(0.0, 17.0, 0.0, 0.0),
                 color: Color(0xfff0fbfd),
-                child: createFutureWidget<User>(futureUser, (User user) => Scrollbar(
+                child: Scrollbar(
                     child: ListView(
                       children: getInterestList(user.interests.entries.map<Interest>((entry) => entry.value).toList(), (int newInterestId) {
                         setState(() {
@@ -230,7 +216,7 @@ class _InterestsState extends State<Interests> {
                         });
                       }, interestId),
                     )
-                )),
+                ),
               ),
             ),
             SizedBox(
@@ -260,6 +246,6 @@ class _InterestsState extends State<Interests> {
           ],
         ),
       ),
-    );
+    ));
   }
 }

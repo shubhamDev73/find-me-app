@@ -1,11 +1,12 @@
-import 'package:findme/constant.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 import 'package:findme/assets.dart';
-
 import 'package:findme/screens/meTab.dart';
 import 'package:findme/screens/foundTab.dart';
+import 'package:findme/constant.dart';
+import 'package:findme/widgets/misc.dart';
+import 'package:findme/globals.dart' as globals;
 
 enum Tab { me, found }
 
@@ -24,13 +25,25 @@ const Map<Tab, String> tabIcon = {
   Tab.found: Assets.found,
 };
 
-class TabbedScreen extends StatefulWidget {
+class TabbedScreen extends StatelessWidget {
 
   @override
-  _TabbedScreenState createState() => _TabbedScreenState();
+  Widget build(BuildContext context) {
+    return createFutureWidget(globals.getUser(), (data) =>
+      createFutureWidget(globals.interests.get(), (data) =>
+        Tabs(),
+      ),
+    );
+  }
 }
 
-class _TabbedScreenState extends State<TabbedScreen> {
+class Tabs extends StatefulWidget {
+
+  @override
+  _TabsState createState() => _TabsState();
+}
+
+class _TabsState extends State<Tabs> {
 
   Tab _currentTab = Tab.me;
 
@@ -61,12 +74,10 @@ class _TabbedScreenState extends State<TabbedScreen> {
               Tab newTab = Tab.values[index];
               if(newTab == _currentTab && _currentTab == Tab.found)
                 navigatorKeys[_currentTab].currentState.popUntil(ModalRoute.withName('/'));
-
               setState(() {
                 _currentTab = newTab;
               });
             },
-
             showSelectedLabels: false,
             showUnselectedLabels: false,
             elevation: 0,

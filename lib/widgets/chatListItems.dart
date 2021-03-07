@@ -52,7 +52,7 @@ class _ChatListItemState extends State<ChatListItem> {
 
   @override
   Widget build (BuildContext context) {
-    return createFirebaseStreamWidget(widget.lastMessage, (List<DocumentSnapshot> messages) => GestureDetector(
+    return GestureDetector(
       onTap: () {
         Navigator.of(context).pushNamed('/message',
             arguments: widget.found);
@@ -61,7 +61,7 @@ class _ChatListItemState extends State<ChatListItem> {
         color: widget.index % 2 == 0 ? Colors.grey[300] : Colors.white,
         child: Padding(
           padding: const EdgeInsets.all(0.0),
-          child: Row(
+          child: createFirebaseStreamWidget(widget.lastMessage, (List<DocumentSnapshot> messages) => Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: <Widget>[
               Row(

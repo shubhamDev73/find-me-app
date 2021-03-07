@@ -5,35 +5,19 @@ import 'package:flutter/material.dart';
 import 'package:findme/widgets/interestButton.dart';
 import 'package:findme/widgets/misc.dart';
 import 'package:findme/widgets/topBox.dart';
-
 import 'package:findme/models/user.dart';
 import 'package:findme/models/interests.dart';
 import 'package:findme/constant.dart';
 import 'package:findme/API.dart';
 import 'package:findme/globals.dart' as globals;
 
-class AddInterests extends StatefulWidget {
+class AddInterests extends StatelessWidget {
 
   final ScrollController scrollController = ScrollController();
 
   @override
-  _AddInterestsState createState() => _AddInterestsState();
-}
-
-class _AddInterestsState extends State<AddInterests> {
-
-  Future<Map<int, Interest>> futureInterests;
-
-  @override
-  void initState () {
-    super.initState();
-    globals.getUser();
-    futureInterests = globals.interests.get();
-  }
-
-  @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return createFutureWidget(globals.interests.get(), (Map<int, Interest> interests) => Scaffold(
       backgroundColor: ThemeColors.lightColor,
       body: SafeArea(
         child: Column(
@@ -52,9 +36,9 @@ class _AddInterestsState extends State<AddInterests> {
                 child: Scrollbar(
                   thickness: 0,
                   isAlwaysShown: true,
-                  controller: widget.scrollController,
-                  child: createFutureWidget<Map<int, Interest>>(futureInterests, (Map<int, Interest> interests) => GridView(
-                    controller: widget.scrollController,
+                  controller: scrollController,
+                  child: GridView(
+                    controller: scrollController,
                     shrinkWrap: true,
                     scrollDirection: Axis.vertical,
                     gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
@@ -83,7 +67,7 @@ class _AddInterestsState extends State<AddInterests> {
                       amount: interest.amount,
                       canChangeAmount: true,
                     )).toList(),
-                  )),
+                  ),
                 ),
               ),
             ),
@@ -91,6 +75,6 @@ class _AddInterestsState extends State<AddInterests> {
           ],
         ),
       ),
-    );
+    ));
   }
 }
