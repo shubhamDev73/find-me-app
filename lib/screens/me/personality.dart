@@ -11,27 +11,28 @@ import 'package:findme/models/user.dart';
 import 'package:findme/constant.dart';
 import 'package:findme/globals.dart' as globals;
 
-class Personality extends StatefulWidget {
+class AdjectiveCarousel extends StatefulWidget {
 
-  final bool me;
-  const Personality({this.me = true});
+  final List<dynamic> adjectives;
+  const AdjectiveCarousel({this.adjectives});
 
   @override
-  _PersonalityState createState() => _PersonalityState();
+  _AdjectiveCarouselState createState() => _AdjectiveCarouselState();
 }
 
-class _PersonalityState extends State<Personality> {
+class _AdjectiveCarouselState extends State<AdjectiveCarousel> {
 
-  String trait;
   int currentAdjIndex = 0;
 
-  Container buildAdjCarouselSlider(List adjectives) {
+  @override
+  Widget build(BuildContext context) {
     return Container(
       height: 206,
       width: 340,
       decoration: BoxDecoration(
         color: ThemeColors.boxColor,
-        borderRadius: BorderRadius.circular(15)),
+        borderRadius: BorderRadius.circular(15),
+      ),
       margin: EdgeInsets.fromLTRB(10.0, 0.0, 10.0, 0.0),
       child: Column(
         children: [
@@ -48,7 +49,7 @@ class _PersonalityState extends State<Personality> {
                       currentAdjIndex = index;
                     });
                   }),
-              items: adjectives.map((adjective) => Builder(
+              items: widget.adjectives.map((adjective) => Builder(
                 builder: (BuildContext context) {
                   return AdjListItem(
                     name: adjective['name'],
@@ -62,8 +63,8 @@ class _PersonalityState extends State<Personality> {
             flex: 1,
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
-              children: adjectives.map((adjective) {
-                int index = adjectives.indexOf(adjective);
+              children: widget.adjectives.map((adjective) {
+                int index = widget.adjectives.indexOf(adjective);
                 return Container(
                   width: 8.0,
                   height: 8.0,
@@ -81,6 +82,20 @@ class _PersonalityState extends State<Personality> {
       ),
     );
   }
+}
+
+class Personality extends StatefulWidget {
+
+  final bool me;
+  const Personality({this.me = true});
+
+  @override
+  _PersonalityState createState() => _PersonalityState();
+}
+
+class _PersonalityState extends State<Personality> {
+
+  String trait;
 
   @override
   Widget build(BuildContext context) {
@@ -181,7 +196,7 @@ class _PersonalityState extends State<Personality> {
                 style: TextStyle(fontSize: 17),
               ),
             ),
-            buildAdjCarouselSlider(user.personality[trait]['adjectives']),
+            AdjectiveCarousel(adjectives: user.personality[trait]['adjectives']),
             Expanded(
               flex: 1,
               child: Container(),
