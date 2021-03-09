@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:firebase_core/firebase_core.dart';
 
 import 'package:findme/assets.dart';
 import 'package:findme/screens/meTab.dart';
@@ -29,8 +30,9 @@ class TabbedScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return createFutureWidget(globals.getUser(), (data) =>
-      createFutureWidget(globals.interests.get(), (data) =>
+    Firebase.initializeApp();
+    return createFutureWidget(globals.interests.networkGet(), (data) =>
+      createFutureWidget(globals.getUser(), (data) =>
         Tabs(),
       ),
     );

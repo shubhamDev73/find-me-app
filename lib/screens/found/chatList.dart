@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 import 'package:findme/widgets/chatItems.dart';
@@ -15,12 +14,10 @@ class ChatList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Firebase.initializeApp();
-
     return createFutureWidget<User>(globals.getUser(), (User user) =>
       createFutureWidget<Map<String, int>>(globals.lastReadTimes.get(), (Map<String, int> times) =>
         createFutureWidget<List<dynamic>>(GETResponse<List<dynamic>>('requests/'), (List<dynamic> requests) =>
-          createFutureWidget<dynamic>(GETResponse<dynamic>('find/'), (dynamic find) =>
+          createFutureWidget<Map<String, dynamic>>(GETResponse<Map<String, dynamic>>('find/'), (Map<String, dynamic> find) =>
             createFutureWidget<List<Found>>(GETResponse<List<Found>>('found/',
               decoder: (result) => result.map<Found>((found) => Found.fromJson(found)).toList(),
             ), (List<Found> foundList) {
@@ -78,7 +75,7 @@ class ChatList extends StatelessWidget {
                               itemBuilder: (context, index) {
                                 Found found = foundList[index];
 
-                                if (!globals.lastReadTimes.getValue().containsKey(found.chatId))
+                                if (times == null || !times.containsKey(found.chatId))
                                   globals.lastReadTimes.mappedSet(found.chatId, 0);
 
                                 return ChatListItem(

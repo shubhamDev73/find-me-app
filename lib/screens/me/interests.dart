@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 import 'package:findme/widgets/interestButton.dart';
 import 'package:findme/widgets/misc.dart';
@@ -79,173 +80,179 @@ class Interests extends StatefulWidget {
 class _InterestsState extends State<Interests> {
 
   int interestId;
-  Map<String, dynamic> question;
+  Map<String, dynamic> question = {"id": 0, "answer": ""};
 
   void updateAnswer(int interestId, int questionId, String answer) {
     POST('me/interests/$interestId/update/', jsonEncode([{"question": questionId, "answer": answer}]));
 
-    User user = globals.getUserValue();
-    Interest interest = user.interests[interestId];
-    for (int i = 0; i < interest.questions.length; i++) {
-      if (interest.questions[i]['id'] == questionId) {
-        interest.questions[i]['answer'] = answer;
-        break;
+    globals.meUser.update((User user) {
+      Interest interest = user.interests[interestId];
+      for (int i = 0; i < interest.questions.length; i++) {
+        if (interest.questions[i]['id'] == questionId) {
+          interest.questions[i]['answer'] = answer;
+          break;
+        }
       }
-    }
-    user.interests[interestId] = interest;
-    globals.meUser.set(user);
+      user.interests[interestId] = interest;
+      return user;
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    if (interestId == null) {
-      interestId = ModalRoute.of(context).settings.arguments;
-      question = globals.getUserValue(me: widget.me)?.interests[interestId].questions[0];
-    }
+    if (interestId == null) interestId = ModalRoute.of(context).settings.arguments;
 
     CarouselController buttonCarouselController = CarouselController();
     TextEditingController answerController = new TextEditingController(text: question['answer']);
 
-    return createFutureWidget<User>(globals.getUser(me: widget.me), (User user) => Scaffold(
-      body: SafeArea(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Container(
-              padding: const EdgeInsets.all(12.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  Icon(Icons.more_vert),
-                ],
+    return createFutureWidget<User>(globals.getUser(me: widget.me), (User user) {
+      if(question['id'] == 0) {
+        question = user.interests[interestId].questions[0];
+        answerController.text = question['answer'];
+      }
+      return Scaffold(
+        body: SafeArea(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Container(
+                padding: const EdgeInsets.all(12.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    Icon(Icons.more_vert),
+                  ],
+                ),
               ),
-            ),
-            Expanded(
-              flex: 6,
-              child: Stack(
-                alignment: Alignment.center,
-                children: [
-                  createQuestions(user, (Map<String, dynamic> newQuestion) {
-                    setState(() {
-                      question = newQuestion;
-                    });
-                  }, interestId, buttonCarouselController),
-                  Positioned(
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.only(left: 12.0),
-                          child: InkWell(
-                            onTap: () => buttonCarouselController.previousPage(
-                                duration: Duration(milliseconds: 300),
-                                curve: Curves.decelerate),
-                            child: Container(
-                              child: Center(
-                                child: Icon(
-                                  Icons.arrow_back_ios,
-                                  color: Colors.grey.shade800,
+              Expanded(
+                flex: 6,
+                child: Stack(
+                  alignment: Alignment.center,
+                  children: [
+                    createQuestions(user, (Map<String, dynamic> newQuestion) {
+                      setState(() {
+                        question = newQuestion;
+                      });
+                    }, interestId, buttonCarouselController),
+                    Positioned(
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.only(left: 12.0),
+                            child: InkWell(
+                              onTap: () => buttonCarouselController.previousPage(
+                                  duration: Duration(milliseconds: 300),
+                                  curve: Curves.decelerate),
+                              child: Container(
+                                child: Center(
+                                  child: Icon(
+                                    Icons.arrow_back_ios,
+                                    color: Colors.grey.shade800,
+                                  ),
                                 ),
                               ),
                             ),
                           ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.only(right: 12.0),
-                          child: InkWell(
-                            onTap: () => buttonCarouselController.nextPage(
-                                duration: Duration(milliseconds: 300),
-                                curve: Curves.decelerate),
-                            child: Container(
-                              child: Center(
-                                child: Icon(
-                                  Icons.arrow_forward_ios,
-                                  color: Colors.grey.shade800,
+                          Padding(
+                            padding: const EdgeInsets.only(right: 12.0),
+                            child: InkWell(
+                              onTap: () => buttonCarouselController.nextPage(
+                                  duration: Duration(milliseconds: 300),
+                                  curve: Curves.decelerate),
+                              child: Container(
+                                child: Center(
+                                  child: Icon(
+                                    Icons.arrow_forward_ios,
+                                    color: Colors.grey.shade800,
+                                  ),
                                 ),
                               ),
                             ),
                           ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              Expanded(
+                flex: 5,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Container(
+                      margin: EdgeInsets.symmetric(horizontal: 80, vertical: 0),
+                      child: widget.me ? TextField(
+                        controller: answerController,
+                        onSubmitted: (text) {updateAnswer(interestId, question['id'], text);},
+                        textAlign: TextAlign.center,
+                        style: GoogleFonts.quicksand(
+                          textStyle: TextStyle(
+                            fontSize: 25,
+                            fontWeight: FontWeight.w700,
+                          ),
                         ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            Expanded(
-              flex: 5,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Container(
-                    margin: EdgeInsets.symmetric(horizontal: 80, vertical: 0),
-                    child: widget.me ? TextField(
-                      controller: answerController,
-                      onSubmitted: (text) {updateAnswer(interestId, question['id'], text);},
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        fontSize: 25,
-                        fontWeight: FontWeight.w700,
-                      ),
-                    ) :
-                    Text(
-                      question['answer'],
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        fontSize: 25,
-                        fontWeight: FontWeight.w700,
+                      ) :
+                      Text(
+                        question['answer'],
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontSize: 25,
+                          fontWeight: FontWeight.w700,
+                        ),
                       ),
                     ),
+                    SizedBox(height: 27),
+                  ],
+                ),
+              ),
+              Expanded(
+                flex: 6,
+                child: Container(
+                  padding: const EdgeInsets.fromLTRB(0.0, 17.0, 0.0, 0.0),
+                  color: Color(0xfff0fbfd),
+                  child: Scrollbar(
+                      child: ListView(
+                        children: getInterestList(user.interests.entries.map<Interest>((entry) => entry.value).toList(), (int newInterestId) {
+                          setState(() {
+                            interestId = newInterestId;
+                            question = user.interests[interestId].questions[0];
+                          });
+                        }, interestId),
+                      )
                   ),
-                  SizedBox(height: 27),
-                ],
-              ),
-            ),
-            Expanded(
-              flex: 6,
-              child: Container(
-                padding: const EdgeInsets.fromLTRB(0.0, 17.0, 0.0, 0.0),
-                color: Color(0xfff0fbfd),
-                child: Scrollbar(
-                    child: ListView(
-                      children: getInterestList(user.interests.entries.map<Interest>((entry) => entry.value).toList(), (int newInterestId) {
-                        setState(() {
-                          interestId = newInterestId;
-                          question = user.interests[interestId].questions[0];
-                        });
-                      }, interestId),
-                    )
                 ),
               ),
-            ),
-            SizedBox(
-              height: 10,
-            ),
-            widget.me ? GestureDetector(
-              onTap: () {
-                Navigator.of(context).pushNamed('/interests/add');
-              },
-              child: Container(
-                decoration: BoxDecoration(
-                  color: Colors.black,
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                margin: EdgeInsets.symmetric(vertical: 10),
-                padding: EdgeInsets.symmetric(horizontal: 25, vertical: 7),
-                child: Text(
-                  "+ Interests",
-                  style: TextStyle(color: Colors.white),
-                ),
+              SizedBox(
+                height: 10,
               ),
-            ) :
-            Container(),
-            SizedBox(
-              height: 15,
-            ),
-          ],
+              widget.me ? GestureDetector(
+                onTap: () {
+                  Navigator.of(context).pushNamed('/interests/add');
+                },
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: Colors.black,
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  margin: EdgeInsets.symmetric(vertical: 10),
+                  padding: EdgeInsets.symmetric(horizontal: 25, vertical: 7),
+                  child: Text(
+                    "+ Interests",
+                    style: TextStyle(color: Colors.white),
+                  ),
+                ),
+              ) :
+              Container(),
+              SizedBox(
+                height: 15,
+              ),
+            ],
+          ),
         ),
-      ),
-    ));
+      );
+    });
   }
 }

@@ -20,7 +20,7 @@ class CachedData<T> {
   String Function(T) encoder;
   T Function(String) decoder;
   Function networkDecoder;
-  Function(T) setCallback;
+  Function setCallback;
 
   CachedData({this.url, this.cacheFile, this.encoder, this.networkDecoder, this.decoder, this.setCallback});
 
@@ -38,11 +38,7 @@ class CachedData<T> {
     return _cachedValue;
   }
 
-  T getValue () {
-    return _cachedValue;
-  }
-
-  Future<T> networkGet (Function(T) callback) async {
+  Future<T> networkGet ({Function(T) callback}) async {
     await get();
 
     Future<T> future;
@@ -67,15 +63,19 @@ class CachedData<T> {
     saveToFile();
   }
 
+  void update (T Function(T) function) {
+    set(function(_cachedValue));
+  }
+
+  void clear () {
+    set(null);
+  }
+
   Future<void> saveToFile () async {
     if(cacheFile == null) return;
     File file = await getFile(cacheFile);
     String writeString = _cachedValue == null ? '' : encoder != null ? encoder(_cachedValue) : _cachedValue;
     await file.writeAsString(writeString);
-  }
-
-  void clear () {
-    set(null);
   }
 
 }
@@ -86,12 +86,12 @@ class MappedCachedData<K, V> extends CachedData<Map<K, V>> {
     String url,
     String cacheFile,
     Function networkDecoder,
-    Function(Map<K, V>) setCallback,
+    Function(Map<K, V>, K key) setCallback,
   }) : super(
     url: url,
     cacheFile: cacheFile,
     encoder: (data) => jsonEncode(data),
-    decoder: (data) => jsonDecode(data),
+    decoder: (data) => Map<K, V>.from(jsonDecode(data)),
     networkDecoder: networkDecoder,
     setCallback: setCallback,
   );
@@ -99,7 +99,7 @@ class MappedCachedData<K, V> extends CachedData<Map<K, V>> {
   Future<void> mappedSet (K key, V value) async {
     if(_cachedValue == null) _cachedValue = {key: value};
     else _cachedValue[key] = value;
-    if(setCallback != null) setCallback(_cachedValue);
+    if(setCallback != null) setCallback(_cachedValue, key);
     saveToFile();
   }
 

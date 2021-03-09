@@ -9,8 +9,10 @@ import 'package:findme/models/cachedData.dart';
 CachedData<String> token = CachedData(
   cacheFile: 'token.txt',
   setCallback: (token) {
-    if (token == null) onLogout();
-    else onLogin();
+    if (token == null) {
+      onLogout();
+      meUser.clear();
+    } else onLogin();
   },
 );
 Function onLogin, onLogout;
@@ -20,16 +22,16 @@ Function onLogin, onLogout;
 
 MappedCachedData<String, int> lastReadTimes = MappedCachedData(
   cacheFile: 'times.json',
-  setCallback: (data) => onTimeChanged.forEach((key, value) => value()),
+  setCallback: (data, String key) => onTimesChanged[key](),
 );
-Map<String, Function> onTimeChanged = {};
+Map<String, Function> onTimesChanged = {};
 
 
 // interests
 
 MappedCachedData<int, Interest> interests = MappedCachedData(
   url: 'interests/',
-  networkDecoder: (dynamic data) =>
+  networkDecoder: (data) =>
   Map<int, Interest>.fromIterable(data,
       key: (interest) => interest['id'],
       value: (interest) => Interest.fromJson(interest)
@@ -55,11 +57,7 @@ CachedData<User> _anotherUser = CachedData(
 );
 
 Future<User> getUser ({bool me = true, Function(User) callback}) async {
-  return me ? meUser.networkGet(callback) : _anotherUser.networkGet(callback);
-}
-
-User getUserValue ({bool me = true}) {
-  return me ? meUser.getValue() : _anotherUser.getValue();
+  return me ? meUser.networkGet(callback: callback) : _anotherUser.networkGet(callback: callback);
 }
 
 void setAnotherUser (String url) {

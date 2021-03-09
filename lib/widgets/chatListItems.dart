@@ -8,7 +8,7 @@ import 'package:findme/widgets/misc.dart';
 import 'package:findme/constant.dart';
 import 'package:findme/globals.dart' as globals;
 
-class ChatListItem extends StatelessWidget {
+class ChatListItem extends StatefulWidget {
 
   final Found found;
   final int index;
@@ -17,91 +17,16 @@ class ChatListItem extends StatelessWidget {
   ChatListItem({this.found, this.index = 0, this.lastMessage});
 
   @override
-  Widget build (BuildContext context) {
-    return GestureDetector(
-      onTap: () {
-        Navigator.of(context).pushNamed('/message',
-            arguments: found);
-      },
-      child: ColoredBox(
-        color: index % 2 == 0 ? Colors.grey[300] : Colors.white,
-        child: Padding(
-          padding: const EdgeInsets.all(0.0),
-          child: createFirebaseStreamWidget(lastMessage, (List<DocumentSnapshot> messages) => Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: <Widget>[
-              Row(
-                  children: <Widget>[
-                    Container(
-                      padding: const EdgeInsets.fromLTRB(17.0, 17.0, 17.0, 14.0),
-                      child: Image.network(found.avatar, height: 40),
-                    ),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
-                        Text(
-                          found.nick,
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 20.0,
-                          ),
-                        ),
-                        Container(
-                          constraints: BoxConstraints(maxWidth: 200, maxHeight: 20),
-                          child: Text(
-                            messages[0]['message'],
-                            style: TextStyle(
-                              color: Colors.black,
-                              fontSize: 14.0,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ]
-              ),
-              Container(
-                margin: EdgeInsets.symmetric(horizontal: 10.0),
-                child: UnreadMessage(found: found, endDate: messages[0]['timestamp'].toDate()),
-              ),
-            ],
-          ),
-        ),
-      ),
-    ));
-  }
+  _ChatListItemState createState() => _ChatListItemState();
 }
 
-class UnreadMessage extends StatefulWidget {
+class _ChatListItemState extends State<ChatListItem> {
 
-  final Found found;
-  final DateTime endDate;
-  const UnreadMessage({this.found, this.endDate});
-
-  @override
-  _UnreadMessageState createState() => _UnreadMessageState();
-}
-
-class _UnreadMessageState extends State<UnreadMessage> {
-
-  Stream<QuerySnapshot> unreadDocsStream;
+  Future<QuerySnapshot> unreadDocsStream;
 
   @override
   void initState () {
     super.initState();
-    updateStream();
-    globals.onTimeChanged[widget.found.chatId] = () {
-      setState((){updateStream();});
-    };
-  }
-
-  @override
-  void dispose () {
-    super.dispose();
-    globals.onTimeChanged.remove(widget.found.chatId);
-  }
-
-  void updateStream () {
     int timestamp = globals.lastReadTimes.mappedGetValue(widget.found.chatId);
     unreadDocsStream = FirebaseFirestore.instance
         .collection('chats')
@@ -109,34 +34,128 @@ class _UnreadMessageState extends State<UnreadMessage> {
         .collection('chats')
         .where('user', isEqualTo: 3 - widget.found.me)
         .where('timestamp', isGreaterThanOrEqualTo: new Timestamp.fromMillisecondsSinceEpoch(timestamp))
-        .snapshots();
+        .get();
+  }
+
+  @override
+  Widget build (BuildContext context) {
+    return GestureDetector(
+      onTap: () {
+        Navigator.of(context).pushNamed('/message',
+            arguments: widget.found);
+      },
+      child: ColoredBox(
+        color: widget.index % 2 == 0 ? Colors.grey[300] : Colors.white,
+        child: Padding(
+          padding: const EdgeInsets.all(0.0),
+          child: createFutureWidget<QuerySnapshot>(unreadDocsStream, (QuerySnapshot unreadMessages) =>
+            ChatListInfo(found: widget.found, lastMessage: widget.lastMessage, initNum: unreadMessages.docs.length)
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class ChatListInfo extends StatefulWidget {
+
+  final Found found;
+  final Stream<QuerySnapshot> lastMessage;
+  final int initNum;
+  ChatListInfo({this.found, this.lastMessage, this.initNum});
+
+  @override
+  _ChatListInfoState createState() => _ChatListInfoState();
+}
+
+class _ChatListInfoState extends State<ChatListInfo> {
+
+  String lastMessageId;
+  int num;
+
+  @override
+  void initState () {
+    super.initState();
+    num = widget.initNum;
+    globals.onTimesChanged[widget.found.chatId] = () {
+      num = 0;
+//      setState((){num = 0;});
+    };
+  }
+
+  @override
+  void dispose () {
+    super.dispose();
+    globals.onTimesChanged.remove(widget.found.chatId);
   }
 
   @override
   Widget build(BuildContext context) {
-    return createFirebaseStreamWidget(unreadDocsStream, (List<DocumentSnapshot> unreadMessages) {
-      int num = unreadMessages.length;
-      return num > 0 ?
-      Column(
-        crossAxisAlignment: CrossAxisAlignment.end,
+    return createFirebaseStreamWidget(widget.lastMessage, (List<DocumentSnapshot> messages) {
+      DocumentSnapshot message = messages[0];
+      if(lastMessageId == null) lastMessageId = message.id;
+      else if(lastMessageId != message.id && messages[0]['user'] != widget.found.me) {
+        lastMessageId = message.id;
+        num++;
+      }
+      return Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: <Widget>[
-          DateWidget(endDate: widget.endDate),
-          Container(
-            padding: EdgeInsets.all(7.0),
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              color: ThemeColors.primaryColor,
-            ),
-            child: Text(
-              "$num",
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: 14.0,
+          Row(
+            children: <Widget>[
+              Container(
+                padding: const EdgeInsets.fromLTRB(17.0, 17.0, 17.0, 14.0),
+                child: Image.network(widget.found.avatar, height: 40),
               ),
-            ),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  Text(
+                    widget.found.nick,
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 20.0,
+                    ),
+                  ),
+                  Container(
+                    constraints: BoxConstraints(maxWidth: 200, maxHeight: 20),
+                    child: Text(
+                      message['message'],
+                      style: TextStyle(
+                        color: Colors.black,
+                        fontSize: 14.0,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ]
+          ),
+          Container(
+            margin: EdgeInsets.symmetric(horizontal: 10.0),
+            child: num > 0 ? Column(
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: <Widget>[
+                DateWidget(endDate: messages[0]['timestamp'].toDate()),
+                Container(
+                  padding: EdgeInsets.all(7.0),
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: ThemeColors.primaryColor,
+                  ),
+                  child: Text(
+                    "$num",
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 14.0,
+                    ),
+                  ),
+                ),
+              ],
+            ) : Container(),
           ),
         ],
-      ) : Container();
+      );
     });
   }
 }

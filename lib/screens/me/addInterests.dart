@@ -17,7 +17,7 @@ class AddInterests extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return createFutureWidget(globals.interests.get(), (Map<int, Interest> interests) => Scaffold(
+    return createFutureWidget(globals.interests.networkGet(), (Map<int, Interest> interests) => Scaffold(
       backgroundColor: ThemeColors.lightColor,
       body: SafeArea(
         child: Column(
@@ -55,14 +55,15 @@ class AddInterests extends StatelessWidget {
 
                         POST('me/interests/update/', jsonEncode([{"interest": interest.id, "amount": interest.amount}]));
 
-                        User user = globals.meUser.getValue();
-                        if(user.interests.containsKey(interest.id)){
-                          if(amount == 0) user.interests.remove(interest.id);
-                          else user.interests[interest.id].amount = amount;
-                        }else{
-                          if(amount != 0) user.interests[interest.id] = interest;
-                        }
-                        globals.meUser.set(user);
+                        globals.meUser.update((User user) {
+                          if(user.interests.containsKey(interest.id)){
+                            if(amount == 0) user.interests.remove(interest.id);
+                            else user.interests[interest.id].amount = amount;
+                          }else{
+                            if(amount != 0) user.interests[interest.id] = interest;
+                          }
+                          return user;
+                        });
                       },
                       amount: interest.amount,
                       canChangeAmount: true,
