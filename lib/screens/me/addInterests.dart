@@ -17,7 +17,7 @@ class AddInterests extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return createFutureWidget(globals.interests.networkGet(), (Map<int, Interest> interests) => Scaffold(
+    return createFutureWidget(globals.interests.get(), (Map<int, Interest> interests) => Scaffold(
       backgroundColor: ThemeColors.lightColor,
       body: SafeArea(
         child: Column(

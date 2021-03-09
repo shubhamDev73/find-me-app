@@ -27,34 +27,26 @@ class CachedData<T> {
   T _cachedValue;
 
   Future<T> get () async {
-    if(_cachedValue != null || cacheFile == null) return _cachedValue;
-    try {
-      File file = await getFile(cacheFile);
-      String readString = await file.readAsString();
-      _cachedValue = decoder != null ? decoder(readString) : readString;
-    }catch(OSError) {
-      _cachedValue = null;
-    }
-    return _cachedValue;
-  }
+    // memory value
+    if(_cachedValue != null) return _cachedValue;
 
-  Future<T> networkGet ({Function(T) callback}) async {
-    await get();
+    // reading from file
+    if(cacheFile != null)
+      try {
+        File file = await getFile(cacheFile);
+        String readString = await file.readAsString();
+        _cachedValue = decoder != null ? decoder(readString) : readString;
+      }catch(OSError) {
+        _cachedValue = null;
+      }
+    if(_cachedValue != null || url == null) return _cachedValue;
 
-    Future<T> future;
-    if(_cachedValue == null){
-      future = GETResponse<T>(url,
+    // network call
+    return GETResponse<T>(url,
         decoder: networkDecoder,
-        callback: (T retrievedValue) {
-          _cachedValue = retrievedValue;
-          if(callback != null) callback(_cachedValue);
-        });
-    }else{
-      future = returnAsFuture<T>(_cachedValue);
-      if(callback != null) callback(_cachedValue);
-    }
-    saveToFile();
-    return future;
+        callback: (T retrievedValue) => set(retrievedValue),
+    );
+
   }
 
   void set (T value) {

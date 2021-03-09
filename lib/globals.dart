@@ -56,8 +56,8 @@ CachedData<User> _anotherUser = CachedData(
   networkDecoder: (Map<String, dynamic> user) => User.fromJson(user),
 );
 
-Future<User> getUser ({bool me = true, Function(User) callback}) async {
-  return me ? meUser.networkGet(callback: callback) : _anotherUser.networkGet(callback: callback);
+Future<User> getUser ({bool me = true}) async {
+  return me ? meUser.get() : _anotherUser.get();
 }
 
 void setAnotherUser (String url) {
