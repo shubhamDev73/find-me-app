@@ -53,24 +53,19 @@ class _TabsState extends State<Tabs> {
     return WillPopScope(
       onWillPop: () async => !await navigatorKeys[_currentTab].currentState.maybePop(),
       child: Scaffold(
-        body: Stack(children: <Widget>[
-          Offstage(
-            offstage: _currentTab != Tab.me,
-            child: tabScreens[Tab.me],
-          ),
-          Offstage(
-            offstage: _currentTab != Tab.found,
-            child: tabScreens[Tab.found],
-          ),
-        ]),
+        body: Stack(
+          children: Tab.values.map<Widget>((Tab tab) => Offstage(
+            offstage: _currentTab != tab,
+            child: tabScreens[tab],
+          )).toList(),
+        ),
         bottomNavigationBar: SizedBox(
           height: 40,
           child: BottomNavigationBar(
             type: BottomNavigationBarType.fixed,
-            items: [
-              tabButton(icon: tabIcon[Tab.me], selected: _currentTab == Tab.me),
-              tabButton(icon: tabIcon[Tab.found], selected: _currentTab == Tab.found),
-            ],
+            items: Tab.values.map<BottomNavigationBarItem>((Tab tab) =>
+              tabButton(icon: tabIcon[tab], selected: _currentTab == tab)
+            ).toList(),
             currentIndex: Tab.values.indexOf(_currentTab),
             onTap: (index) {
               Tab newTab = Tab.values[index];
