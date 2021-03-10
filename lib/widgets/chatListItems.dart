@@ -114,15 +114,15 @@ class ChatListItem extends StatelessWidget {
                           ),
                         ],
                       ) : Container(),
-                    )),
+                    ), fullPage: false),
                   ],
                 );
-              });
-            }),
+              }, fullPage: false);
+            }, fullPage: false),
           ),
         ),
       );
-    });
+    }, fullPage: false);
   }
 }
 

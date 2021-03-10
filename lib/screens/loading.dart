@@ -2,14 +2,17 @@ import 'package:flutter/material.dart';
 
 class LoadingScreen extends StatelessWidget {
 
+  final bool fullPage;
+  const LoadingScreen({this.fullPage = true});
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Container(
-        child: Center(
-          child: CircularProgressIndicator(),
-        ),
+    Widget loader = Container(
+      child: Center(
+        child: CircularProgressIndicator(),
       ),
     );
+
+    return fullPage ? Scaffold(body: loader) : loader;
   }
 }

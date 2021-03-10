@@ -120,7 +120,7 @@ class ChatMessage extends StatelessWidget {
                         },
                       ),
                     );
-                  }),
+                  }, fullPage: false),
                 ),
               ),
               Container(
