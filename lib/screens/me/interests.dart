@@ -82,6 +82,14 @@ class _InterestsState extends State<Interests> {
   int interestId;
   Map<String, dynamic> question = {"id": 0, "answer": ""};
 
+  @override
+  void initState () {
+    super.initState();
+    globals.onInterestsChanged = () {
+      setState(() {});
+    };
+  }
+
   void updateAnswer(int interestId, int questionId, String answer) {
     POST('me/interests/$interestId/update/', jsonEncode([{"question": questionId, "answer": answer}]));
 

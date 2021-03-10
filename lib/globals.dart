@@ -54,8 +54,9 @@ MappedCachedData<int, Interest> interests = MappedCachedData(
       key: (interest) => interest['id'],
       value: (interest) => Interest.fromJson(interest)
     ),
+  setCallback: (data, [key]) => onInterestsChanged?.call(),
 );
-
+Function onInterestsChanged;
 
 // users
 
