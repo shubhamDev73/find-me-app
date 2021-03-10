@@ -7,9 +7,10 @@ import 'package:findme/models/cachedData.dart';
 // token
 
 CachedData<String> token = CachedData(
+  emptyValue: '',
   cacheFile: 'token.txt',
   setCallback: (token) {
-    if (token == null) {
+    if (token == '') {
       onLogout();
       meUser.clear();
     } else onLogin();
@@ -30,18 +31,20 @@ Map<String, Function> onTimesChanged = {};
 // interests
 
 MappedCachedData<int, Interest> interests = MappedCachedData(
+  cacheFile: 'interests.json',
   url: 'interests/',
   networkDecoder: (data) =>
-  Map<int, Interest>.fromIterable(data,
+    Map<int, Interest>.fromIterable(data,
       key: (interest) => interest['id'],
       value: (interest) => Interest.fromJson(interest)
-  ),
+    ),
 );
 
 
 // users
 
 CachedData<User> meUser = CachedData(
+  emptyValue: User(),
   url: 'me/',
   cacheFile: 'user.json',
   encoder: (User user) => jsonEncode(user.toJson()),
@@ -50,6 +53,7 @@ CachedData<User> meUser = CachedData(
 );
 
 CachedData<User> _anotherUser = CachedData(
+  emptyValue: User(),
   url: '',
   encoder: (User user) => jsonEncode(user.toJson()),
   decoder: (String userString) => User.fromJson(jsonDecode(userString)),

@@ -15,6 +15,7 @@ Future<T> returnAsFuture<T> (T data) async {
 
 class CachedData<T> {
 
+  T emptyValue;
   String url;
   String cacheFile;
   String Function(T) encoder;
@@ -22,24 +23,25 @@ class CachedData<T> {
   Function networkDecoder;
   Function setCallback;
 
-  CachedData({this.url, this.cacheFile, this.encoder, this.networkDecoder, this.decoder, this.setCallback});
+  CachedData({this.emptyValue, this.url, this.cacheFile, this.encoder, this.networkDecoder, this.decoder, this.setCallback});
 
   T _cachedValue;
 
   Future<T> get () async {
     // memory value
-    if(_cachedValue != null) return _cachedValue;
+    if(_cachedValue == null) _cachedValue = emptyValue;
+    if(_cachedValue != emptyValue) return _cachedValue;
 
     // reading from file
     if(cacheFile != null)
       try {
         File file = await getFile(cacheFile);
         String readString = await file.readAsString();
-        _cachedValue = decoder != null ? decoder(readString) : readString;
-      }catch(OSError) {
-        _cachedValue = null;
+        _cachedValue = readString == '' || readString == null ? emptyValue : decoder?.call(readString) ?? readString;
+      } catch (OSError) {
+        _cachedValue = emptyValue;
       }
-    if(_cachedValue != null || url == null) return _cachedValue;
+    if(_cachedValue != emptyValue || url == null) return _cachedValue;
 
     // network call
     return GETResponse<T>(url,
@@ -51,7 +53,7 @@ class CachedData<T> {
 
   void set (T value) {
     _cachedValue = value;
-    if(setCallback != null) setCallback(_cachedValue);
+    setCallback?.call(_cachedValue);
     saveToFile();
   }
 
@@ -60,13 +62,13 @@ class CachedData<T> {
   }
 
   void clear () {
-    set(null);
+    set(emptyValue);
   }
 
   Future<void> saveToFile () async {
     if(cacheFile == null) return;
     File file = await getFile(cacheFile);
-    String writeString = _cachedValue == null ? '' : encoder != null ? encoder(_cachedValue) : _cachedValue;
+    String writeString = _cachedValue == emptyValue ? '' : encoder?.call(_cachedValue) ?? _cachedValue;
     await file.writeAsString(writeString);
   }
 
@@ -80,6 +82,7 @@ class MappedCachedData<K, V> extends CachedData<Map<K, V>> {
     Function networkDecoder,
     Function(Map<K, V>, K key) setCallback,
   }) : super(
+    emptyValue: {},
     url: url,
     cacheFile: cacheFile,
     encoder: (data) => jsonEncode(data),
@@ -89,14 +92,13 @@ class MappedCachedData<K, V> extends CachedData<Map<K, V>> {
   );
 
   Future<void> mappedSet (K key, V value) async {
-    if(_cachedValue == null) _cachedValue = {key: value};
-    else _cachedValue[key] = value;
-    if(setCallback != null) setCallback(_cachedValue, key);
+    _cachedValue[key] = value;
+    setCallback?.call(_cachedValue, key);
     saveToFile();
   }
 
   V mappedGetValue (K key) {
-    if(_cachedValue == null || !_cachedValue.containsKey(key)) return null;
+    if(!_cachedValue.containsKey(key)) return null;
     return _cachedValue[key];
   }
 

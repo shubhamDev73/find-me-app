@@ -75,7 +75,7 @@ class ChatList extends StatelessWidget {
                               itemBuilder: (context, index) {
                                 Found found = foundList[index];
 
-                                if (times == null || !times.containsKey(found.chatId))
+                                if (!times.containsKey(found.chatId))
                                   globals.lastReadTimes.mappedSet(found.chatId, 0);
 
                                 return ChatListItem(
