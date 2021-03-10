@@ -3,7 +3,7 @@ class Found {
   int me;
   String chatId;
   String nick;
-  String avatar;
+  Map<String, dynamic> avatar;
   bool retainRequestSent;
   bool retained;
 

@@ -36,7 +36,7 @@ class ChatList extends StatelessWidget {
                               children: <Widget>[
                                 Expanded(
                                   flex: 3,
-                                  child: Image.network(user.avatar, height: 75),
+                                  child: Image.network(user.avatar['v1'], height: 75),
                                 ),
                                 Container(
                                   width: 7,
@@ -54,7 +54,7 @@ class ChatList extends StatelessWidget {
                                         dynamic user = users[index];
                                         return FindListItem(
                                             id: user['id'],
-                                            avatar: user['avatar'],
+                                            avatar: user['avatar']['v1'],
                                             nick: user['nick'],
                                             isRequest: index < numRequests
                                         );

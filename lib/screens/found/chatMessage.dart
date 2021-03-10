@@ -51,7 +51,7 @@ class ChatMessage extends StatelessWidget {
                           },
                           child: Container(
                             margin: EdgeInsets.symmetric(horizontal: 12.0),
-                            child: Image.network(found.avatar, height: 75),
+                            child: Image.network(found.avatar['v1'], height: 75),
                           ),
                         ),
                       ),

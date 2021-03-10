@@ -2,7 +2,7 @@ import 'package:findme/models/interests.dart';
 
 class User {
   String nick;
-  String avatar;
+  Map<String, dynamic> avatar;
   Map<String, dynamic> personality;
   Map<int, Interest> interests;
   String mood;

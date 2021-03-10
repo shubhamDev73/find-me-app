@@ -105,7 +105,7 @@ class _ChatListInfoState extends State<ChatListInfo> {
             children: <Widget>[
               Container(
                 padding: const EdgeInsets.fromLTRB(17.0, 17.0, 17.0, 14.0),
-                child: Image.network(widget.found.avatar, height: 40),
+                child: Image.network(widget.found.avatar['v1'], height: 40),
               ),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,

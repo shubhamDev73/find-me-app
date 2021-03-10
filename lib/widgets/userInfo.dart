@@ -22,7 +22,7 @@ class UserInfo extends StatelessWidget {
             children: [
               Container(
                 child: Center(
-                  child: Image.network(user.avatar),
+                  child: Image.network(user.avatar['v2']),
                 ),
               ),
               Positioned(
