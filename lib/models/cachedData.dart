@@ -37,7 +37,7 @@ class CachedData<T> {
       try {
         File file = await getFile(cacheFile);
         String readString = await file.readAsString();
-        _cachedValue = readString == '' || readString == null ? emptyValue : decoder?.call(readString) ?? readString;
+        _cachedValue = readString == '' || readString == null ? emptyValue : decoder?.call(readString) ?? jsonDecode(readString);
       } catch (OSError) {
         _cachedValue = emptyValue;
       }
@@ -45,7 +45,7 @@ class CachedData<T> {
 
     // network call
     return GETResponse<T>(url,
-        decoder: networkDecoder,
+        decoder: networkDecoder ?? decoder,
         callback: (T retrievedValue) => set(retrievedValue),
     );
 
@@ -68,7 +68,7 @@ class CachedData<T> {
   Future<void> saveToFile () async {
     if(cacheFile == null) return;
     File file = await getFile(cacheFile);
-    String writeString = _cachedValue == emptyValue ? '' : encoder?.call(_cachedValue) ?? _cachedValue;
+    String writeString = _cachedValue == emptyValue ? '' : encoder?.call(_cachedValue) ?? jsonEncode(_cachedValue);
     await file.writeAsString(writeString);
   }
 
@@ -79,13 +79,14 @@ class MappedCachedData<K, V> extends CachedData<Map<K, V>> {
   MappedCachedData({
     String url,
     String cacheFile,
+    String Function(Map<K, V>) encoder,
     Function networkDecoder,
     Function(Map<K, V>, K key) setCallback,
   }) : super(
     emptyValue: {},
     url: url,
     cacheFile: cacheFile,
-    encoder: (data) => jsonEncode(data),
+    encoder: encoder,
     decoder: (data) => Map<K, V>.from(jsonDecode(data)),
     networkDecoder: networkDecoder,
     setCallback: setCallback,

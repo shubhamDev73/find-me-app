@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:findme/models/user.dart';
 import 'package:findme/models/interests.dart';
+import 'package:findme/models/found.dart';
 import 'package:findme/models/cachedData.dart';
 
 // token
@@ -31,8 +32,8 @@ Map<String, Function> onTimesChanged = {};
 // interests
 
 MappedCachedData<int, Interest> interests = MappedCachedData(
-  cacheFile: 'interests.json',
   url: 'interests/',
+  cacheFile: 'interests.json',
   networkDecoder: (data) =>
     Map<int, Interest>.fromIterable(data,
       key: (interest) => interest['id'],
@@ -70,3 +71,27 @@ void setAnotherUser (String url) {
     _anotherUser.url = url;
   }
 }
+
+
+// found
+
+CachedData<List<dynamic>> requests = CachedData(
+  emptyValue: [],
+  url: 'requests/',
+  cacheFile: 'requests.json',
+);
+
+CachedData<List<dynamic>> finds = CachedData(
+  emptyValue: [],
+  url: 'find/',
+  cacheFile: 'finds.json',
+  networkDecoder: (data) => data['users'],
+);
+
+CachedData<List<Found>> founds = CachedData(
+  emptyValue: [],
+  url: 'found/',
+  cacheFile: 'founds.json',
+  encoder: (data) => jsonEncode(data.map((found) => found.toJson()).toList()),
+  networkDecoder: (data) => data.map<Found>((found) => Found.fromJson(found)).toList()
+);

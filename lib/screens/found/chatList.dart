@@ -7,7 +7,6 @@ import 'package:findme/widgets/misc.dart';
 import 'package:findme/models/user.dart';
 import 'package:findme/models/found.dart';
 import 'package:findme/constant.dart';
-import 'package:findme/API.dart';
 import 'package:findme/globals.dart' as globals;
 
 class ChatList extends StatelessWidget {
@@ -16,12 +15,10 @@ class ChatList extends StatelessWidget {
   Widget build(BuildContext context) {
     return createFutureWidget<User>(globals.getUser(), (User user) =>
       createFutureWidget<Map<String, int>>(globals.lastReadTimes.get(), (Map<String, int> times) =>
-        createFutureWidget<List<dynamic>>(GETResponse<List<dynamic>>('requests/'), (List<dynamic> requests) =>
-          createFutureWidget<Map<String, dynamic>>(GETResponse<Map<String, dynamic>>('find/'), (Map<String, dynamic> find) =>
-            createFutureWidget<List<Found>>(GETResponse<List<Found>>('found/',
-              decoder: (result) => result.map<Found>((found) => Found.fromJson(found)).toList(),
-            ), (List<Found> foundList) {
-              List<dynamic> users = [...requests, ...find['users']];
+        createFutureWidget<List<dynamic>>(globals.requests.get(), (List<dynamic> requests) =>
+          createFutureWidget<List<dynamic>>(globals.finds.get(), (List<dynamic> finds) =>
+            createFutureWidget<List<Found>>(globals.founds.get(), (List<Found> founds) {
+              List<dynamic> users = [...requests, ...finds];
               int numRequests = requests.length;
               return Scaffold(
                 body: SafeArea(
@@ -73,7 +70,7 @@ class ChatList extends StatelessWidget {
                             color: Colors.white,
                             child: ListView.builder(
                               itemBuilder: (context, index) {
-                                Found found = foundList[index];
+                                Found found = founds[index];
 
                                 if (!times.containsKey(found.chatId))
                                   globals.lastReadTimes.mappedSet(found.chatId, 0);
@@ -91,7 +88,7 @@ class ChatList extends StatelessWidget {
                                   index: index
                                 );
                               },
-                              itemCount: foundList.length,
+                              itemCount: founds.length,
                             ),
                           ),
                         ),
