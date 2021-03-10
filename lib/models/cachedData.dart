@@ -107,9 +107,4 @@ class MappedCachedData<K, V> extends CachedData<Map<K, V>> {
     saveToFile();
   }
 
-  V mappedGetValue (K key) {
-    if(!_cachedValue.containsKey(key)) return null;
-    return _cachedValue[key];
-  }
-
 }

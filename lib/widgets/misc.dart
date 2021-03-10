@@ -5,28 +5,37 @@ import 'package:intl/intl.dart';
 
 import 'package:findme/screens/loading.dart';
 
-FutureBuilder<T> createFutureWidget<T>(Future<T> futureObj, Function widgetCreator) {
-  return FutureBuilder<T>(
-    future: futureObj,
-    builder: (context, snapshot) {
+class WidgetBuilder<T> {
+
+  final Widget Function(T) widgetCreator;
+  const WidgetBuilder(this.widgetCreator);
+
+  Widget Function(BuildContext, AsyncSnapshot<T>) getBuilder () {
+    return (BuildContext context, AsyncSnapshot<T> snapshot) {
       if (snapshot.hasData) return widgetCreator(snapshot.data);
       else if (snapshot.hasError) return Text("${snapshot.error}");
       return LoadingScreen();
-    },
+    };
+  }
+
+}
+
+FutureBuilder<T> createFutureWidget<T>(Future<T> futureObj, Widget Function(T) widgetCreator) {
+  return FutureBuilder<T>(
+    future: futureObj,
+    builder: WidgetBuilder<T>(widgetCreator).getBuilder(),
   );
 }
 
-StreamBuilder<QuerySnapshot> createFirebaseStreamWidget(Stream<QuerySnapshot> streamObj, Function widgetCreator) {
-  return StreamBuilder<QuerySnapshot>(
+StreamBuilder<T> createStreamWidget<T>(Stream<T> streamObj, Widget Function(T) widgetCreator) {
+  return StreamBuilder<T>(
     stream: streamObj,
-    builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
-      if (snapshot.hasData){
-        List<DocumentSnapshot> messages = snapshot.data.docs;
-        return widgetCreator(messages);
-      } else if (snapshot.hasError) return Text("${snapshot.error}");
-      return CircularProgressIndicator();
-    },
+    builder: WidgetBuilder<T>(widgetCreator).getBuilder(),
   );
+}
+
+StreamBuilder<QuerySnapshot> createFirebaseStreamWidget(Stream<QuerySnapshot> streamObj, Widget Function(List<DocumentSnapshot>) widgetCreator) {
+  return createStreamWidget(streamObj, (QuerySnapshot query) => widgetCreator(query.docs));
 }
 
 String formatDate ({Timestamp timestamp, DateTime endDate}) {

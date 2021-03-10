@@ -8,7 +8,7 @@ import 'package:findme/widgets/misc.dart';
 import 'package:findme/constant.dart';
 import 'package:findme/globals.dart' as globals;
 
-class ChatListItem extends StatefulWidget {
+class ChatListItem extends StatelessWidget {
 
   final Found found;
   final int index;
@@ -16,145 +16,111 @@ class ChatListItem extends StatefulWidget {
 
   ChatListItem({this.found, this.index = 0, this.lastMessage});
 
-  @override
-  _ChatListItemState createState() => _ChatListItemState();
-}
+  final StreamController<int> numController = StreamController<int>();
+  int num;
+  String lastMessageId;
 
-class _ChatListItemState extends State<ChatListItem> {
-
-  Future<QuerySnapshot> unreadDocsStream;
-
-  @override
-  void initState () {
-    super.initState();
-    int timestamp = globals.lastReadTimes.mappedGetValue(widget.found.chatId);
-    unreadDocsStream = FirebaseFirestore.instance
-        .collection('chats')
-        .doc(widget.found.chatId)
-        .collection('chats')
-        .where('user', isEqualTo: 3 - widget.found.me)
-        .where('timestamp', isGreaterThanOrEqualTo: new Timestamp.fromMillisecondsSinceEpoch(timestamp))
-        .get();
+  void assign (int n) {
+    num = n;
+    numController.add(num);
   }
 
   @override
   Widget build (BuildContext context) {
-    return GestureDetector(
-      onTap: () {
-        Navigator.of(context).pushNamed('/message',
-            arguments: widget.found);
-      },
-      child: ColoredBox(
-        color: widget.index % 2 == 0 ? Colors.grey[300] : Colors.white,
-        child: Padding(
-          padding: const EdgeInsets.all(0.0),
-          child: createFutureWidget<QuerySnapshot>(unreadDocsStream, (QuerySnapshot unreadMessages) =>
-            ChatListInfo(found: widget.found, lastMessage: widget.lastMessage, initNum: unreadMessages.docs.length)
+    if(num == null){
+      assign(0);
+      globals.onTimesChanged[found.chatId] = () => assign(0);
+    }
+
+    return createFutureWidget(globals.lastReadTimes.get(), (Map<String, int> times) {
+      Future<QuerySnapshot> unreadDocsStream = FirebaseFirestore.instance
+          .collection('chats')
+          .doc(found.chatId)
+          .collection('chats')
+          .where('user', isEqualTo: 3 - found.me)
+          .where('timestamp', isGreaterThanOrEqualTo: new Timestamp.fromMillisecondsSinceEpoch(times[found.chatId]))
+          .get();
+
+      return GestureDetector(
+        onTap: () {
+          Navigator.of(context).pushNamed('/message',
+              arguments: found);
+        },
+        child: ColoredBox(
+          color: index % 2 == 0 ? Colors.grey[300] : Colors.white,
+          child: Container(
+            child: createFutureWidget<QuerySnapshot>(unreadDocsStream, (QuerySnapshot unreadMessages) {
+              assign(unreadMessages.docs.length);
+              return createFirebaseStreamWidget(lastMessage, (List<DocumentSnapshot> messages) {
+                DocumentSnapshot message = messages[0];
+                if (lastMessageId == null)
+                  lastMessageId = message.id;
+                else if (lastMessageId != message.id && messages[0]['user'] != found.me) {
+                  lastMessageId = message.id;
+                  assign(num + 1);
+                }
+                return Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: <Widget>[
+                    Row(
+                        children: <Widget>[
+                          Container(
+                            padding: const EdgeInsets.fromLTRB(17.0, 17.0, 17.0, 14.0),
+                            child: Image.network(found.avatar['v1'], height: 40),
+                          ),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: <Widget>[
+                              Text(
+                                found.nick,
+                                style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 20.0,
+                                ),
+                              ),
+                              Container(
+                                constraints: BoxConstraints(maxWidth: 200, maxHeight: 20),
+                                child: Text(
+                                  message['message'],
+                                  style: TextStyle(
+                                    color: Colors.black,
+                                    fontSize: 14.0,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ]
+                    ),
+                    createStreamWidget<int>(numController.stream, (int num) => Container(
+                      margin: EdgeInsets.symmetric(horizontal: 10.0),
+                      child: num > 0 ? Column(
+                        crossAxisAlignment: CrossAxisAlignment.end,
+                        children: <Widget>[
+                          DateWidget(endDate: message['timestamp'].toDate()),
+                          Container(
+                            padding: EdgeInsets.all(7.0),
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              color: ThemeColors.primaryColor,
+                            ),
+                            child: Text(
+                              "$num",
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 14.0,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ) : Container(),
+                    )),
+                  ],
+                );
+              });
+            }),
           ),
         ),
-      ),
-    );
-  }
-}
-
-class ChatListInfo extends StatefulWidget {
-
-  final Found found;
-  final Stream<QuerySnapshot> lastMessage;
-  final int initNum;
-  ChatListInfo({this.found, this.lastMessage, this.initNum});
-
-  @override
-  _ChatListInfoState createState() => _ChatListInfoState();
-}
-
-class _ChatListInfoState extends State<ChatListInfo> {
-
-  String lastMessageId;
-  int num;
-
-  @override
-  void initState () {
-    super.initState();
-    num = widget.initNum;
-    globals.onTimesChanged[widget.found.chatId] = () {
-      num = 0;
-//      setState((){num = 0;});
-    };
-  }
-
-  @override
-  void dispose () {
-    super.dispose();
-    globals.onTimesChanged.remove(widget.found.chatId);
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return createFirebaseStreamWidget(widget.lastMessage, (List<DocumentSnapshot> messages) {
-      DocumentSnapshot message = messages[0];
-      if(lastMessageId == null) lastMessageId = message.id;
-      else if(lastMessageId != message.id && messages[0]['user'] != widget.found.me) {
-        lastMessageId = message.id;
-        num++;
-      }
-      return Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: <Widget>[
-          Row(
-            children: <Widget>[
-              Container(
-                padding: const EdgeInsets.fromLTRB(17.0, 17.0, 17.0, 14.0),
-                child: Image.network(widget.found.avatar['v1'], height: 40),
-              ),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  Text(
-                    widget.found.nick,
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 20.0,
-                    ),
-                  ),
-                  Container(
-                    constraints: BoxConstraints(maxWidth: 200, maxHeight: 20),
-                    child: Text(
-                      message['message'],
-                      style: TextStyle(
-                        color: Colors.black,
-                        fontSize: 14.0,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ]
-          ),
-          Container(
-            margin: EdgeInsets.symmetric(horizontal: 10.0),
-            child: num > 0 ? Column(
-              crossAxisAlignment: CrossAxisAlignment.end,
-              children: <Widget>[
-                DateWidget(endDate: messages[0]['timestamp'].toDate()),
-                Container(
-                  padding: EdgeInsets.all(7.0),
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: ThemeColors.primaryColor,
-                  ),
-                  child: Text(
-                    "$num",
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 14.0,
-                    ),
-                  ),
-                ),
-              ],
-            ) : Container(),
-          ),
-        ],
       );
     });
   }
