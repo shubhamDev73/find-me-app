@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import 'package:findme/widgets/adjectiveListItems.dart';
 import 'package:findme/widgets/topBox.dart';
@@ -202,7 +203,10 @@ class _PersonalityState extends State<Personality> {
               child: Container(),
             ),
             GestureDetector(
-              onTap: () {},
+              onTap: () async {
+                String url = user.personality[trait]['url'];
+                if(await canLaunch(url)) await launch(url);
+              },
               child: Container(
                 height: 37,
                 width: 110,
