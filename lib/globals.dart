@@ -12,8 +12,12 @@ CachedData<String> token = CachedData(
   cacheFile: 'token.txt',
   setCallback: (token) {
     if (token == '') {
-      onLogout();
       meUser.clear();
+      lastReadTimes.clear();
+      requests.clear();
+      finds.clear();
+      founds.clear();
+      onLogout();
     } else onLogin();
   },
 );
@@ -24,7 +28,7 @@ Function onLogin, onLogout;
 
 MappedCachedData<String, int> lastReadTimes = MappedCachedData(
   cacheFile: 'times.json',
-  setCallback: (data, String key) => onTimesChanged[key](),
+  setCallback: (data, [String key]) => key == null ? null : onTimesChanged.containsKey(key) ? onTimesChanged[key]() : null,
 );
 Map<String, Function> onTimesChanged = {};
 
@@ -34,8 +38,19 @@ Map<String, Function> onTimesChanged = {};
 MappedCachedData<int, Interest> interests = MappedCachedData(
   url: 'interests/',
   cacheFile: 'interests.json',
+  encoder: (data) => jsonEncode(
+    Map<String, Map<String, dynamic>>.fromIterable(data.values,
+      key: (interest) => interest.id.toString(),
+      value: (interest) => interest.toJson(),
+    )
+  ),
+  decoder: (data) =>
+    Map<int, Interest>.fromIterable(jsonDecode(data).values,
+      key: (interest) => int.parse(interest['id']),
+      value: (interest) => Interest.fromJson(interest)
+    ),
   networkDecoder: (data) =>
-    Map<int, Interest>.fromIterable(data,
+    Map<int, Interest>.fromIterable(jsonDecode(data),
       key: (interest) => interest['id'],
       value: (interest) => Interest.fromJson(interest)
     ),
@@ -50,7 +65,6 @@ CachedData<User> meUser = CachedData(
   cacheFile: 'user.json',
   encoder: (User user) => jsonEncode(user.toJson()),
   decoder: (String userString) => User.fromJson(jsonDecode(userString)),
-  networkDecoder: (Map<String, dynamic> user) => User.fromJson(user),
 );
 
 CachedData<User> _anotherUser = CachedData(
@@ -58,7 +72,6 @@ CachedData<User> _anotherUser = CachedData(
   url: '',
   encoder: (User user) => jsonEncode(user.toJson()),
   decoder: (String userString) => User.fromJson(jsonDecode(userString)),
-  networkDecoder: (Map<String, dynamic> user) => User.fromJson(user),
 );
 
 Future<User> getUser ({bool me = true}) async {
@@ -85,7 +98,7 @@ CachedData<List<dynamic>> finds = CachedData(
   emptyValue: [],
   url: 'find/',
   cacheFile: 'finds.json',
-  networkDecoder: (data) => data['users'],
+  networkDecoder: (data) => jsonDecode(data)['users'],
 );
 
 CachedData<List<Found>> founds = CachedData(
@@ -93,5 +106,5 @@ CachedData<List<Found>> founds = CachedData(
   url: 'found/',
   cacheFile: 'founds.json',
   encoder: (data) => jsonEncode(data.map((found) => found.toJson()).toList()),
-  networkDecoder: (data) => data.map<Found>((found) => Found.fromJson(found)).toList()
+  decoder: (data) => jsonDecode(data).map<Found>((found) => Found.fromJson(found)).toList(),
 );

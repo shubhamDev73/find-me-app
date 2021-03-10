@@ -20,7 +20,7 @@ class CachedData<T> {
   String cacheFile;
   String Function(T) encoder;
   T Function(String) decoder;
-  Function networkDecoder;
+  T Function(String) networkDecoder;
   Function setCallback;
 
   CachedData({this.emptyValue, this.url, this.cacheFile, this.encoder, this.networkDecoder, this.decoder, this.setCallback});
@@ -30,7 +30,7 @@ class CachedData<T> {
   Future<T> get () async {
     // memory value
     if(_cachedValue == null) _cachedValue = emptyValue;
-    if(_cachedValue != emptyValue) return _cachedValue;
+    if(!isEmpty()) return _cachedValue;
 
     // reading from file
     if(cacheFile != null)
@@ -41,11 +41,11 @@ class CachedData<T> {
       } catch (OSError) {
         _cachedValue = emptyValue;
       }
-    if(_cachedValue != emptyValue || url == null) return _cachedValue;
+    if(!isEmpty() || url == null) return _cachedValue;
 
     // network call
     return GETResponse<T>(url,
-        decoder: networkDecoder ?? decoder,
+        decoder: networkDecoder ?? decoder ?? (data) => jsonDecode(data),
         callback: (T retrievedValue) => set(retrievedValue),
     );
 
@@ -65,10 +65,14 @@ class CachedData<T> {
     set(emptyValue);
   }
 
+  bool isEmpty () {
+    return _cachedValue == emptyValue;
+  }
+
   Future<void> saveToFile () async {
     if(cacheFile == null) return;
     File file = await getFile(cacheFile);
-    String writeString = _cachedValue == emptyValue ? '' : encoder?.call(_cachedValue) ?? jsonEncode(_cachedValue);
+    String writeString = isEmpty() ? '' : encoder?.call(_cachedValue) ?? jsonEncode(_cachedValue);
     await file.writeAsString(writeString);
   }
 
@@ -80,17 +84,22 @@ class MappedCachedData<K, V> extends CachedData<Map<K, V>> {
     String url,
     String cacheFile,
     String Function(Map<K, V>) encoder,
+    Map<K, V> Function(String) decoder,
     Function networkDecoder,
     Function(Map<K, V>, K key) setCallback,
   }) : super(
-    emptyValue: {},
+    emptyValue: new Map<K, V>(),
     url: url,
     cacheFile: cacheFile,
     encoder: encoder,
-    decoder: (data) => Map<K, V>.from(jsonDecode(data)),
+    decoder: decoder ?? (data) => Map<K, V>.from(jsonDecode(data)),
     networkDecoder: networkDecoder,
     setCallback: setCallback,
   );
+
+  bool isEmpty () {
+    return _cachedValue.isEmpty;
+  }
 
   Future<void> mappedSet (K key, V value) async {
     _cachedValue[key] = value;

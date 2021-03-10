@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:http/http.dart' as http;
 import 'package:findme/globals.dart' as globals;
 
@@ -10,14 +8,13 @@ Future<http.Response> GET(String url) async {
   return http.get(baseURL + url, headers: {"Authorization": "Bearer $token"});
 }
 
-Future<T> GETResponse<T>(String url, {Function decoder, Function callback}) async {
+Future<T> GETResponse<T>(String url, {T Function(String) decoder, Function callback}) async {
 
   final response = await GET(url);
   if (response.statusCode == 200) {
-    var result = jsonDecode(response.body);
-    if(decoder != null) result = decoder(result);
-    if(callback != null) callback(result);
-    return result as T;
+    T result = decoder?.call(response.body) ?? response.body;
+    callback?.call(result);
+    return result;
   } else {
     throw Exception('Failed to load: ${response.statusCode}');
   }
