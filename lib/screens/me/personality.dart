@@ -167,7 +167,10 @@ class _PersonalityState extends State<Personality> {
             ),
             widget.me ?
             GestureDetector(
-              onTap: () {},
+              onTap: () async {
+                String url = 'https://tripetto.app/run/YK2S455EX3';
+                if(await canLaunch(url)) await launch(url);
+              },
               child: Container(
                 height: 42,
                 width: 125,
