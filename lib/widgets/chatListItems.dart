@@ -20,7 +20,7 @@ class ChatListItem extends StatelessWidget {
   int num;
   String lastMessageId;
 
-  void assign (int n) {
+  void assignNum (int n) {
     num = n;
     numController.add(num);
   }
@@ -28,8 +28,8 @@ class ChatListItem extends StatelessWidget {
   @override
   Widget build (BuildContext context) {
     if(num == null){
-      assign(0);
-      globals.onTimesChanged[found.chatId] = () => assign(0);
+      assignNum(0);
+      globals.onTimesChanged[found.chatId] = () => assignNum(0);
     }
 
     return createFutureWidget(globals.lastReadTimes.get(), (Map<String, int> times) {
@@ -50,49 +50,52 @@ class ChatListItem extends StatelessWidget {
           color: index % 2 == 0 ? Colors.grey[300] : Colors.white,
           child: Container(
             child: createFutureWidget<QuerySnapshot>(unreadDocsStream, (QuerySnapshot unreadMessages) {
-              assign(unreadMessages.docs.length);
+              assignNum(unreadMessages.docs.length);
               return createFirebaseStreamWidget(lastMessage, (List<DocumentSnapshot> messages) {
-                DocumentSnapshot message = messages[0];
-                if (lastMessageId == null)
-                  lastMessageId = message.id;
-                else if (lastMessageId != message.id && messages[0]['user'] != found.me) {
-                  lastMessageId = message.id;
-                  assign(num + 1);
-                }
+                DocumentSnapshot message = messages.length > 0 ? messages[0] : null;
+                if(message != null)
+                  if (lastMessageId == null)
+                    lastMessageId = message.id;
+                  else if (lastMessageId != message.id && message['user'] != found.me) {
+                    lastMessageId = message.id;
+                    assignNum(num + 1);
+                  }
+
                 return Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: <Widget>[
                     Row(
-                        children: <Widget>[
-                          Container(
-                            padding: const EdgeInsets.fromLTRB(17.0, 17.0, 17.0, 14.0),
-                            child: Image.network(found.avatar['v1'], height: 40),
-                          ),
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: <Widget>[
-                              Text(
-                                found.nick,
+                      children: <Widget>[
+                        Container(
+                          padding: const EdgeInsets.fromLTRB(17.0, 17.0, 17.0, 14.0),
+                          child: Image.network(found.avatar['v1'], height: 40),
+                        ),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: <Widget>[
+                            Text(
+                              found.nick,
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 20.0,
+                              ),
+                            ),
+                            Container(
+                              constraints: BoxConstraints(maxWidth: 200, maxHeight: 20),
+                              child: Text(
+                                message == null ? 'New connect!' : message['message'],
                                 style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 20.0,
+                                  color: Colors.black,
+                                  fontSize: 14.0,
+                                  fontStyle: message == null ? FontStyle.italic : FontStyle.normal,
                                 ),
                               ),
-                              Container(
-                                constraints: BoxConstraints(maxWidth: 200, maxHeight: 20),
-                                child: Text(
-                                  message['message'],
-                                  style: TextStyle(
-                                    color: Colors.black,
-                                    fontSize: 14.0,
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ]
+                            ),
+                          ],
+                        ),
+                      ]
                     ),
-                    createStreamWidget<int>(numController.stream, (int num) => Container(
+                    message == null ? Container() : createStreamWidget<int>(numController.stream, (int num) => Container(
                       margin: EdgeInsets.symmetric(horizontal: 10.0),
                       child: num > 0 ? Column(
                         crossAxisAlignment: CrossAxisAlignment.end,
