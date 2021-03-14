@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/scheduler.dart';
@@ -8,6 +10,7 @@ import 'package:findme/widgets/chatItems.dart';
 import 'package:findme/models/found.dart';
 import 'package:findme/constant.dart';
 import 'package:findme/assets.dart';
+import 'package:findme/API.dart';
 import 'package:findme/globals.dart' as globals;
 
 class ChatMessage extends StatelessWidget {
@@ -25,11 +28,6 @@ class ChatMessage extends StatelessWidget {
       .orderBy('timestamp', descending: true)
       .limit(messageLimit)
       .snapshots();
-
-    ScrollController scrollController = ScrollController();
-    SchedulerBinding.instance.addPostFrameCallback((_) {
-      scrollController.jumpTo(scrollController.position.maxScrollExtent);
-    });
 
     return SafeArea(
       child: Scaffold(
@@ -100,6 +98,13 @@ class ChatMessage extends StatelessWidget {
                   ),
                   child: createFirebaseStreamWidget(stream, (List<DocumentSnapshot> messages) {
                     globals.lastReadTimes.mappedSet(found.chatId, DateTime.now().millisecondsSinceEpoch);
+                    POST('found/read/', jsonEncode({"id": found.id}));
+
+                    ScrollController scrollController = ScrollController();
+                    SchedulerBinding.instance.addPostFrameCallback((_) {
+                      scrollController.jumpTo(scrollController.position.maxScrollExtent);
+                    });
+
                     return Container(
                       margin: EdgeInsets.symmetric(horizontal: 10),
                       child: ListView.builder(

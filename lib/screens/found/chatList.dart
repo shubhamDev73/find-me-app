@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 
 import 'package:findme/widgets/chatItems.dart';
 import 'package:findme/widgets/chatListItems.dart';
@@ -66,8 +65,6 @@ class ChatList extends StatelessWidget {
                         ),
                         Expanded(
                           child: Container(
-                            constraints: BoxConstraints(minHeight: 463),
-                            color: Colors.white,
                             child: ListView.builder(
                               itemBuilder: (context, index) {
                                 Found found = founds[index];
@@ -77,14 +74,6 @@ class ChatList extends StatelessWidget {
 
                                 return ChatListItem(
                                   found: found,
-                                  lastMessage: FirebaseFirestore.instance
-                                      .collection('chats')
-                                      .doc(found.chatId)
-                                      .collection('chats')
-                                      .orderBy(
-                                      'timestamp', descending: true)
-                                      .limit(1)
-                                      .snapshots(),
                                   index: index
                                 );
                               },

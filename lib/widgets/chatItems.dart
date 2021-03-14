@@ -30,7 +30,7 @@ class FindListItem extends StatelessWidget {
                 border: Border.all(color: Colors.white),
               ),
               margin: EdgeInsets.symmetric(vertical: 5),
-              padding: const EdgeInsets.fromLTRB(12.0, 7.0, 0.0, 0.0),
+              padding: const EdgeInsets.all(7.0),
               child: Image.network(avatar, width: 50),
             ),
             Text(
