@@ -17,17 +17,16 @@ class ChatListItem extends StatelessWidget {
 
   final StreamController<int> unreadNumController = StreamController<int>();
   Stream<QuerySnapshot> lastMessage;
-  int unreadNum;
   String lastMessageId;
 
-  void assignUnreadNum (int n) {
-    unreadNum = n;
-    unreadNumController.add(unreadNum);
+  void syncWithFound (Found found) {
+    unreadNumController.add(found.unreadNum);
+    lastMessageId = found.lastMessage['id'];
   }
 
   @override
   Widget build (BuildContext context) {
-    if(unreadNum == null){
+    if(lastMessageId == null){
       lastMessage = FirebaseFirestore.instance
           .collection('chats')
           .doc(found.chatId)
@@ -35,9 +34,8 @@ class ChatListItem extends StatelessWidget {
           .orderBy('timestamp', descending: true)
           .limit(1)
           .snapshots();
-      lastMessageId = found.lastMessage['id'];
-      assignUnreadNum(found.unreadNum);
-      globals.onTimesChanged[found.chatId] = () => assignUnreadNum(0);
+      syncWithFound(found);
+      globals.onFoundChanged[found.id] = syncWithFound;
     }
 
     return GestureDetector(
@@ -50,11 +48,13 @@ class ChatListItem extends StatelessWidget {
         child: Container(
           child: createFirebaseStreamWidget(lastMessage, (List<DocumentSnapshot> messages) {
             DocumentSnapshot message = messages.length > 0 ? messages[0] : null;
-            if(message != null)
-              if (lastMessageId != message.id && message['user'] != found.me) {
-                lastMessageId = message.id;
-                assignUnreadNum(unreadNum + 1);
-              }
+            if(message != null && lastMessageId != message.id)
+              globals.founds.mappedUpdate(found.id, (Found found) {
+                found.lastMessage = globals.getMessageJSON(message);
+                if(message['user'] != found.me)
+                  found.unreadNum++;
+                return found;
+              });
 
             return Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,

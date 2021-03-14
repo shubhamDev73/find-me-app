@@ -101,10 +101,14 @@ class MappedCachedData<K, V> extends CachedData<Map<K, V>> {
     return _cachedValue.isEmpty;
   }
 
-  Future<void> mappedSet (K key, V value) async {
+  void mappedSet (K key, V value) {
     _cachedValue[key] = value;
     setCallback?.call(_cachedValue, key);
     saveToFile();
+  }
+
+  void mappedUpdate (K key, V Function(V) function) {
+    mappedSet(key, function(_cachedValue[key]));
   }
 
 }

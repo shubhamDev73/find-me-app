@@ -97,7 +97,11 @@ class ChatMessage extends StatelessWidget {
                     image: DecorationImage(image: AssetImage("assets/mood/gloomy_bg.png"), fit: BoxFit.cover),
                   ),
                   child: createFirebaseStreamWidget(stream, (List<DocumentSnapshot> messages) {
-                    globals.lastReadTimes.mappedSet(found.chatId, DateTime.now().millisecondsSinceEpoch);
+                    globals.founds.mappedUpdate(found.id, (Found found) {
+                      found.lastMessage = globals.getMessageJSON(messages[0]);
+                      found.unreadNum = 0;
+                      return found;
+                    });
                     POST('found/read/', jsonEncode({"id": found.id}));
 
                     ScrollController scrollController = ScrollController();

@@ -1,5 +1,7 @@
 import 'dart:convert';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 import 'package:findme/models/user.dart';
 import 'package:findme/models/interests.dart';
 import 'package:findme/models/found.dart';
@@ -13,7 +15,6 @@ CachedData<String> token = CachedData(
   setCallback: (token) {
     if (token == '') {
       meUser.clear();
-      lastReadTimes.clear();
       requests.clear();
       finds.clear();
       founds.clear();
@@ -22,15 +23,6 @@ CachedData<String> token = CachedData(
   },
 );
 Function onLogin, onLogout;
-
-
-// last read times
-
-MappedCachedData<String, int> lastReadTimes = MappedCachedData(
-  cacheFile: 'times.json',
-  setCallback: (data, [String key]) => key == null ? null : onTimesChanged.containsKey(key) ? onTimesChanged[key]() : null,
-);
-Map<String, Function> onTimesChanged = {};
 
 
 // interests
@@ -102,10 +94,32 @@ CachedData<List<dynamic>> finds = CachedData(
   networkDecoder: (data) => jsonDecode(data)['users'],
 );
 
-CachedData<List<Found>> founds = CachedData(
-  emptyValue: [],
+MappedCachedData<int, Found> founds = MappedCachedData(
   url: 'found/',
   cacheFile: 'founds.json',
-  encoder: (data) => jsonEncode(data.map((found) => found.toJson()).toList()),
-  decoder: (data) => jsonDecode(data).map<Found>((found) => Found.fromJson(found)).toList(),
+  encoder: (data) => jsonEncode(
+      Map<String, Map<String, dynamic>>.fromIterable(data.values,
+        key: (found) => found.id.toString(),
+        value: (found) => found.toJson(),
+      )
+  ),
+  decoder: (data) =>
+  Map<int, Found>.fromIterable(jsonDecode(data).values,
+      key: (found) => int.parse(found['id']),
+      value: (found) => Found.fromJson(found)
+  ),
+  networkDecoder: (data) =>
+  Map<int, Found>.fromIterable(jsonDecode(data),
+      key: (found) => found['id'],
+      value: (found) => Found.fromJson(found)
+  ),
+  setCallback: (data, [int key]) => key == null ? null : onFoundChanged.containsKey(key) ? onFoundChanged[key](data[key]) : null,
 );
+Map<int, void Function(Found)> onFoundChanged = {};
+
+Map<String, dynamic> getMessageJSON (DocumentSnapshot message) {
+  Map<String, dynamic> json = message.data();
+  json['id'] = message.id;
+  json['timestamp'] = json['timestamp'].toDate().toString();
+  return json;
+}
