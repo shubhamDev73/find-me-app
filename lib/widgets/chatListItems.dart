@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 import 'package:findme/models/found.dart';
+import 'package:findme/models/fakeDocument.dart';
 import 'package:findme/widgets/misc.dart';
 import 'package:findme/constant.dart';
 import 'package:findme/globals.dart' as globals;
@@ -46,8 +47,8 @@ class ChatListItem extends StatelessWidget {
       child: ColoredBox(
         color: index % 2 == 0 ? Colors.grey[300] : Colors.white,
         child: Container(
-          child: createFirebaseStreamWidget(lastMessage, (List<DocumentSnapshot> messages) {
-            DocumentSnapshot message = messages.length > 0 ? messages[0] : null;
+          child: createFirebaseStreamWidget(lastMessage, (messages) {
+            dynamic message = messages.length > 0 ? messages[0] : null;
             if(message != null && lastMessageId != message.id)
               globals.founds.mappedUpdate(found.id, (Found found) {
                 found.lastMessage = globals.getMessageJSON(message);
@@ -95,7 +96,7 @@ class ChatListItem extends StatelessWidget {
                   child: num > 0 ? Column(
                     crossAxisAlignment: CrossAxisAlignment.end,
                     children: <Widget>[
-                      DateWidget(endDate: message['timestamp'].toDate()),
+                      DateWidget(endDate: message['timestamp'] is String ? DateTime.parse(message['timestamp']) : message['timestamp'].toDate()),
                       Container(
                         padding: EdgeInsets.all(7.0),
                         decoration: BoxDecoration(
@@ -115,7 +116,7 @@ class ChatListItem extends StatelessWidget {
                 ), fullPage: false),
               ],
             );
-          }, fullPage: false),
+          }, fullPage: false, cacheObj: [FakeDocument(id: found.lastMessage['id'], data: found.lastMessage)]),
         ),
       ),
     );
