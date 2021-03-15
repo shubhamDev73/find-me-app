@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:carousel_slider/carousel_slider.dart';
@@ -207,7 +209,10 @@ class _PersonalityState extends State<Personality> {
             ),
             GestureDetector(
               onTap: () async {
-                String url = user.personality[trait]['url'];
+                final random = new Random();
+                List<String> urls = user.personality[trait]['url'];
+                int i = random.nextInt(urls.length);
+                String url = urls[i];
                 if(await canLaunch(url)) await launch(url);
               },
               child: Container(
