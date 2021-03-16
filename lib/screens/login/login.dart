@@ -6,10 +6,17 @@ import 'package:flutter_svg/svg.dart';
 import 'package:findme/widgets/textFields.dart';
 import 'package:findme/assets.dart';
 import 'package:findme/constant.dart';
+import 'package:findme/screens/loading.dart';
 import 'package:findme/API.dart';
 import 'package:findme/globals.dart' as globals;
 
-class Login extends StatelessWidget {
+class Login extends StatefulWidget {
+
+  @override
+  _LoginState createState() => _LoginState();
+}
+
+class _LoginState extends State<Login> {
 
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
@@ -17,11 +24,13 @@ class Login extends StatelessWidget {
   final TextEditingController usernameController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
 
+  bool isLoading = false;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       key: _scaffoldKey,
-      body: Container(
+      body: isLoading ? LoadingScreen(fullPage: false) : Container(
         color: ThemeColors.primaryColor,
         child: Column(
           children: [
@@ -131,10 +140,19 @@ class Login extends StatelessWidget {
   }
 
   void submitForm (GlobalKey<ScaffoldState> scaffoldKey) async {
+
+    setState(() {
+      isLoading = true;
+    });
+
     String username = usernameController.text;
     String password = passwordController.text;
 
     final response = await POST('login/', jsonEncode({"username": username, "password": password}), useToken: false);
+
+    setState(() {
+      isLoading = false;
+    });
 
     Map<String, dynamic> json = jsonDecode(response.body);
     if (response.statusCode == 200 && json.containsKey('token'))
