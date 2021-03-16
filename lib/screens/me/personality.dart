@@ -170,7 +170,7 @@ class _PersonalityState extends State<Personality> {
             widget.me ?
             GestureDetector(
               onTap: () async {
-                String url = 'https://tripetto.app/run/YK2S455EX3';
+                String url = 'https://tripetto.app/run/YK2S455EX3/?nick=${user.nick}';
                 if(await canLaunch(url)) await launch(url);
               },
               child: Container(
