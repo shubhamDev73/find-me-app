@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
 import 'package:findme/assets.dart';
-import 'package:findme/screens/meTab.dart';
-import 'package:findme/screens/foundTab.dart';
+import 'package:findme/screens/navigation/meTab.dart';
+import 'package:findme/screens/navigation/foundTab.dart';
 
 enum PageTab { me, found }
 

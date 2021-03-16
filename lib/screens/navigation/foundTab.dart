@@ -1,18 +1,19 @@
 import 'package:flutter/material.dart';
 
+import 'package:findme/screens/navigation/animatedRoute.dart';
 import 'package:findme/screens/found/chatList.dart';
 import 'package:findme/screens/found/chatMessage.dart';
-import 'package:findme/screens/meTab.dart';
+import 'package:findme/screens/navigation/meTab.dart';
 
 class FoundTab extends StatelessWidget {
 
   final GlobalKey<NavigatorState> navigatorKey;
   FoundTab({this.navigatorKey});
 
-  final Map<String, WidgetBuilder> meRoutes = MeTab().createRoutes();
-  final Map<String, WidgetBuilder> routes = {
-    '/': (BuildContext _) => ChatList(),
-    '/message': (BuildContext _) => ChatMessage(),
+  final Map<String, Widget> meRoutes = MeTab().createRoutes();
+  final Map<String, Widget> routes = {
+    '/': ChatList(),
+    '/message': ChatMessage(),
   };
 
   @override
@@ -24,7 +25,7 @@ class FoundTab extends StatelessWidget {
     return Navigator(
       key: navigatorKey,
       initialRoute: '/',
-      onGenerateRoute: (RouteSettings settings) => MaterialPageRoute(builder: routes[settings.name], settings: settings),
+      onGenerateRoute: (RouteSettings settings) => animatedRoute(routes, settings),
     );
   }
 }

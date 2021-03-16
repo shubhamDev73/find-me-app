@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-import 'package:findme/screens/app.dart';
+import 'package:findme/screens/navigation/app.dart';
 import 'package:findme/constant.dart';
 
 void main() {

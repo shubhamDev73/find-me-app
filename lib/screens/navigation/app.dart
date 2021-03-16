@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-import 'package:findme/screens/loginScreens.dart';
-import 'package:findme/screens/tabs.dart';
+import 'package:findme/screens/navigation/loginScreens.dart';
+import 'package:findme/screens/navigation/tabs.dart';
 import 'package:findme/widgets/misc.dart';
 import 'package:findme/globals.dart' as globals;
 
