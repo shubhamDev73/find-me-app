@@ -9,7 +9,7 @@ import 'package:findme/models/found.dart';
 import 'package:findme/constant.dart';
 import 'package:findme/globals.dart' as globals;
 
-class ChatList extends StatelessWidget {
+class FoundPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
@@ -17,7 +17,6 @@ class ChatList extends StatelessWidget {
       createFutureWidget<List<dynamic>>(globals.requests.get(), (List<dynamic> requests) =>
         createFutureWidget<List<dynamic>>(globals.finds.get(), (List<dynamic> finds) =>
           createFutureWidget<Map<int, Found>>(globals.founds.get(), (Map<int, Found> founds) {
-            List<Found> foundList = founds.values.toList();
             List<dynamic> users = [...requests, ...finds];
             int numRequests = requests.length;
             return Scaffold(
@@ -66,13 +65,7 @@ class ChatList extends StatelessWidget {
                       ),
                       Expanded(
                         child: Container(
-                          child: ListView.builder(
-                            itemBuilder: (context, index) => ChatListItem(
-                              found: foundList[index],
-                              index: index,
-                            ),
-                            itemCount: foundList.length,
-                          ),
+                          child: ChatList(founds: founds),
                         ),
                       ),
                     ],

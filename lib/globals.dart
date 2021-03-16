@@ -127,8 +127,12 @@ MappedCachedData<int, Found> founds = MappedCachedData(
       key: (found) => found['id'],
       value: (found) => Found.fromJson(found)
     ),
-  setCallback: (data, [int key]) => key == null ? null : onFoundChanged.containsKey(key) ? onFoundChanged[key](data[key]) : null,
+  setCallback: (data, [int key]) {
+    onChatListUpdate?.call(data);
+    if(key != null && onFoundChanged.containsKey(key)) onFoundChanged[key](data[key]);
+  },
 );
+Function(Map<int, Found>) onChatListUpdate;
 Map<int, void Function(Found)> onFoundChanged = {};
 
 Map<String, dynamic> getMessageJSON (DocumentSnapshot message) {

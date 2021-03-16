@@ -12,7 +12,7 @@ class FoundTab extends StatelessWidget {
 
   final Map<String, Widget> meRoutes = MeTab().createRoutes();
   final Map<String, Widget> routes = {
-    '/': ChatList(),
+    '/': FoundPage(),
     '/message': ChatMessage(),
   };
 

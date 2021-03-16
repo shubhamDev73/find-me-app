@@ -10,6 +10,62 @@ import 'package:findme/widgets/misc.dart';
 import 'package:findme/constant.dart';
 import 'package:findme/globals.dart' as globals;
 
+class ChatList extends StatefulWidget {
+
+  final Map<int, Found> founds;
+  ChatList({this.founds});
+
+  @override
+  _ChatListState createState() => _ChatListState();
+}
+
+class _ChatListState extends State<ChatList> {
+
+  List<Found> foundList;
+
+  @override
+  void initState () {
+    super.initState();
+    globals.onChatListUpdate = (Map<int, Found> founds) =>
+      Timer(const Duration(milliseconds: 100), () =>
+        setState(() {
+          assignFoundList(founds);
+        })
+      );
+  }
+
+  @override
+  void dispose () {
+    super.dispose();
+    globals.onChatListUpdate = null;
+  }
+
+  void assignFoundList (Map<int, Found> founds) {
+    foundList = founds.values.toList();
+    foundList.sort((Found a, Found b) {
+      if(a.lastMessage == null) return -1;
+      if(b.lastMessage == null) return 1;
+      DateTime aDate = DateTime.parse(a.lastMessage['timestamp']);
+      DateTime bDate = DateTime.parse(b.lastMessage['timestamp']);
+      return bDate.compareTo(aDate);
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    if(foundList == null)
+      assignFoundList(widget.founds);
+
+    return ListView.builder(
+      itemBuilder: (context, index) => ChatListItem(
+        found: foundList[index],
+        index: index,
+      ),
+      itemCount: foundList.length,
+    );
+  }
+}
+
 class ChatListItem extends StatelessWidget {
 
   final Found found;
@@ -23,7 +79,7 @@ class ChatListItem extends StatelessWidget {
 
   void syncWithFound (Found found) {
     unreadNumController.add(found.unreadNum);
-    lastMessageTime = DateTime.parse(found.lastMessage['timestamp']);
+    lastMessageTime = found.lastMessage == null ? DateTime.fromMillisecondsSinceEpoch(0) : DateTime.parse(found.lastMessage['timestamp']);
   }
 
   @override
@@ -121,7 +177,7 @@ class ChatListItem extends StatelessWidget {
                 ), fullPage: false),
               ],
             );
-          }, fullPage: false, cacheObj: [FakeDocument(id: found.lastMessage['id'], data: found.lastMessage)]),
+          }, fullPage: false, cacheObj: [FakeDocument(id: found.lastMessage == null ? '' : found.lastMessage['id'], data: found.lastMessage)]),
         ),
       ),
     );
