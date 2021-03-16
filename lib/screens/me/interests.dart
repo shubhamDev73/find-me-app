@@ -223,7 +223,7 @@ class _InterestsState extends State<Interests> {
                   color: Color(0xfff0fbfd),
                   child: Scrollbar(
                       child: ListView(
-                        children: getInterestList(user.interests.entries.map<Interest>((entry) => entry.value).toList(), (int newInterestId) {
+                        children: getInterestList(user.interests.values.toList(), (int newInterestId) {
                           setState(() {
                             interestId = newInterestId;
                             question = user.interests[interestId].questions[0];

@@ -1,3 +1,4 @@
+import 'dart:collection';
 import 'dart:io';
 import 'dart:convert';
 import 'package:path_provider/path_provider.dart';
@@ -84,11 +85,11 @@ class MappedCachedData<K, V> extends CachedData<Map<K, V>> {
     Function networkDecoder,
     Function(Map<K, V>, K key) setCallback,
   }) : super(
-    emptyValue: new Map<K, V>(),
+    emptyValue: new LinkedHashMap<K, V>(),
     url: url,
     cacheFile: cacheFile,
     encoder: encoder,
-    decoder: decoder ?? (data) => Map<K, V>.from(jsonDecode(data)),
+    decoder: decoder ?? (data) => LinkedHashMap<K, V>.from(jsonDecode(data)),
     networkDecoder: networkDecoder,
     setCallback: setCallback,
   );

@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:collection';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 
@@ -44,18 +45,18 @@ MappedCachedData<int, Interest> interests = MappedCachedData(
   url: 'interests/',
   cacheFile: 'interests.json',
   encoder: (data) => jsonEncode(
-    Map<String, Map<String, dynamic>>.fromIterable(data.values,
+    LinkedHashMap<String, Map<String, dynamic>>.fromIterable(data.values,
       key: (interest) => interest.id.toString(),
       value: (interest) => interest.toJson(),
     )
   ),
   decoder: (data) =>
-    Map<int, Interest>.fromIterable(jsonDecode(data).values,
+    LinkedHashMap<int, Interest>.fromIterable(jsonDecode(data).values,
       key: (interest) => int.parse(interest['id']),
       value: (interest) => Interest.fromJson(interest)
     ),
   networkDecoder: (data) =>
-    Map<int, Interest>.fromIterable(jsonDecode(data),
+    LinkedHashMap<int, Interest>.fromIterable(jsonDecode(data),
       key: (interest) => interest['id'],
       value: (interest) => Interest.fromJson(interest)
     ),
@@ -111,21 +112,21 @@ MappedCachedData<int, Found> founds = MappedCachedData(
   url: 'found/',
   cacheFile: 'founds.json',
   encoder: (data) => jsonEncode(
-      Map<String, Map<String, dynamic>>.fromIterable(data.values,
+      LinkedHashMap<String, Map<String, dynamic>>.fromIterable(data.values,
         key: (found) => found.id.toString(),
         value: (found) => found.toJson(),
       )
   ),
   decoder: (data) =>
-  Map<int, Found>.fromIterable(jsonDecode(data).values,
+    LinkedHashMap<int, Found>.fromIterable(jsonDecode(data).values,
       key: (found) => int.parse(found['id']),
       value: (found) => Found.fromJson(found)
-  ),
+    ),
   networkDecoder: (data) =>
-  Map<int, Found>.fromIterable(jsonDecode(data),
+    LinkedHashMap<int, Found>.fromIterable(jsonDecode(data),
       key: (found) => found['id'],
       value: (found) => Found.fromJson(found)
-  ),
+    ),
   setCallback: (data, [int key]) => key == null ? null : onFoundChanged.containsKey(key) ? onFoundChanged[key](data[key]) : null,
 );
 Map<int, void Function(Found)> onFoundChanged = {};

@@ -1,10 +1,12 @@
+import 'dart:collection';
+
 import 'package:findme/models/interests.dart';
 
 class User {
   String nick;
   Map<String, dynamic> avatar;
   Map<String, dynamic> personality;
-  Map<int, Interest> interests;
+  LinkedHashMap<int, Interest> interests;
   String mood;
 
   User({
@@ -19,7 +21,7 @@ class User {
     nick: json["nick"],
     avatar: json["avatar"],
     personality: json["personality"],
-    interests: Map.fromIterable(json["interests"], key: (interest) => interest['id'], value: (interest) => Interest.fromJson(interest)),
+    interests: LinkedHashMap.fromIterable(json["interests"], key: (interest) => interest['id'], value: (interest) => Interest.fromJson(interest)),
     mood: json["mood"],
   );
 
@@ -28,7 +30,7 @@ class User {
       "nick": nick,
       "avatar": avatar,
       "personality": personality,
-      "interests": interests.entries.map((entry) => entry.value.toJson()).toList(),
+      "interests": interests.values.map((value) => value.toJson()).toList(),
       "mood": mood,
     };
 
