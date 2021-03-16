@@ -1,9 +1,10 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 
 import 'package:findme/widgets/misc.dart';
 import 'package:findme/widgets/chatItems.dart';
@@ -49,7 +50,7 @@ class ChatMessage extends StatelessWidget {
                           },
                           child: Container(
                             margin: EdgeInsets.symmetric(horizontal: 12.0),
-                            child: Image.network(found.avatar['v1'], height: 75),
+                            child: CachedNetworkImage(imageUrl: found.avatar['v1'], height: 75),
                           ),
                         ),
                       ),

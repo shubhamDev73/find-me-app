@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 
 import 'package:findme/globals.dart' as globals;
 
@@ -31,7 +32,7 @@ class FindListItem extends StatelessWidget {
               ),
               margin: EdgeInsets.symmetric(vertical: 5),
               padding: const EdgeInsets.all(7.0),
-              child: Image.network(avatar, width: 50),
+              child: CachedNetworkImage(imageUrl: avatar, width: 50),
             ),
             Text(
               nick,

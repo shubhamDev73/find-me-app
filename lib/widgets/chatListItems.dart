@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 
 import 'package:findme/models/found.dart';
 import 'package:findme/models/fakeDocument.dart';
@@ -64,7 +65,7 @@ class ChatListItem extends StatelessWidget {
                   children: <Widget>[
                     Container(
                       padding: const EdgeInsets.fromLTRB(17.0, 17.0, 17.0, 14.0),
-                      child: Image.network(found.avatar['v1'], height: 40),
+                      child: CachedNetworkImage(imageUrl: found.avatar['v1'], height: 40),
                     ),
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,

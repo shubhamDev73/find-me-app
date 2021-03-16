@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 
 import 'package:findme/assets.dart';
 import 'package:findme/models/user.dart';
@@ -22,7 +23,7 @@ class UserInfo extends StatelessWidget {
             children: [
               Container(
                 child: Center(
-                  child: Image.network(user.avatar['v2']),
+                  child: CachedNetworkImage(imageUrl: user.avatar['v2']),
                 ),
               ),
               Positioned(

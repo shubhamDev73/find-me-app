@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 
 import 'package:google_fonts/google_fonts.dart';
 
@@ -81,7 +82,7 @@ FutureBuilder<List<dynamic>> createAvatarList(Future<List<dynamic>> avatars, Fun
                 return GestureDetector(
                   child: Column(
                     children: [
-                      Image.network(x["url"], width: 160,),
+                      CachedNetworkImage(imageUrl: x["url"], width: 160,),
                       Text(x["mood"])
                     ],
                   ),

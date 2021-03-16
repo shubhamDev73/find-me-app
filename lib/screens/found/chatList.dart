@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 
 import 'package:findme/widgets/chatItems.dart';
 import 'package:findme/widgets/chatListItems.dart';
@@ -32,7 +33,7 @@ class ChatList extends StatelessWidget {
                             children: <Widget>[
                               Expanded(
                                 flex: 3,
-                                child: Image.network(user.avatar['v1'], height: 75),
+                                child: CachedNetworkImage(imageUrl: user.avatar['v1'], height: 75),
                               ),
                               Container(
                                 width: 7,
