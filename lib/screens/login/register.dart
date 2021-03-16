@@ -82,6 +82,7 @@ class _RegisterState extends State<Register> {
                         keyType: TextInputType.name,
                         label: "UserName",
                         errMsg: "Please enter your Username.",
+                        autofocus: true,
                       ),
                       textFieldForRegistration(
                         editingController: phoneController,
@@ -90,12 +91,7 @@ class _RegisterState extends State<Register> {
                         label: "Phone",
                         errMsg: "Please enter your Phone.",
                       ),
-                      textFieldForRegistration(
-                        editingController: passwordController,
-                        keyType: TextInputType.visiblePassword,
-                        label: "Password",
-                        errMsg: "Please enter your Password.",
-                      ),
+                      PasswordField(passwordController: passwordController),
                       Container(
                         margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
                         constraints: const BoxConstraints(maxWidth: 500),

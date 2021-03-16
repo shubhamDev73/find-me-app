@@ -80,14 +80,9 @@ class _LoginState extends State<Login> {
                           keyType: TextInputType.name,
                           label: "Username",
                           errMsg: "Please enter your Username.",
+                          autofocus: true,
                         ),
-                        textFieldForRegistration(
-                          editingController: passwordController,
-                          keyType: TextInputType.visiblePassword,
-                          label: "Password",
-                          errMsg: "Please enter your Password.",
-                          obscureText: true,
-                        ),
+                        PasswordField(passwordController: passwordController),
                         Container(
                           margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
                           constraints: const BoxConstraints(maxWidth: 500),
