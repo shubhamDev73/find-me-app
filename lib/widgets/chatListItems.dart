@@ -19,16 +19,16 @@ class ChatListItem extends StatelessWidget {
 
   final StreamController<int> unreadNumController = StreamController<int>();
   Stream<QuerySnapshot> lastMessage;
-  String lastMessageId;
+  DateTime lastMessageTime;
 
   void syncWithFound (Found found) {
     unreadNumController.add(found.unreadNum);
-    lastMessageId = found.lastMessage['id'];
+    lastMessageTime = DateTime.parse(found.lastMessage['timestamp']);
   }
 
   @override
   Widget build (BuildContext context) {
-    if(lastMessageId == null){
+    if(lastMessageTime == null){
       lastMessage = FirebaseFirestore.instance
           .collection('chats')
           .doc(found.chatId)
@@ -50,13 +50,17 @@ class ChatListItem extends StatelessWidget {
         child: Container(
           child: createFirebaseStreamWidget(lastMessage, (messages) {
             dynamic message = messages.length > 0 ? messages[0] : null;
-            if(message != null && lastMessageId != message.id)
-              globals.founds.mappedUpdate(found.id, (Found found) {
-                found.lastMessage = globals.getMessageJSON(message);
-                if(message['user'] != found.me)
-                  found.unreadNum++;
-                return found;
-              });
+            DateTime dateTime;
+            if(message != null){
+              dateTime = message['timestamp'] is String ? DateTime.parse(message['timestamp']) : message['timestamp'].toDate();
+              if(dateTime.compareTo(lastMessageTime) > 0)
+                globals.founds.mappedUpdate(found.id, (Found found) {
+                  found.lastMessage = globals.getMessageJSON(message);
+                  if(message['user'] != found.me)
+                    found.unreadNum++;
+                  return found;
+                });
+            }
 
             return Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -97,7 +101,7 @@ class ChatListItem extends StatelessWidget {
                   child: num > 0 ? Column(
                     crossAxisAlignment: CrossAxisAlignment.end,
                     children: <Widget>[
-                      DateWidget(endDate: message['timestamp'] is String ? DateTime.parse(message['timestamp']) : message['timestamp'].toDate()),
+                      DateWidget(endDate: dateTime),
                       Container(
                         padding: EdgeInsets.all(7.0),
                         decoration: BoxDecoration(
