@@ -5,7 +5,18 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:findme/models/user.dart';
 import 'package:findme/models/interests.dart';
 import 'package:findme/models/found.dart';
+import 'package:findme/models/pageTab.dart';
 import 'package:findme/models/cachedData.dart';
+
+// currentTab
+
+CachedData<PageTab> currentTab = CachedData(
+  emptyValue: PageTab.me,
+  cacheFile: 'tab.txt',
+  encoder: (PageTab tab) => tab.index.toString(),
+  decoder: (String tabString) => PageTab.values[int.parse(tabString)],
+);
+
 
 // token
 
@@ -14,6 +25,8 @@ CachedData<String> token = CachedData(
   cacheFile: 'token.txt',
   setCallback: (token) {
     if (token == '') {
+      currentTab.clear();
+      interests.clear();
       meUser.clear();
       requests.clear();
       finds.clear();

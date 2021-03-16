@@ -9,10 +9,6 @@ Future<File> getFile (String filename) async {
   return File('${directory.path}/$filename');
 }
 
-Future<T> returnAsFuture<T> (T data) async {
-  return data;
-}
-
 class CachedData<T> {
 
   T emptyValue;
