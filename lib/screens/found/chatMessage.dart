@@ -1,7 +1,6 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -16,19 +15,11 @@ import 'package:findme/globals.dart' as globals;
 
 class ChatMessage extends StatelessWidget {
 
-  final int messageLimit = 50;
   final TextEditingController messageController = new TextEditingController();
 
   @override
   Widget build(BuildContext context) {
     Found found = ModalRoute.of(context).settings.arguments as Found;
-    Stream<QuerySnapshot> stream = FirebaseFirestore.instance
-      .collection('chats')
-      .doc(found.chatId)
-      .collection('chats')
-      .orderBy('timestamp', descending: true)
-      .limit(messageLimit)
-      .snapshots();
 
     return SafeArea(
       child: Scaffold(
@@ -97,40 +88,7 @@ class ChatMessage extends StatelessWidget {
                   decoration: BoxDecoration(
                     image: DecorationImage(image: AssetImage("assets/mood/gloomy_bg.png"), fit: BoxFit.cover),
                   ),
-                  child: createFirebaseStreamWidget(stream, (List<DocumentSnapshot> messages) {
-                    globals.founds.mappedUpdate(found.id, (Found found) {
-                      found.lastMessage = globals.getMessageJSON(messages[0]);
-                      found.unreadNum = 0;
-                      return found;
-                    });
-                    POST('found/read/', jsonEncode({"id": found.id}));
-
-                    ScrollController scrollController = ScrollController();
-                    SchedulerBinding.instance.addPostFrameCallback((_) {
-                      scrollController.jumpTo(scrollController.position.maxScrollExtent);
-                    });
-
-                    return Container(
-                      margin: EdgeInsets.symmetric(horizontal: 10),
-                      child: ListView.builder(
-                        reverse: true,
-                        controller: scrollController,
-                        itemCount: messages.length,
-                        itemBuilder: (BuildContext context, int index) {
-                          DocumentSnapshot message = messages[index];
-                          int borderState = 0;
-                          if(index == messages.length - 1 || messages[index + 1]['user'] != message['user']) borderState = 1;
-                          else if(index == 0 || messages[index - 1]['user'] != message['user']) borderState = 2;
-                          return ChatMessageItem(
-                            message: message['message'],
-                            time: formatDate(timestamp: message['timestamp']),
-                            me: message['user'] == found.me,
-                            borderState: borderState,
-                          );
-                        },
-                      ),
-                    );
-                  }, fullPage: false),
+                  child: ChatMessageList(found: found),
                 ),
               ),
               Container(
@@ -189,6 +147,100 @@ class ChatMessage extends StatelessWidget {
       'timestamp': FieldValue.serverTimestamp(),
     });
     messageController.clear();
+  }
+
+}
+
+class ChatMessageList extends StatefulWidget {
+
+  final Found found;
+  ChatMessageList({this.found});
+
+  final int messageLimit = 50;
+  final ScrollController scrollController = ScrollController();
+
+  @override
+  _ChatMessageListState createState() => _ChatMessageListState();
+}
+
+class _ChatMessageListState extends State<ChatMessageList> {
+
+  int currentMessageLimit;
+  Stream<QuerySnapshot> stream;
+  int downloadedMessages = 0;
+  bool streamDownloaded = false;
+
+  @override
+  void initState () {
+    super.initState();
+    currentMessageLimit = widget.messageLimit;
+    updateStream();
+    streamDownloaded = true;
+    widget.scrollController.addListener(() {
+      double maxScroll = widget.scrollController.position.maxScrollExtent;
+      double currentScroll = widget.scrollController.offset;
+      if(streamDownloaded && maxScroll - currentScroll <= 40)
+        setState(() {
+          currentMessageLimit += widget.messageLimit;
+          updateStream();
+        });
+    });
+  }
+
+  void updateStream () {
+    stream = FirebaseFirestore.instance
+        .collection('chats')
+        .doc(widget.found.chatId)
+        .collection('chats')
+        .orderBy('timestamp', descending: true)
+        .limit(currentMessageLimit)
+        .snapshots();
+    streamDownloaded = false;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return createFirebaseStreamWidget(stream, (List<DocumentSnapshot> messages) {
+      if(messages.length > downloadedMessages){
+        streamDownloaded = true;
+        downloadedMessages = messages.length;
+        globals.founds.mappedUpdate(widget.found.id, (Found found) {
+          found.lastMessage = globals.getMessageJSON(messages[0]);
+          found.unreadNum = 0;
+          return found;
+        });
+        POST('found/read/', jsonEncode({"id": widget.found.id}));
+      }
+
+      return Container(
+        margin: EdgeInsets.symmetric(horizontal: 10),
+        child: ListView.builder(
+          reverse: true,
+          controller: widget.scrollController,
+          itemCount: streamDownloaded ? messages.length : messages.length + 1,
+          itemBuilder: (BuildContext context, int index) {
+            if(index == messages.length)
+              return Container(
+                padding: EdgeInsets.symmetric(vertical: 10),
+                child: Center(
+                  child: CircularProgressIndicator(),
+                ),
+              );
+
+            DocumentSnapshot message = messages[index];
+            int borderState = 0;
+            if (index == messages.length - 1 || messages[index + 1]['user'] != message['user']) borderState = 1;
+            else if (index == 0 || messages[index - 1]['user'] != message['user']) borderState = 2;
+            return ChatMessageItem(
+              message: message['message'],
+              time: formatDate(timestamp: message['timestamp']),
+              me: message['user'] == widget.found.me,
+              borderState: borderState,
+            );
+          },
+        ),
+      );
+    }, fullPage: false);
   }
 
 }
