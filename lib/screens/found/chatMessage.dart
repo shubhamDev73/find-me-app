@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 
 import 'package:findme/widgets/misc.dart';
@@ -16,10 +17,17 @@ import 'package:findme/globals.dart' as globals;
 class ChatMessage extends StatelessWidget {
 
   final TextEditingController messageController = new TextEditingController();
+  final DatabaseReference realtimeDB = FirebaseDatabase.instance.reference();
 
   @override
   Widget build(BuildContext context) {
     Found found = ModalRoute.of(context).settings.arguments as Found;
+
+    messageController.addListener(() {
+      realtimeDB.child("${found.id}-${found.me}").update({
+        'typing': messageController.text != '',
+      });
+    });
 
     return SafeArea(
       child: Scaffold(
@@ -141,6 +149,9 @@ class ChatMessage extends StatelessWidget {
       'timestamp': FieldValue.serverTimestamp(),
     });
     messageController.clear();
+    realtimeDB.child("${found.id}-${found.me}").update({
+      'typing': false,
+    });
   }
 
 }
@@ -179,6 +190,14 @@ class _ChatMessageListState extends State<ChatMessageList> {
           updateStream();
         });
     });
+  }
+
+  @override
+  void dispose () {
+    FirebaseDatabase.instance.reference().child("${widget.found.id}-${widget.found.me}").update({
+      'typing': false,
+    });
+    super.dispose();
   }
 
   void updateStream () {

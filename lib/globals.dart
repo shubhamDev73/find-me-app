@@ -138,6 +138,6 @@ Map<int, void Function(Found)> onFoundChanged = {};
 Map<String, dynamic> getMessageJSON (DocumentSnapshot message) {
   Map<String, dynamic> json = message.data();
   json['id'] = message.id;
-  json['timestamp'] = json['timestamp'].toDate().toString();
+  json['timestamp'] = (json['timestamp']?.toDate() ?? DateTime.now()).toString();
   return json;
 }

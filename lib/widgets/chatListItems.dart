@@ -43,6 +43,7 @@ class _ChatListState extends State<ChatList> {
       FirebaseDatabase.instance.reference().child("${found.id}-${found.me}").update({
         'online': false,
         'lastSeen': DateTime.now().millisecondsSinceEpoch,
+        'typing': false,
       });
     }
   }
@@ -96,10 +97,12 @@ class ChatListItem extends StatelessWidget {
       realtimeDB.child("${found.id}-${found.me}").update({
         'online': true,
         'lastSeen': DateTime.now().millisecondsSinceEpoch,
+        'typing': false,
       });
       realtimeDB.child("${found.id}-${found.me}").onDisconnect().update({
         'online': false,
         'lastSeen': DateTime.now().millisecondsSinceEpoch,
+        'typing': false,
       });
       lastMessage = FirebaseFirestore.instance
           .collection('chats')

@@ -110,10 +110,11 @@ class LastSeenWidget extends StatelessWidget {
       dynamic data = e.snapshot.value;
       if(data['online']){
         return Text(
-          "currently active",
+          data['typing'] ? "typing..." : "currently active",
           style: TextStyle(
             color: Colors.white,
             fontSize: 11,
+            fontStyle: data['typing'] ? FontStyle.italic : FontStyle.normal,
           ),
         );
       }else{
