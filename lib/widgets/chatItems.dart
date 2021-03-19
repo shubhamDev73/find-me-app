@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:firebase_database/firebase_database.dart';
 
+import 'package:findme/models/found.dart';
+import 'package:findme/widgets/misc.dart';
 import 'package:findme/globals.dart' as globals;
 
 class FindListItem extends StatelessWidget {
@@ -92,4 +95,33 @@ class ChatMessageItem extends StatelessWidget {
     return circleRadius;
   }
 
+}
+
+class LastSeenWidget extends StatelessWidget {
+
+  final Found found;
+  LastSeenWidget({this.found});
+
+  final DatabaseReference realtimeDB = FirebaseDatabase.instance.reference();
+
+  @override
+  Widget build(BuildContext context) {
+    return createStreamWidget<Event>(realtimeDB.child("${found.id}-${3 - found.me}").onValue, (Event e) {
+      dynamic data = e.snapshot.value;
+      if(data['online']){
+        return Text(
+          "currently active",
+          style: TextStyle(
+            color: Colors.white,
+            fontSize: 11,
+          ),
+        );
+      }else{
+        return DateWidget(endDate: DateTime.fromMillisecondsSinceEpoch(data['lastSeen']), prefix: 'last seen ', textStyle: TextStyle(
+          color: Colors.white,
+          fontSize: 11,
+        ));
+      }
+    }, fullPage: false);
+  }
 }

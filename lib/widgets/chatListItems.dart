@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 
 import 'package:findme/models/found.dart';
@@ -38,6 +39,12 @@ class _ChatListState extends State<ChatList> {
   void dispose () {
     super.dispose();
     globals.onChatListUpdate = null;
+    for(Found found in foundList){
+      FirebaseDatabase.instance.reference().child("${found.id}-${found.me}").update({
+        'online': false,
+        'lastSeen': DateTime.now().millisecondsSinceEpoch,
+      });
+    }
   }
 
   void assignFoundList (Map<int, Found> founds) {
@@ -73,6 +80,7 @@ class ChatListItem extends StatelessWidget {
 
   ChatListItem({this.found, this.index = 0});
 
+  final DatabaseReference realtimeDB = FirebaseDatabase.instance.reference();
   final StreamController<int> unreadNumController = StreamController<int>();
   Stream<QuerySnapshot> lastMessage;
   DateTime lastMessageTime;
@@ -85,6 +93,14 @@ class ChatListItem extends StatelessWidget {
   @override
   Widget build (BuildContext context) {
     if(lastMessageTime == null){
+      realtimeDB.child("${found.id}-${found.me}").update({
+        'online': true,
+        'lastSeen': DateTime.now().millisecondsSinceEpoch,
+      });
+      realtimeDB.child("${found.id}-${found.me}").onDisconnect().update({
+        'online': false,
+        'lastSeen': DateTime.now().millisecondsSinceEpoch,
+      });
       lastMessage = FirebaseFirestore.instance
           .collection('chats')
           .doc(found.chatId)
@@ -157,7 +173,10 @@ class ChatListItem extends StatelessWidget {
                   child: num > 0 ? Column(
                     crossAxisAlignment: CrossAxisAlignment.end,
                     children: <Widget>[
-                      DateWidget(endDate: dateTime),
+                      DateWidget(endDate: dateTime, textStyle: TextStyle(
+                        color: Colors.black,
+                        fontSize: 12,
+                      )),
                       Container(
                         padding: EdgeInsets.all(7.0),
                         decoration: BoxDecoration(
@@ -182,43 +201,4 @@ class ChatListItem extends StatelessWidget {
       ),
     );
   }
-}
-
-class DateWidget extends StatefulWidget {
-
-  final DateTime endDate;
-
-  DateWidget({this.endDate});
-
-  @override
-  _DateWidgetState createState() => _DateWidgetState();
-}
-
-class _DateWidgetState extends State<DateWidget> {
-
-  Timer timer;
-
-  @override
-  void initState () {
-    super.initState();
-    timer = Timer.periodic(new Duration(minutes: 1), (timer) {setState(() {});});
-  }
-
-  @override
-  Widget build (BuildContext context) {
-    return Text(
-      formatDate(endDate: widget.endDate),
-      style: TextStyle(
-        color: Colors.black,
-        fontSize: 12,
-      ),
-    );
-  }
-
-  @override
-  void dispose () {
-    super.dispose();
-    timer.cancel();
-  }
-
 }

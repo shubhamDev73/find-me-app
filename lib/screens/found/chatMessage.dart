@@ -60,13 +60,7 @@ class ChatMessage extends StatelessWidget {
                             ),
                           ),
                           Container(
-                            child: Text(
-                              "currently active",
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 11,
-                              ),
-                            ),
+                            child: LastSeenWidget(found: found),
                           ),
                         ],
                       ),

@@ -1,7 +1,8 @@
-import 'package:flutter/material.dart';
-
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'dart:async';
 import 'package:intl/intl.dart';
+
+import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 import 'package:findme/screens/loading.dart';
 import 'package:findme/models/fakeDocument.dart';
@@ -67,4 +68,42 @@ String formatDate ({Timestamp timestamp, DateTime endDate}) {
     return num == 0 ? "just now" : "$num $type${num > 1 ? 's' : ''} ago";
   }
   return '';
+}
+
+class DateWidget extends StatefulWidget {
+
+  final DateTime endDate;
+  final TextStyle textStyle;
+  final String prefix;
+
+  DateWidget({this.endDate, this.textStyle, this.prefix = ''});
+
+  @override
+  _DateWidgetState createState() => _DateWidgetState();
+}
+
+class _DateWidgetState extends State<DateWidget> {
+
+  Timer timer;
+
+  @override
+  void initState () {
+    super.initState();
+    timer = Timer.periodic(new Duration(minutes: 1), (timer) {setState(() {});});
+  }
+
+  @override
+  Widget build (BuildContext context) {
+    return Text(
+      widget.prefix + formatDate(endDate: widget.endDate),
+      style: widget.textStyle,
+    );
+  }
+
+  @override
+  void dispose () {
+    timer.cancel();
+    super.dispose();
+  }
+
 }
