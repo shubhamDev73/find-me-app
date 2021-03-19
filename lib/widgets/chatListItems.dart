@@ -199,7 +199,7 @@ class ChatListItem extends StatelessWidget {
                 ), fullPage: false),
               ],
             );
-          }, fullPage: false, cacheObj: [FakeDocument(id: found.lastMessage == null ? '' : found.lastMessage['id'], data: found.lastMessage)]),
+          }, fullPage: false, cacheObj: [found.lastMessage == null ? null : FakeDocument(id: found.lastMessage['id'], data: found.lastMessage)]),
         ),
       ),
     );

@@ -40,17 +40,15 @@ class ChatMessage extends StatelessWidget {
                   color: ThemeColors.primaryColor,
                   child: Row(
                     children: <Widget>[
-                      Expanded(
-                        flex: 2,
-                        child: InkWell(
-                          onTap: () {
-                            globals.setAnotherUser('/found/${found.id}');
-                            Navigator.of(context).pushNamed('/user');
-                          },
-                          child: Container(
-                            margin: EdgeInsets.symmetric(horizontal: 12.0),
-                            child: CachedNetworkImage(imageUrl: found.avatar['v1'], height: 75),
-                          ),
+                      InkWell(
+                        onTap: () {
+                          globals.setAnotherUser('/found/${found.id}');
+                          Navigator.of(context).pushNamed('/user');
+                        },
+                        child: Container(
+                          width: 50,
+                          margin: EdgeInsets.symmetric(horizontal: 12.0),
+                          child: CachedNetworkImage(imageUrl: found.avatar['v1']),
                         ),
                       ),
                       Column(
