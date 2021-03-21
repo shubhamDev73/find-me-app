@@ -24,21 +24,24 @@ class CachedData<T> {
 
   T _cachedValue;
 
-  Future<T> get () async {
+  Future<T> get ({bool forceNetwork = false}) async {
     // memory value
     if(_cachedValue == null) _cachedValue = emptyValue;
-    if(!isEmpty()) return _cachedValue;
 
-    // reading from file
-    if(cacheFile != null)
-      try {
-        File file = await getFile(cacheFile);
-        String readString = await file.readAsString();
-        _cachedValue = readString == '' || readString == null ? emptyValue : decoder?.call(readString) ?? jsonDecode(readString);
-      } catch (OSError) {
-        _cachedValue = emptyValue;
-      }
-    if(!isEmpty() || url == null) return _cachedValue;
+    if(!forceNetwork){
+      if(!isEmpty()) return _cachedValue;
+
+      // reading from file
+      if(cacheFile != null)
+        try{
+          File file = await getFile(cacheFile);
+          String readString = await file.readAsString();
+          _cachedValue = (readString == '' || readString == null) ? emptyValue : (decoder?.call(readString) ?? jsonDecode(readString));
+        }catch(OSError){
+          _cachedValue = emptyValue;
+        }
+      if(!isEmpty() || url == null) return _cachedValue;
+    }
 
     // network call
     return GETResponse<T>(url,

@@ -55,11 +55,30 @@ class _TabsState extends State<Tabs> {
     }else{
       saveToken();
     }
+  }
 
+  void saveToken () async {
+    String fcmToken = await _fcm.getToken();
+    POST('notification/token/', jsonEncode({'fcm_token': fcmToken}));
+    configureFCM();
+  }
+
+  void configureFCM () {
     void Function(Map<String, dynamic>) onNotification = (Map<String, dynamic> message) {
-      setState(() {
-        _currentTab = PageTab.found;
-      });
+      switch(message['data']['type']){
+        case 'Found':
+          globals.founds.get(forceNetwork: true);
+          setState(() {
+            _currentTab = PageTab.found;
+          });
+          break;
+        case 'Personality':
+          globals.meUser.get(forceNetwork: true);
+          setState(() {
+            _currentTab = PageTab.me;
+          });
+          break;
+      }
     };
 
     _fcm.configure(
@@ -86,11 +105,6 @@ class _TabsState extends State<Tabs> {
       onLaunch: onNotification,
       onResume: onNotification,
     );
-  }
-
-  void saveToken () async {
-    String fcmToken = await _fcm.getToken();
-    await POST('notification/token/', jsonEncode({'fcm_token': fcmToken}));
   }
 
   Widget build(BuildContext context) {
