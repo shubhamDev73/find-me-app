@@ -1,6 +1,12 @@
+import 'dart:convert';
+import 'dart:io';
+import 'dart:async';
+
+import 'package:findme/API.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 
 import 'package:findme/models/pageTab.dart';
 import 'package:findme/constant.dart';
@@ -14,9 +20,9 @@ class TabbedScreen extends StatelessWidget {
     Firebase.initializeApp();
     return createFutureWidget(globals.interests.get(), (data) =>
       createFutureWidget(globals.getUser(), (data) =>
-          createFutureWidget(globals.currentTab.get(), (PageTab cachedTab) =>
-            Tabs(initTab: cachedTab),
-          ),
+        createFutureWidget(globals.currentTab.get(), (PageTab cachedTab) =>
+          Tabs(initTab: cachedTab),
+        ),
       ),
     );
   }
@@ -34,6 +40,58 @@ class Tabs extends StatefulWidget {
 class _TabsState extends State<Tabs> {
 
   PageTab _currentTab;
+
+  final FirebaseMessaging _fcm = FirebaseMessaging();
+  StreamSubscription iosSubscription;
+
+  @override
+  void initState() {
+    super.initState();
+    if(Platform.isIOS){
+      iosSubscription = _fcm.onIosSettingsRegistered.listen((data) {
+        saveToken();
+      });
+      _fcm.requestNotificationPermissions(IosNotificationSettings());
+    }else{
+      saveToken();
+    }
+
+    void Function(Map<String, dynamic>) onNotification = (Map<String, dynamic> message) {
+      setState(() {
+        _currentTab = PageTab.found;
+      });
+    };
+
+    _fcm.configure(
+      onMessage: (Map<String, dynamic> message) async {
+        showDialog(
+          context: context,
+          builder: (context) => AlertDialog(
+            content: ListTile(
+              title: Text(message['notification']['title']),
+              subtitle: Text(message['notification']['body']),
+            ),
+            actions: <Widget>[
+              FlatButton(
+                child: Text('Ok'),
+                onPressed: () {
+                  onNotification(message);
+                  Navigator.of(context).pop();
+                },
+              ),
+            ],
+          ),
+        );
+      },
+      onLaunch: onNotification,
+      onResume: onNotification,
+    );
+  }
+
+  void saveToken () async {
+    String fcmToken = await _fcm.getToken();
+    await POST('notification/token/', jsonEncode({'fcm_token': fcmToken}));
+  }
 
   Widget build(BuildContext context) {
     if(_currentTab == null) _currentTab = widget.initTab;
