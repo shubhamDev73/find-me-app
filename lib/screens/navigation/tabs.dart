@@ -68,21 +68,22 @@ class _TabsState extends State<Tabs> {
       switch(message['data']['type']){
         case 'Found':
           globals.founds.get(forceNetwork: true);
-          setState(() {
-            _currentTab = PageTab.found;
-          });
+          break;
+        case 'Find':
+          globals.finds.get(forceNetwork: true);
+          break;
+        case 'Request':
+          globals.requests.get(forceNetwork: true);
           break;
         case 'Personality':
           globals.meUser.get(forceNetwork: true);
-          setState(() {
-            _currentTab = PageTab.me;
-          });
           break;
       }
     };
 
     _fcm.configure(
       onMessage: (Map<String, dynamic> message) async {
+        onNotification(message);
         showDialog(
           context: context,
           builder: (context) => AlertDialog(
@@ -94,7 +95,6 @@ class _TabsState extends State<Tabs> {
               FlatButton(
                 child: Text('Ok'),
                 onPressed: () {
-                  onNotification(message);
                   Navigator.of(context).pop();
                 },
               ),

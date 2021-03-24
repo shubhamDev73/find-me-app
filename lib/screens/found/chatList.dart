@@ -16,66 +16,95 @@ class FoundPage extends StatelessWidget {
     return createFutureWidget<User>(globals.getUser(), (User user) =>
       createFutureWidget<List<dynamic>>(globals.requests.get(), (List<dynamic> requests) =>
         createFutureWidget<List<dynamic>>(globals.finds.get(), (List<dynamic> finds) =>
-          createFutureWidget<Map<int, Found>>(globals.founds.get(), (Map<int, Found> founds) {
-            List<dynamic> users = [...requests, ...finds];
-            int numRequests = requests.length;
-            return Scaffold(
-              body: SafeArea(
-                child: Container(
-                  child: Column(
-                    children: [
-                      Container(
-                        height: 150,
-                        color: ThemeColors.primaryColor,
-                        child: Container(
-                          child: Row(
-                            children: <Widget>[
-                              Expanded(
-                                flex: 3,
-                                child: CachedNetworkImage(imageUrl: user.avatar['v1'], height: 75),
+          createFutureWidget<Map<int, Found>>(globals.founds.get(), (Map<int, Found> founds) => Scaffold(
+            body: SafeArea(
+              child: Container(
+                child: Column(
+                  children: [
+                    Container(
+                      height: 150,
+                      color: ThemeColors.primaryColor,
+                      child: Container(
+                        child: Row(
+                          children: <Widget>[
+                            Expanded(
+                              flex: 3,
+                              child: CachedNetworkImage(imageUrl: user.avatar['v1'], height: 75),
+                            ),
+                            Container(
+                              width: 7,
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: Colors.black,
                               ),
-                              Container(
-                                width: 7,
-                                decoration: BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  color: Colors.black,
-                                ),
+                            ),
+                            Expanded(
+                              flex: 7,
+                              child: Center(
+                                child: FindList(),
                               ),
-                              Expanded(
-                                flex: 7,
-                                child: Center(
-                                  child: ListView.builder(
-                                    scrollDirection: Axis.horizontal,
-                                    itemBuilder: (context, index) {
-                                      dynamic user = users[index];
-                                      return FindListItem(
-                                          id: user['id'],
-                                          avatar: user['avatar']['v1'],
-                                          nick: user['nick'],
-                                          isRequest: index < numRequests
-                                      );
-                                    },
-                                    itemCount: users.length,
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
+                            ),
+                          ],
                         ),
                       ),
-                      Expanded(
-                        child: Container(
-                          child: ChatList(founds: founds),
-                        ),
+                    ),
+                    Expanded(
+                      child: Container(
+                        child: ChatList(founds: founds),
                       ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
               ),
-            );
-          }),
+            ),
+          )),
         ),
       ),
+    );
+  }
+}
+
+class FindList extends StatefulWidget {
+
+  @override
+  _FindListState createState() => _FindListState();
+}
+
+class _FindListState extends State<FindList> {
+
+  @override
+  void initState(){
+    super.initState();
+    globals.onFindsUpdate = () => setState(() {});
+  }
+
+  @override
+  void dispose(){
+    globals.onFindsUpdate = null;
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return createFutureWidget<List<dynamic>>(globals.requests.get(), (List<dynamic> requests) =>
+      createFutureWidget<List<dynamic>>(globals.finds.get(), (List<dynamic> finds) {
+        List<dynamic> users = [...requests, ...finds];
+        int numRequests = requests.length;
+        return ListView.builder(
+          scrollDirection: Axis.horizontal,
+          itemBuilder: (context, index) {
+            dynamic user = users[index];
+            return FindListItem(
+              id: user['id'],
+              avatar: user['avatar']['v1'],
+              nick: user['nick'],
+              isRequest: index < numRequests
+            );
+          },
+          itemCount: users.length,
+        );
+      }, fullPage: false),
+      fullPage: false,
     );
   }
 }

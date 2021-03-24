@@ -99,6 +99,7 @@ CachedData<List<dynamic>> requests = CachedData(
   emptyValue: [],
   url: 'requests/',
   cacheFile: 'requests.json',
+  setCallback: (data) => onFindsUpdate?.call(),
 );
 
 CachedData<List<dynamic>> finds = CachedData(
@@ -106,7 +107,9 @@ CachedData<List<dynamic>> finds = CachedData(
   url: 'find/',
   cacheFile: 'finds.json',
   networkDecoder: (data) => jsonDecode(data)['users'],
+  setCallback: (data) => onFindsUpdate?.call(),
 );
+Function onFindsUpdate;
 
 MappedCachedData<int, Found> founds = MappedCachedData(
   url: 'found/',
