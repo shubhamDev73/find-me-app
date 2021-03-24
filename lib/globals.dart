@@ -52,7 +52,7 @@ MappedCachedData<int, Interest> interests = MappedCachedData(
   ),
   decoder: (data) =>
     LinkedHashMap<int, Interest>.fromIterable(jsonDecode(data).values,
-      key: (interest) => int.parse(interest['id']),
+      key: (interest) => interest['id'],
       value: (interest) => Interest.fromJson(interest)
     ),
   networkDecoder: (data) =>
@@ -119,7 +119,7 @@ MappedCachedData<int, Found> founds = MappedCachedData(
   ),
   decoder: (data) =>
     LinkedHashMap<int, Found>.fromIterable(jsonDecode(data).values,
-      key: (found) => int.parse(found['id']),
+      key: (found) => found['id'],
       value: (found) => Found.fromJson(found)
     ),
   networkDecoder: (data) =>

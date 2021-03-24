@@ -72,7 +72,7 @@ class CachedData<T> {
   Future<void> saveToFile () async {
     if(cacheFile == null) return;
     File file = await getFile(cacheFile);
-    String writeString = isEmpty() ? '' : encoder?.call(_cachedValue) ?? jsonEncode(_cachedValue);
+    String writeString = isEmpty() ? '' : (encoder?.call(_cachedValue) ?? jsonEncode(_cachedValue));
     await file.writeAsString(writeString);
   }
 
@@ -97,8 +97,15 @@ class MappedCachedData<K, V> extends CachedData<Map<K, V>> {
     setCallback: setCallback,
   );
 
+  @override
   bool isEmpty () {
     return _cachedValue.isEmpty;
+  }
+
+  @override
+  void clear () {
+    emptyValue = new LinkedHashMap<K, V>();
+    super.clear();
   }
 
   void mappedSet (K key, V value) {
