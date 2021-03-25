@@ -13,35 +13,16 @@ import 'package:findme/constant.dart';
 import 'package:findme/widgets/misc.dart';
 import 'package:findme/globals.dart' as globals;
 
-class TabbedScreen extends StatelessWidget {
-
-  @override
-  Widget build(BuildContext context) {
-    Firebase.initializeApp();
-    globals.interests.get();
-    globals.meUser.get();
-    return createFutureWidget(globals.interests.get(), (data) =>
-      createFutureWidget(globals.meUser.get(), (data) =>
-        createFutureWidget(globals.currentTab.get(), (PageTab cachedTab) {
-          globals.interests.get(forceNetwork: true);
-          globals.meUser.get(forceNetwork: true);
-          return Tabs(initTab: cachedTab);
-        }),
-      ),
-    );
-  }
-}
-
-class Tabs extends StatefulWidget {
+class TabbedScreen extends StatefulWidget {
 
   final PageTab initTab;
-  Tabs({this.initTab: PageTab.me});
+  TabbedScreen({this.initTab: PageTab.me});
 
   @override
-  _TabsState createState() => _TabsState();
+  _TabbedScreenState createState() => _TabbedScreenState();
 }
 
-class _TabsState extends State<Tabs> {
+class _TabbedScreenState extends State<TabbedScreen> {
 
   PageTab _currentTab;
 
@@ -51,6 +32,10 @@ class _TabsState extends State<Tabs> {
   @override
   void initState() {
     super.initState();
+    Firebase.initializeApp();
+    globals.interests.get(forceNetwork: true);
+    globals.meUser.get(forceNetwork: true);
+    globals.posts.get();
     if(Platform.isIOS){
       iosSubscription = _fcm.onIosSettingsRegistered.listen((data) {
         saveToken();
@@ -112,44 +97,46 @@ class _TabsState extends State<Tabs> {
   }
 
   Widget build(BuildContext context) {
-    if(_currentTab == null) _currentTab = widget.initTab;
+    return createFutureWidget(globals.currentTab.get(), (PageTab cachedTab) {
+      if(_currentTab == null) _currentTab = cachedTab;
 
-    return WillPopScope(
-      onWillPop: () async => !await navigatorKeys[_currentTab].currentState.maybePop(),
-      child: Scaffold(
-        body: Stack(
-          children: PageTab.values.map<Widget>((PageTab tab) => Offstage(
-            offstage: _currentTab != tab,
-            child: tabScreens[tab],
-          )).toList(),
-        ),
-        bottomNavigationBar: SizedBox(
-          height: 40,
-          child: BottomNavigationBar(
-            type: BottomNavigationBarType.fixed,
-            items: PageTab.values.map<BottomNavigationBarItem>((PageTab tab) =>
-              tabButton(icon: tabIcon[tab], selected: _currentTab == tab)
-            ).toList(),
-            currentIndex: PageTab.values.indexOf(_currentTab),
-            onTap: (index) {
-              PageTab newTab = PageTab.values[index];
-              globals.currentTab.set(newTab);
-              if(newTab == _currentTab && _currentTab == PageTab.found)
-                navigatorKeys[_currentTab].currentState.popUntil(ModalRoute.withName('/'));
-              setState(() {
-                _currentTab = newTab;
-              });
-            },
-            showSelectedLabels: false,
-            showUnselectedLabels: false,
-            elevation: 0,
-            backgroundColor: Colors.transparent,
-            selectedFontSize: 0,
-            unselectedFontSize: 0,
+      return WillPopScope(
+        onWillPop: () async => !await navigatorKeys[_currentTab].currentState.maybePop(),
+        child: Scaffold(
+          body: Stack(
+            children: PageTab.values.map<Widget>((PageTab tab) => Offstage(
+              offstage: _currentTab != tab,
+              child: tabScreens[tab],
+            )).toList(),
+          ),
+          bottomNavigationBar: SizedBox(
+            height: 40,
+            child: BottomNavigationBar(
+              type: BottomNavigationBarType.fixed,
+              items: PageTab.values.map<BottomNavigationBarItem>((PageTab tab) =>
+                tabButton(icon: tabIcon[tab], selected: _currentTab == tab)
+              ).toList(),
+              currentIndex: PageTab.values.indexOf(_currentTab),
+              onTap: (index) {
+                PageTab newTab = PageTab.values[index];
+                globals.currentTab.set(newTab);
+                if(newTab == _currentTab && _currentTab == PageTab.found)
+                  navigatorKeys[_currentTab].currentState.popUntil(ModalRoute.withName('/'));
+                setState(() {
+                  _currentTab = newTab;
+                });
+              },
+              showSelectedLabels: false,
+              showUnselectedLabels: false,
+              elevation: 0,
+              backgroundColor: Colors.transparent,
+              selectedFontSize: 0,
+              unselectedFontSize: 0,
+            ),
           ),
         ),
-      ),
-    );
+      );
+    });
   }
 
   BottomNavigationBarItem tabButton({String icon, bool selected = false}) {
