@@ -12,9 +12,26 @@ import 'package:findme/constant.dart';
 import 'package:findme/API.dart';
 import 'package:findme/globals.dart' as globals;
 
-class AddInterests extends StatelessWidget {
+class AddInterests extends StatefulWidget {
 
+  @override
+  _AddInterestsState createState() => _AddInterestsState();
+}
+
+class _AddInterestsState extends State<AddInterests> {
   final ScrollController scrollController = ScrollController();
+
+  @override
+  void initState() {
+    super.initState();
+    globals.onInterestsChanged = () => setState(() {});
+  }
+
+  @override
+  void dispose() {
+    globals.onInterestsChanged = null;
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
