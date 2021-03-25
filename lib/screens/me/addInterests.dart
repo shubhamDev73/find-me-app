@@ -25,11 +25,13 @@ class _AddInterestsState extends State<AddInterests> {
   void initState() {
     super.initState();
     globals.onInterestsChanged = () => setState(() {});
+    globals.onUserChanged['addInterests'] = () => setState(() {});
   }
 
   @override
   void dispose() {
     globals.onInterestsChanged = null;
+    globals.onUserChanged.remove('addInterests');
     super.dispose();
   }
 

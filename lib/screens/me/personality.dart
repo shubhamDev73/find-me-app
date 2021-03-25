@@ -101,6 +101,18 @@ class _PersonalityState extends State<Personality> {
   String trait;
 
   @override
+  void initState() {
+    super.initState();
+    if(widget.me) globals.onUserChanged['personality'] = () => setState(() {});
+  }
+
+  @override
+  void dispose() {
+    if(widget.me) globals.onUserChanged.remove('personality');
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     if (trait == null) trait = ModalRoute.of(context).settings.arguments;
 

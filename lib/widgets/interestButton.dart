@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:findme/constant.dart';
 import 'package:flutter_svg/svg.dart';
+
+import 'package:findme/constant.dart';
+import 'package:findme/globals.dart' as globals;
 
 class InterestButton extends StatefulWidget {
   final Function onClick;
@@ -24,6 +26,13 @@ class _InterestButtonState extends State<InterestButton> {
   void initState() {
     super.initState();
     amount = widget.amount;
+    if(widget.canChangeAmount) globals.onUserChanged['interestButton${widget.name}'] = () => setState(() {});
+  }
+
+  @override
+  void dispose() {
+    if(widget.canChangeAmount) globals.onUserChanged.remove('interestButton${widget.name}');
+    super.dispose();
   }
 
   @override
@@ -38,7 +47,7 @@ class _InterestButtonState extends State<InterestButton> {
       child: Container(
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(50),
-          color: ThemeColors.interestColors[amount],
+          color: ThemeColors.interestColors[widget.canChangeAmount ? amount : widget.amount],
           border: widget.selected ? Border.all(
             color: Colors.black,
             width: 2,

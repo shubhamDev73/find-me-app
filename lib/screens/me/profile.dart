@@ -10,37 +10,55 @@ import 'package:findme/models/user.dart';
 import 'package:findme/models/interests.dart';
 import 'package:findme/assets.dart';
 
-Widget createInterest(User user, BuildContext context, int index) {
-  List<Interest> interests = user.interests.values.toList();
-  if(index == 4){
-    return InterestButton(
-      name: Assets.plus,
-      isSvg: true,
-      selected: true,
-      onClick: () {
-        Navigator.of(context).pushNamed('/interests', arguments: interests[0].id);
-      },
-    );
-  }else{
-    Interest interest = interests[index];
-    return InterestButton(
-      name: interest.name,
-      amount: interest.amount,
-      onClick: () {
-        Navigator.of(context).pushNamed('/interests', arguments: interest.id);
-      },
-    );
-  }
-}
-
-class Profile extends StatelessWidget {
+class Profile extends StatefulWidget {
 
   final bool me;
   const Profile({this.me = true});
 
   @override
+  _ProfileState createState() => _ProfileState();
+}
+
+class _ProfileState extends State<Profile> {
+
+  @override
+  void initState() {
+    super.initState();
+    if(widget.me) globals.onUserChanged['profile'] = () => setState(() {});
+  }
+
+  @override
+  void dispose() {
+    if(widget.me) globals.onUserChanged.remove('profile');
+    super.dispose();
+  }
+
+  Widget createInterest(User user, BuildContext context, int index) {
+    List<Interest> interests = user.interests.values.toList();
+    if(index == 4){
+      return InterestButton(
+        name: Assets.plus,
+        isSvg: true,
+        selected: true,
+        onClick: () {
+          Navigator.of(context).pushNamed('/interests', arguments: interests[0].id);
+        },
+      );
+    }else{
+      Interest interest = interests[index];
+      return InterestButton(
+        name: interest.name,
+        amount: interest.amount,
+        onClick: () {
+          Navigator.of(context).pushNamed('/interests', arguments: interest.id);
+        },
+      );
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return createFutureWidget<User>(globals.getUser(me: me), (User user) => Scaffold(
+    return createFutureWidget<User>(globals.getUser(me: widget.me), (User user) => Scaffold(
       body: SafeArea(
         child: Column(
           mainAxisSize: MainAxisSize.min,

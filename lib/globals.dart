@@ -72,9 +72,9 @@ CachedData<User> meUser = CachedData(
   cacheFile: 'user.json',
   encoder: (User user) => jsonEncode(user.toJson()),
   decoder: (String userString) => User.fromJson(jsonDecode(userString)),
-  setCallback: (data) => onUserChanged?.call(),
+  setCallback: (data) => onUserChanged.forEach((key, value) => value()),
 );
-Function onUserChanged;
+Map<String, Function> onUserChanged = {};
 
 CachedData<User> _anotherUser = CachedData(
   emptyValue: User(),

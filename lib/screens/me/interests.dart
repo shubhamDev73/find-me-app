@@ -225,7 +225,13 @@ class _InterestsState extends State<Interests> {
   @override
   void initState() {
     super.initState();
-    globals.onUserChanged = () => setState(() {});
+    if(widget.me) globals.onUserChanged['interests'] = () => setState(() {});
+  }
+
+  @override
+  void dispose() {
+    if(widget.me) globals.onUserChanged.remove('interests');
+    super.dispose();
   }
 
   @override
