@@ -45,8 +45,8 @@ class CachedData<T> {
 
     // network call
     return GETResponse<T>(url,
-        decoder: networkDecoder ?? decoder ?? (data) => jsonDecode(data),
-        callback: (T retrievedValue) => set(retrievedValue),
+      decoder: networkDecoder ?? decoder ?? (data) => jsonDecode(data),
+      callback: (T retrievedValue) => set(retrievedValue),
     );
 
   }
@@ -78,15 +78,15 @@ class CachedData<T> {
 
 }
 
-class MappedCachedData<K, V> extends CachedData<Map<K, V>> {
+class MappedCachedData<K, V> extends CachedData<LinkedHashMap<K, V>> {
 
   MappedCachedData({
     String url,
     String cacheFile,
-    String Function(Map<K, V>) encoder,
+    String Function(LinkedHashMap<K, V>) encoder,
     Map<K, V> Function(String) decoder,
     Function networkDecoder,
-    Function(Map<K, V>, K key) setCallback,
+    Function(LinkedHashMap<K, V>, K key) setCallback,
   }) : super(
     emptyValue: new LinkedHashMap<K, V>(),
     url: url,

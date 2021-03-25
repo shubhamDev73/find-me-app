@@ -1,3 +1,4 @@
+import 'dart:collection';
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
@@ -17,65 +18,66 @@ class AddInterests extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return createFutureWidget(globals.interests.get(), (Map<int, Interest> interests) => Scaffold(
-      backgroundColor: ThemeColors.lightColor,
-      body: SafeArea(
-        child: Column(
-          children: [
-            Expanded(
-              flex: 2,
-              child: TopBox(
-                title: "Interests",
-                desc: "tap and tap",
+    return createFutureWidget<User>(globals.meUser.get(), (User user) =>
+      createFutureWidget<LinkedHashMap<int, Interest>>(globals.interests.get(), (LinkedHashMap<int, Interest> interests) => Scaffold(
+        backgroundColor: ThemeColors.lightColor,
+        body: SafeArea(
+          child: Column(
+            children: [
+              Expanded(
+                flex: 2,
+                child: TopBox(
+                  title: "Interests",
+                  desc: "tap and tap",
+                ),
               ),
-            ),
-            Expanded(
-              flex: 9,
-              child: Container(
-                margin: EdgeInsets.symmetric(horizontal: 20),
-                child: Scrollbar(
-                  thickness: 0,
-                  isAlwaysShown: true,
-                  controller: scrollController,
-                  child: GridView(
+              Expanded(
+                flex: 9,
+                child: Container(
+                  margin: EdgeInsets.symmetric(horizontal: 20),
+                  child: Scrollbar(
+                    thickness: 0,
+                    isAlwaysShown: true,
                     controller: scrollController,
-                    shrinkWrap: true,
-                    scrollDirection: Axis.vertical,
-                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                      childAspectRatio: 3.3,
-                      mainAxisSpacing: 30,
-                      crossAxisSpacing: 10,
-                      crossAxisCount: 3,
+                    child: GridView(
+                      controller: scrollController,
+                      shrinkWrap: true,
+                      scrollDirection: Axis.vertical,
+                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                        childAspectRatio: 3.3,
+                        mainAxisSpacing: 30,
+                        crossAxisSpacing: 10,
+                        crossAxisCount: 3,
+                      ),
+                      children: interests.values.map<Widget>((Interest interest) => InterestButton(
+                        name: interest.name,
+                        onClick: (amount) {
+                          interest.amount = amount;
+
+                          POST('me/interests/update/', jsonEncode([{"interest": interest.id, "amount": interest.amount}]));
+
+                          globals.meUser.update((User user) {
+                            if(user.interests.containsKey(interest.id)){
+                              if(amount == 0) user.interests.remove(interest.id);
+                              else user.interests[interest.id].amount = amount;
+                            }else{
+                              if(amount != 0) user.interests[interest.id] = interest;
+                            }
+                            return user;
+                          });
+                        },
+                        amount: user.interests.containsKey(interest.id) ? user.interests[interest.id].amount : 0,
+                        canChangeAmount: true,
+                      )).toList(),
                     ),
-                    children: interests.values.map<Widget>((Interest interest) => InterestButton(
-                      name: interest.name,
-                      onClick: (amount) {
-                        interest.amount = amount;
-                        globals.interests.mappedSet(interest.id, interest);
-
-                        POST('me/interests/update/', jsonEncode([{"interest": interest.id, "amount": interest.amount}]));
-
-                        globals.meUser.update((User user) {
-                          if(user.interests.containsKey(interest.id)){
-                            if(amount == 0) user.interests.remove(interest.id);
-                            else user.interests[interest.id].amount = amount;
-                          }else{
-                            if(amount != 0) user.interests[interest.id] = interest;
-                          }
-                          return user;
-                        });
-                      },
-                      amount: interest.amount,
-                      canChangeAmount: true,
-                    )).toList(),
                   ),
                 ),
               ),
-            ),
-            SizedBox(height: 10),
-          ],
+              SizedBox(height: 10),
+            ],
+          ),
         ),
-      ),
-    ));
+      )),
+    );
   }
 }

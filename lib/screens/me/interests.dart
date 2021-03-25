@@ -225,9 +225,7 @@ class _InterestsState extends State<Interests> {
   @override
   void initState() {
     super.initState();
-    globals.onInterestsChanged = () {
-      setState(() {});
-    };
+    globals.onUserChanged = () => setState(() {});
   }
 
   @override
