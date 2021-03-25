@@ -16,48 +16,54 @@ class FoundPage extends StatelessWidget {
     return createFutureWidget<User>(globals.getUser(), (User user) =>
       createFutureWidget<List<dynamic>>(globals.requests.get(), (List<dynamic> requests) =>
         createFutureWidget<List<dynamic>>(globals.finds.get(), (List<dynamic> finds) =>
-          createFutureWidget<Map<int, Found>>(globals.founds.get(), (Map<int, Found> founds) => Scaffold(
-            body: SafeArea(
-              child: Container(
-                child: Column(
-                  children: [
-                    Container(
-                      height: 150,
-                      color: ThemeColors.primaryColor,
-                      child: Container(
-                        child: Row(
-                          children: <Widget>[
-                            Expanded(
-                              flex: 3,
-                              child: CachedNetworkImage(imageUrl: user.avatar['v1'], height: 75),
-                            ),
-                            Container(
-                              width: 7,
-                              decoration: BoxDecoration(
-                                shape: BoxShape.circle,
-                                color: Colors.black,
+          createFutureWidget<Map<int, Found>>(globals.founds.get(), (Map<int, Found> founds) {
+            globals.requests.get(forceNetwork: true);
+            globals.finds.get(forceNetwork: true);
+            globals.founds.get(forceNetwork: true);
+            return Scaffold(
+              body: SafeArea(
+                child: Container(
+                  child: Column(
+                    children: [
+                      Container(
+                        height: 150,
+                        color: ThemeColors.primaryColor,
+                        child: Container(
+                          child: Row(
+                            children: <Widget>[
+                              Expanded(
+                                flex: 3,
+                                child: CachedNetworkImage(
+                                    imageUrl: user.avatar['v1'], height: 75),
                               ),
-                            ),
-                            Expanded(
-                              flex: 7,
-                              child: Center(
-                                child: FindList(),
+                              Container(
+                                width: 7,
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  color: Colors.black,
+                                ),
                               ),
-                            ),
-                          ],
+                              Expanded(
+                                flex: 7,
+                                child: Center(
+                                  child: FindList(),
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
                       ),
-                    ),
-                    Expanded(
-                      child: Container(
-                        child: ChatList(founds: founds),
+                      Expanded(
+                        child: Container(
+                          child: ChatList(founds: founds),
+                        ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
-            ),
-          )),
+            );
+          }),
         ),
       ),
     );
