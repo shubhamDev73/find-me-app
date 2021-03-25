@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'dart:io';
 import 'dart:async';
 
@@ -48,7 +47,7 @@ class _TabbedScreenState extends State<TabbedScreen> {
 
   void saveToken () async {
     String fcmToken = await _fcm.getToken();
-    POST('notification/token/', jsonEncode({'fcm_token': fcmToken}));
+    POST('notification/token/', {"fcm_token": fcmToken});
     configureFCM();
   }
 

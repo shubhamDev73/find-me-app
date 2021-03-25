@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 
@@ -143,14 +141,14 @@ class _LoginState extends State<Login> {
     String username = usernameController.text;
     String password = passwordController.text;
 
-    final response = await POST('login/', jsonEncode({"username": username, "password": password}), useToken: false);
+    final response = await POST('login/', {"username": username, "password": password}, useToken: false);
 
     setState(() {
       isLoading = false;
     });
 
     Map<String, dynamic> json = jsonDecode(response.body);
-    if (response.statusCode == 200 && json.containsKey('token'))
+    if(response.statusCode == 200 && json.containsKey('token'))
       globals.token.set(json['token']);
     else
       scaffoldKey.currentState.showSnackBar(SnackBar(content: Text("${json['error']}")));

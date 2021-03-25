@@ -1,5 +1,4 @@
 import 'dart:collection';
-import 'dart:convert';
 
 import 'package:flutter/material.dart';
 
@@ -73,7 +72,7 @@ class _AddInterestsState extends State<AddInterests> {
                         onClick: (amount) {
                           interest.amount = amount;
 
-                          POST('me/interests/update/', jsonEncode([{"interest": interest.id, "amount": interest.amount}]));
+                          POST('me/interests/update/', {"interest": interest.id, "amount": interest.amount});
 
                           globals.meUser.update((User user) {
                             if(user.interests.containsKey(interest.id)){

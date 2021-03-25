@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -220,7 +218,7 @@ class _ChatMessageListState extends State<ChatMessageList> {
           found.unreadNum = 0;
           return found;
         });
-        POST('found/read/', jsonEncode({"id": widget.found.id}));
+        POST('found/read/', {"id": widget.found.id});
       }
 
       return Container(

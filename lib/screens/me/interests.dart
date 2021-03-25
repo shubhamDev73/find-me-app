@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -162,7 +160,7 @@ class _QuestionsWidgetState extends State<QuestionsWidget> {
   }
 
   void updateAnswer(int interestId, int questionId, String answer) {
-    POST('me/interests/$interestId/update/', jsonEncode([{"question": questionId, "answer": answer}]));
+    POST('me/interests/$interestId/update/', {"question": questionId, "answer": answer});
 
     globals.meUser.update((User user) {
       Interest interest = user.interests[interestId];

@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:http/http.dart' as http;
 import 'package:findme/globals.dart' as globals;
 
@@ -21,7 +23,7 @@ Future<T> GETResponse<T>(String url, {T Function(String) decoder, Function callb
 
 }
 
-Future<http.Response> POST(String url, String body, {bool useToken = true}) async {
+Future<http.Response> POST(String url, Map<String, dynamic> body, {bool useToken = true}) async {
   String token = await globals.token.get();
-  return http.post(baseURL + url, body: body, headers: useToken ? {"Authorization": "Bearer $token"} : {});
+  return http.post(baseURL + url, body: jsonEncode(body), headers: useToken ? {"Authorization": "Bearer $token"} : null);
 }
