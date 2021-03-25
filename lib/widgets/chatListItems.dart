@@ -11,80 +11,24 @@ import 'package:findme/widgets/misc.dart';
 import 'package:findme/constant.dart';
 import 'package:findme/globals.dart' as globals;
 
-class ChatList extends StatefulWidget {
-
-  final Map<int, Found> founds;
-  ChatList({this.founds});
-
-  @override
-  _ChatListState createState() => _ChatListState();
-}
-
-class _ChatListState extends State<ChatList> {
-
-  List<Found> foundList;
-
-  @override
-  void initState () {
-    super.initState();
-    globals.onChatListUpdate = (Map<int, Found> founds) =>
-      Timer(const Duration(milliseconds: 100), () =>
-        setState(() {
-          assignFoundList(founds);
-        })
-      );
-  }
-
-  @override
-  void dispose () {
-    super.dispose();
-    globals.onChatListUpdate = null;
-    for(Found found in foundList){
-      FirebaseDatabase.instance.reference().child("${found.id}-${found.me}").update({
-        'online': false,
-        'lastSeen': DateTime.now().millisecondsSinceEpoch,
-        'typing': false,
-      });
-    }
-  }
-
-  void assignFoundList (Map<int, Found> founds) {
-    foundList = founds.values.toList();
-    foundList.sort((Found a, Found b) {
-      if(a.lastMessage == null) return -1;
-      if(b.lastMessage == null) return 1;
-      DateTime aDate = DateTime.parse(a.lastMessage['timestamp']);
-      DateTime bDate = DateTime.parse(b.lastMessage['timestamp']);
-      return bDate.compareTo(aDate);
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    if(foundList == null)
-      assignFoundList(widget.founds);
-
-    return ListView.builder(
-      itemBuilder: (context, index) => ChatListItem(
-        found: foundList[index],
-        index: index,
-      ),
-      itemCount: foundList.length,
-    );
-  }
-}
-
-class ChatListItem extends StatelessWidget {
+class ChatListItem extends StatefulWidget {
 
   final Found found;
   final int index;
 
   ChatListItem({this.found, this.index = 0});
 
-  final DatabaseReference realtimeDB = FirebaseDatabase.instance.reference();
+  @override
+  _ChatListItemState createState() => _ChatListItemState();
+}
+
+class _ChatListItemState extends State<ChatListItem> {
+
   final StreamController<int> unreadNumController = StreamController<int>();
+
   Stream<QuerySnapshot> lastMessage;
   DateTime lastMessageTime;
+  DatabaseReference realtimeFound;
 
   void syncWithFound (Found found) {
     unreadNumController.add(found.unreadNum);
@@ -92,36 +36,49 @@ class ChatListItem extends StatelessWidget {
   }
 
   @override
-  Widget build (BuildContext context) {
-    if(lastMessageTime == null){
-      realtimeDB.child("${found.id}-${found.me}").update({
-        'online': true,
-        'lastSeen': DateTime.now().millisecondsSinceEpoch,
-        'typing': false,
-      });
-      realtimeDB.child("${found.id}-${found.me}").onDisconnect().update({
-        'online': false,
-        'lastSeen': DateTime.now().millisecondsSinceEpoch,
-        'typing': false,
-      });
-      lastMessage = FirebaseFirestore.instance
-          .collection('chats')
-          .doc(found.chatId)
-          .collection('chats')
-          .orderBy('timestamp', descending: true)
-          .limit(1)
-          .snapshots();
-      syncWithFound(found);
-      globals.onFoundChanged[found.id] = syncWithFound;
-    }
+  void initState() {
+    super.initState();
+    lastMessage = FirebaseFirestore.instance
+        .collection('chats')
+        .doc(widget.found.chatId)
+        .collection('chats')
+        .orderBy('timestamp', descending: true)
+        .limit(1)
+        .snapshots();
+    syncWithFound(widget.found);
+    globals.onFoundChanged[widget.found.id] = syncWithFound;
+    realtimeFound = FirebaseDatabase.instance.reference().child("${widget.found.id}-${widget.found.me}");
+    realtimeFound.update({
+      'online': true,
+      'lastSeen': DateTime.now().millisecondsSinceEpoch,
+      'typing': false,
+    });
+    realtimeFound.onDisconnect().update({
+      'online': false,
+      'lastSeen': DateTime.now().millisecondsSinceEpoch,
+      'typing': false,
+    });
+  }
 
+  @override
+  void dispose() {
+    realtimeFound.update({
+      'online': false,
+      'lastSeen': DateTime.now().millisecondsSinceEpoch,
+      'typing': false,
+    });
+    super.dispose();
+  }
+
+  @override
+  Widget build (BuildContext context) {
     return GestureDetector(
       onTap: () {
         Navigator.of(context).pushNamed('/message',
-            arguments: found);
+            arguments: widget.found);
       },
       child: ColoredBox(
-        color: index % 2 == 0 ? Colors.grey[300] : Colors.white,
+        color: widget.index % 2 == 0 ? Colors.grey[300] : Colors.white,
         child: Container(
           child: createFirebaseStreamWidget(lastMessage, (messages) {
             dynamic message = messages.length > 0 ? messages[0] : null;
@@ -129,7 +86,7 @@ class ChatListItem extends StatelessWidget {
             if(message != null){
               dateTime = message['timestamp'] is String ? DateTime.parse(message['timestamp']) : message['timestamp'].toDate();
               if(dateTime.compareTo(lastMessageTime) > 0)
-                globals.founds.mappedUpdate(found.id, (Found found) {
+                globals.founds.mappedUpdate(widget.found.id, (Found found) {
                   found.lastMessage = globals.getMessageJSON(message);
                   if(message['user'] != found.me)
                     found.unreadNum++;
@@ -144,13 +101,13 @@ class ChatListItem extends StatelessWidget {
                   children: <Widget>[
                     Container(
                       padding: const EdgeInsets.fromLTRB(17.0, 17.0, 17.0, 14.0),
-                      child: CachedNetworkImage(imageUrl: found.avatar['v1'], height: 40),
+                      child: CachedNetworkImage(imageUrl: widget.found.avatar['v1'], height: 40),
                     ),
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: <Widget>[
                         Text(
-                          found.nick,
+                          widget.found.nick,
                           style: TextStyle(
                             fontWeight: FontWeight.bold,
                             fontSize: 20.0,
@@ -199,7 +156,7 @@ class ChatListItem extends StatelessWidget {
                 ), fullPage: false),
               ],
             );
-          }, fullPage: false, cacheObj: [found.lastMessage == null ? null : FakeDocument(id: found.lastMessage['id'], data: found.lastMessage)]),
+          }, fullPage: false, cacheObj: [widget.found.lastMessage == null ? null : FakeDocument(id: widget.found.lastMessage['id'], data: widget.found.lastMessage)]),
         ),
       ),
     );

@@ -108,3 +108,57 @@ class _FindListState extends State<FindList> {
     );
   }
 }
+
+class ChatList extends StatefulWidget {
+
+  final Map<int, Found> founds;
+  ChatList({this.founds});
+
+  @override
+  _ChatListState createState() => _ChatListState();
+}
+
+class _ChatListState extends State<ChatList> {
+
+  List<Found> foundList;
+
+  @override
+  void initState () {
+    super.initState();
+    assignFoundList(widget.founds);
+    globals.onChatListUpdate = (Map<int, Found> founds) =>
+      WidgetsBinding.instance.addPostFrameCallback((timeStamp) =>
+        setState(() {
+          assignFoundList(founds);
+        })
+      );
+  }
+
+  @override
+  void dispose () {
+    globals.onChatListUpdate = null;
+    super.dispose();
+  }
+
+  void assignFoundList (Map<int, Found> founds) {
+    foundList = founds.values.toList();
+    foundList.sort((Found a, Found b) {
+      if(a.lastMessage == null) return -1;
+      if(b.lastMessage == null) return 1;
+      DateTime aDate = DateTime.parse(a.lastMessage['timestamp']);
+      DateTime bDate = DateTime.parse(b.lastMessage['timestamp']);
+      return bDate.compareTo(aDate);
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return ListView.builder(
+      itemBuilder: (context, index) => ChatListItem(
+        found: foundList[index],
+        index: index,
+      ),
+      itemCount: foundList.length,
+    );
+  }
+}
