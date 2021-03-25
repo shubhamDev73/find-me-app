@@ -13,6 +13,9 @@ class FoundPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    globals.requests.get();
+    globals.finds.get();
+    globals.founds.get();
     return createFutureWidget<User>(globals.getUser(), (User user) =>
       createFutureWidget<List<dynamic>>(globals.requests.get(), (List<dynamic> requests) =>
         createFutureWidget<List<dynamic>>(globals.finds.get(), (List<dynamic> finds) =>

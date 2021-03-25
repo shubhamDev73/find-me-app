@@ -18,8 +18,10 @@ class TabbedScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     Firebase.initializeApp();
+    globals.interests.get();
+    globals.meUser.get();
     return createFutureWidget(globals.interests.get(), (data) =>
-      createFutureWidget(globals.getUser(), (data) =>
+      createFutureWidget(globals.meUser.get(), (data) =>
         createFutureWidget(globals.currentTab.get(), (PageTab cachedTab) {
           globals.interests.get(forceNetwork: true);
           globals.meUser.get(forceNetwork: true);
