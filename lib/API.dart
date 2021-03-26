@@ -12,7 +12,8 @@ Future<http.Response> GET(String url) async {
 
 Future<T> GETResponse<T>(String url, {T Function(String) decoder, Function callback}) async {
   try{
-    final response = await GET(url);
+    final response = await GET(url)
+        .timeout(Duration(minutes: 1));
     if(response.statusCode == 200){
       T result = decoder?.call(response.body) ?? jsonDecode(response.body);
       callback?.call(result);
@@ -31,7 +32,8 @@ Future<void> POST(String url, Map<String, dynamic> body, {bool useToken = true, 
   String token = await globals.token.get();
 
   try{
-    final response = await http.post(baseURL + url, body: jsonEncode(body), headers: useToken ? {"Authorization": "Bearer $token"} : null);
+    final response = await http.post(baseURL + url, body: jsonEncode(body), headers: useToken ? {"Authorization": "Bearer $token"} : null)
+        .timeout(Duration(minutes: 1));
     if(response.statusCode == 200)
       callback?.call(jsonDecode(response.body));
     else if(response.statusCode == 401)
