@@ -21,13 +21,13 @@ Future<T> GETResponse<T>(String url, {T Function(String) decoder, Function callb
       globals.token.clear();
     else
       throw Exception('Something went wrong.');
-  }catch(OSError){
+  }catch(e){
     throw Exception('No network connection.');
   }
 
 }
 
-Future<void> POST(String url, Map<String, dynamic> body, {bool useToken = true, Function callback, Function onError}) async {
+Future<void> POST(String url, Map<String, dynamic> body, {bool useToken = true, Function callback, Function(String) onError}) async {
   String token = await globals.token.get();
 
   try{
@@ -38,7 +38,7 @@ Future<void> POST(String url, Map<String, dynamic> body, {bool useToken = true, 
       globals.token.clear();
     else
       onError?.call('Something went wrong.');
-  }catch(OSError){
+  }catch(e){
     onError?.call('No network connection.');
   }
 

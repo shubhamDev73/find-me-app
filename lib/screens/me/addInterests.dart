@@ -75,6 +75,7 @@ class _AddInterestsState extends State<AddInterests> {
                             'me/interests/update/',
                             {"interest": interest.id, "amount": interest.amount},
                             overwrite: (body) => body['interest'] == interest.id,
+                            onError: (errorText) => Scaffold.of(context).showSnackBar(SnackBar(content: Text(errorText))),
                           );
 
                           globals.meUser.update((User user) {

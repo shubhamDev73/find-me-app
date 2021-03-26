@@ -158,42 +158,51 @@ var uuid = Uuid();
 CachedData<List<dynamic>> posts = CachedData(
   emptyValue: [],
   cacheFile: 'posts.json',
+  encoder: (postsList) => jsonEncode(postsList.map((post) {
+    if(post.containsKey('onError')) return {'url': post['url'], 'body': post['body'], 'id': post['id']};
+    return post;
+  }).toList()),
   setCallback: _makePostCalls,
 );
 
-void addPostCall(String url, Map<String, dynamic> body, {bool Function(Map<String, dynamic>) overwrite}) {
+void addPostCall(String url, Map<String, dynamic> body, {bool Function(Map<String, dynamic>) overwrite, Function(String) onError}) {
   posts.update((postsList) {
     bool present = false;
     if(overwrite != null){
       for(Map<String, dynamic> post in postsList){
         if(post['url'] == url && overwrite(post['body'])){
           post['body'] = body;
+          post['onError'] = onError;
           present = true;
           break;
         }
       }
     }
-    if(!present) postsList.add({"url": url, "body": body, "id": uuid.v1()});
+    if(!present) postsList.add({"url": url, "body": body, "onError": onError, "id": uuid.v1()});
     return postsList;
   });
 }
 
-Set<String> runningTasks = Set();
+Set<String> _runningTasks = Set();
 void _makePostCalls(List<dynamic> postsList) {
   for(Map<String, dynamic> post in postsList){
-    if(!runningTasks.contains(post['id'])){
+    if(!_runningTasks.contains(post['id'])){
       POST(post['url'], post['body'],
         callback: (data) => posts.update((postsList) {
           postsList.remove(post);
-          runningTasks.remove(post['id']);
+          _runningTasks.remove(post['id']);
           return postsList;
         }),
-        onError: (data) {
-          runningTasks.remove(post['id']);
+        onError: (errorText) {
+          if(post.containsKey('onError')){
+            post['onError'](errorText);
+            post.remove('onError');
+          }
+          _runningTasks.remove(post['id']);
           posts.update((data) => data);
         },
       );
-      runningTasks.add(post['id']);
+      _runningTasks.add(post['id']);
     }
   }
 }
