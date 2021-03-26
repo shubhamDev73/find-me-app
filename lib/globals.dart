@@ -104,6 +104,11 @@ CachedData<List<dynamic>> requests = CachedData(
   emptyValue: [],
   url: 'requests/',
   cacheFile: 'requests.json',
+  networkDecoder: (data) {
+    List<dynamic> requestList = jsonDecode(data);
+    requestList.sort((dynamic a, dynamic b) => DateTime.parse(b['timestamp']).compareTo(DateTime.parse(a['timestamp'])));
+    return requestList;
+  },
   setCallback: (data) => onFindsUpdate?.call(),
 );
 
@@ -111,7 +116,11 @@ CachedData<List<dynamic>> finds = CachedData(
   emptyValue: [],
   url: 'find/',
   cacheFile: 'finds.json',
-  networkDecoder: (data) => jsonDecode(data)['users'],
+  networkDecoder: (data) {
+    List<dynamic> findList = jsonDecode(data)['users'];
+    findList.sort((dynamic a, dynamic b) => DateTime.parse(b['timestamp']).compareTo(DateTime.parse(a['timestamp'])));
+    return findList;
+  },
   setCallback: (data) => onFindsUpdate?.call(),
 );
 Function onFindsUpdate;
