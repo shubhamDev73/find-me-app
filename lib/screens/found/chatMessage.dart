@@ -218,7 +218,7 @@ class _ChatMessageListState extends State<ChatMessageList> {
           found.unreadNum = 0;
           return found;
         });
-        POST('found/read/', {"id": widget.found.id});
+        globals.addPostCall('found/read/', {"id": widget.found.id}, overwrite: (body) => body['id'] == widget.found.id);
       }
 
       return Container(

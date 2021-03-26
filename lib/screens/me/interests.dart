@@ -6,7 +6,6 @@ import 'package:findme/widgets/interestButton.dart';
 import 'package:findme/widgets/misc.dart';
 import 'package:findme/models/interests.dart';
 import 'package:findme/models/user.dart';
-import 'package:findme/API.dart';
 import 'package:findme/globals.dart' as globals;
 
 class QuestionsWidget extends StatefulWidget {
@@ -160,7 +159,11 @@ class _QuestionsWidgetState extends State<QuestionsWidget> {
   }
 
   void updateAnswer(int interestId, int questionId, String answer) {
-    POST('me/interests/$interestId/update/', {"question": questionId, "answer": answer});
+    globals.addPostCall(
+      'me/interests/$interestId/update/',
+      {"question": questionId, "answer": answer},
+      overwrite: (body) => body['question'] == questionId,
+    );
 
     globals.meUser.update((User user) {
       Interest interest = user.interests[interestId];

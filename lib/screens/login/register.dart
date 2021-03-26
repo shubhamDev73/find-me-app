@@ -147,17 +147,21 @@ class _RegisterState extends State<Register> {
     String username = usernameController.text;
     String password = passwordController.text;
 
-    final response = await POST('register/', {"username": username, "password": password}, useToken: false);
-
-    setState(() {
-      isLoading = false;
+    POST('register/', {"username": username, "password": password}, useToken: false, callback: (json) {
+      setState(() {
+        isLoading = false;
+      });
+      if(json.containsKey('token'))
+        globals.token.set(json['token']);
+      else
+        scaffoldKey.currentState.showSnackBar(SnackBar(content: Text("${json['error']}")));
+    }, onError: (String errorText) {
+      setState(() {
+        isLoading = false;
+      });
+      scaffoldKey.currentState.showSnackBar(SnackBar(content: Text(errorText)));
     });
 
-    Map<String, dynamic> json = jsonDecode(response.body);
-    if(response.statusCode == 200 && json.containsKey('token'))
-      globals.token.set(json['token']);
-    else
-      scaffoldKey.currentState.showSnackBar(SnackBar(content: Text("${json['error']}")));
   }
 
 }

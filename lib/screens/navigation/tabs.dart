@@ -1,7 +1,6 @@
 import 'dart:io';
 import 'dart:async';
 
-import 'package:findme/API.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -34,7 +33,11 @@ class _TabbedScreenState extends State<TabbedScreen> {
     Firebase.initializeApp();
     globals.interests.get(forceNetwork: true);
     globals.meUser.get(forceNetwork: true);
-    globals.posts.get();
+    createToken();
+  }
+
+  void createToken() async {
+    await globals.posts.get();
     if(Platform.isIOS){
       iosSubscription = _fcm.onIosSettingsRegistered.listen((data) {
         saveToken();
@@ -47,7 +50,7 @@ class _TabbedScreenState extends State<TabbedScreen> {
 
   void saveToken () async {
     String fcmToken = await _fcm.getToken();
-    POST('notification/token/', {"fcm_token": fcmToken});
+    globals.addPostCall('notification/token/', {"fcm_token": fcmToken}, overwrite: (body) => true);
     configureFCM();
   }
 

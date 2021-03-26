@@ -37,7 +37,7 @@ class CachedData<T> {
           File file = await getFile(cacheFile);
           String readString = await file.readAsString();
           _cachedValue = (readString == '' || readString == null) ? emptyValue : (decoder?.call(readString) ?? jsonDecode(readString));
-        }catch(OSError){
+        }catch(e){
           _cachedValue = emptyValue;
         }
       if(!isEmpty() || url == null) return _cachedValue;
@@ -66,6 +66,7 @@ class CachedData<T> {
   }
 
   bool isEmpty () {
+    if(_cachedValue is List) return (_cachedValue as List).isEmpty;
     return _cachedValue == emptyValue;
   }
 

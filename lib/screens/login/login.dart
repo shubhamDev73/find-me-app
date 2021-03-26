@@ -141,17 +141,21 @@ class _LoginState extends State<Login> {
     String username = usernameController.text;
     String password = passwordController.text;
 
-    final response = await POST('login/', {"username": username, "password": password}, useToken: false);
-
-    setState(() {
-      isLoading = false;
+    POST('login/', {"username": username, "password": password}, useToken: false, callback: (json) {
+      setState(() {
+        isLoading = false;
+      });
+      if(json.containsKey('token'))
+        globals.token.set(json['token']);
+      else
+        scaffoldKey.currentState.showSnackBar(SnackBar(content: Text("${json['error']}")));
+    }, onError: (String errorText) {
+      setState(() {
+        isLoading = false;
+      });
+      scaffoldKey.currentState.showSnackBar(SnackBar(content: Text(errorText)));
     });
 
-    Map<String, dynamic> json = jsonDecode(response.body);
-    if(response.statusCode == 200 && json.containsKey('token'))
-      globals.token.set(json['token']);
-    else
-      scaffoldKey.currentState.showSnackBar(SnackBar(content: Text("${json['error']}")));
   }
 
 }

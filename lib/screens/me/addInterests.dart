@@ -8,7 +8,6 @@ import 'package:findme/widgets/topBox.dart';
 import 'package:findme/models/user.dart';
 import 'package:findme/models/interests.dart';
 import 'package:findme/constant.dart';
-import 'package:findme/API.dart';
 import 'package:findme/globals.dart' as globals;
 
 class AddInterests extends StatefulWidget {
@@ -72,7 +71,11 @@ class _AddInterestsState extends State<AddInterests> {
                         onClick: (amount) {
                           interest.amount = amount;
 
-                          POST('me/interests/update/', {"interest": interest.id, "amount": interest.amount});
+                          globals.addPostCall(
+                            'me/interests/update/',
+                            {"interest": interest.id, "amount": interest.amount},
+                            overwrite: (body) => body['interest'] == interest.id,
+                          );
 
                           globals.meUser.update((User user) {
                             if(user.interests.containsKey(interest.id)){

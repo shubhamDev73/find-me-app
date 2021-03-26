@@ -2,12 +2,14 @@ import 'dart:convert';
 import 'dart:collection';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:uuid/uuid.dart';
 
 import 'package:findme/models/user.dart';
 import 'package:findme/models/interests.dart';
 import 'package:findme/models/found.dart';
 import 'package:findme/models/pageTab.dart';
 import 'package:findme/models/cachedData.dart';
+import 'package:findme/API.dart';
 
 // currentTab
 
@@ -25,13 +27,14 @@ CachedData<String> token = CachedData(
   emptyValue: '',
   cacheFile: 'token.txt',
   setCallback: (token) {
-    if (token == '') {
+    if(token == ''){
       currentTab.clear();
       interests.clear();
       meUser.clear();
       requests.clear();
       finds.clear();
       founds.clear();
+      posts.clear();
       onLogout();
     } else onLogin();
   },
@@ -117,10 +120,10 @@ MappedCachedData<int, Found> founds = MappedCachedData(
   url: 'found/',
   cacheFile: 'founds.json',
   encoder: (data) => jsonEncode(
-      LinkedHashMap<String, Map<String, dynamic>>.fromIterable(data.values,
-        key: (found) => found.id.toString(),
-        value: (found) => found.toJson(),
-      )
+    LinkedHashMap<String, Map<String, dynamic>>.fromIterable(data.values,
+      key: (found) => found.id.toString(),
+      value: (found) => found.toJson(),
+    )
   ),
   decoder: (data) =>
     LinkedHashMap<int, Found>.fromIterable(jsonDecode(data).values,
@@ -145,4 +148,52 @@ Map<String, dynamic> getMessageJSON (DocumentSnapshot message) {
   json['id'] = message.id;
   json['timestamp'] = (json['timestamp']?.toDate() ?? DateTime.now()).toString();
   return json;
+}
+
+
+// POST network calls
+
+var uuid = Uuid();
+
+CachedData<List<dynamic>> posts = CachedData(
+  emptyValue: [],
+  cacheFile: 'posts.json',
+  setCallback: _makePostCalls,
+);
+
+void addPostCall(String url, Map<String, dynamic> body, {bool Function(Map<String, dynamic>) overwrite}) {
+  posts.update((postsList) {
+    bool present = false;
+    if(overwrite != null){
+      for(Map<String, dynamic> post in postsList){
+        if(post['url'] == url && overwrite(post['body'])){
+          post['body'] = body;
+          present = true;
+          break;
+        }
+      }
+    }
+    if(!present) postsList.add({"url": url, "body": body, "id": uuid.v1()});
+    return postsList;
+  });
+}
+
+Set<String> runningTasks = Set();
+void _makePostCalls(List<dynamic> postsList) {
+  for(Map<String, dynamic> post in postsList){
+    if(!runningTasks.contains(post['id'])){
+      POST(post['url'], post['body'],
+        callback: (data) => posts.update((postsList) {
+          postsList.remove(post);
+          runningTasks.remove(post['id']);
+          return postsList;
+        }),
+        onError: (data) {
+          runningTasks.remove(post['id']);
+          posts.update((data) => data);
+        },
+      );
+      runningTasks.add(post['id']);
+    }
+  }
 }

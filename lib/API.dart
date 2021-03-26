@@ -11,19 +11,35 @@ Future<http.Response> GET(String url) async {
 }
 
 Future<T> GETResponse<T>(String url, {T Function(String) decoder, Function callback}) async {
-
-  final response = await GET(url);
-  if (response.statusCode == 200) {
-    T result = decoder?.call(response.body) ?? response.body;
-    callback?.call(result);
-    return result;
-  } else {
-    throw Exception('Failed to load: ${response.statusCode}');
+  try{
+    final response = await GET(url);
+    if(response.statusCode == 200){
+      T result = decoder?.call(response.body) ?? jsonDecode(response.body);
+      callback?.call(result);
+      return result;
+    }else if(response.statusCode == 401)
+      globals.token.clear();
+    else
+      throw Exception('Something went wrong.');
+  }catch(OSError){
+    throw Exception('No network connection.');
   }
 
 }
 
-Future<http.Response> POST(String url, Map<String, dynamic> body, {bool useToken = true}) async {
+Future<void> POST(String url, Map<String, dynamic> body, {bool useToken = true, Function callback, Function onError}) async {
   String token = await globals.token.get();
-  return http.post(baseURL + url, body: jsonEncode(body), headers: useToken ? {"Authorization": "Bearer $token"} : null);
+
+  try{
+    final response = await http.post(baseURL + url, body: jsonEncode(body), headers: useToken ? {"Authorization": "Bearer $token"} : null);
+    if(response.statusCode == 200)
+      callback?.call(jsonDecode(response.body));
+    else if(response.statusCode == 401)
+      globals.token.clear();
+    else
+      onError?.call('Something went wrong.');
+  }catch(OSError){
+    onError?.call('No network connection.');
+  }
+
 }
