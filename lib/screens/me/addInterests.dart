@@ -86,7 +86,10 @@ class _AddInterestsState extends State<AddInterests> {
                               if(amount != 0) user.interests[interest.id] = interest;
                             }
                             List<Interest> newInterests = user.interests.values.toList();
-                            newInterests.sort((Interest a, Interest b) => b.amount.compareTo(a.amount));
+                            if(amount != 0){
+                              newInterests.remove(interest);
+                              newInterests.insert(0, interest);
+                            }
                             user.interests = LinkedHashMap.fromIterable(newInterests, key: (interest) => interest.id, value: (interest) => interest);
                             return user;
                           });

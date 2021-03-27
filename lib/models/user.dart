@@ -18,7 +18,7 @@ class User {
   });
 
   factory User.fromJson(Map<String, dynamic> json) {
-    json['interests'].sort((dynamic a, dynamic b) => (b['amount'] as int).compareTo((a['amount'] as int)));
+    json['interests'].sort((dynamic a, dynamic b) => DateTime.parse(b['timestamp']).compareTo(DateTime.parse(a['timestamp'])));
     return User(
       nick: json["nick"],
       avatar: json["avatar"],
