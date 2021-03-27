@@ -30,6 +30,7 @@ CachedData<String> token = CachedData(
     if(token == ''){
       currentTab.clear();
       interests.clear();
+      moods.clear();
       meUser.clear();
       requests.clear();
       finds.clear();
@@ -42,7 +43,7 @@ CachedData<String> token = CachedData(
 Function onLogin, onLogout;
 
 
-// interests
+// data
 
 MappedCachedData<int, Interest> interests = MappedCachedData(
   url: 'interests/',
@@ -56,16 +57,27 @@ MappedCachedData<int, Interest> interests = MappedCachedData(
   decoder: (data) =>
     LinkedHashMap<int, Interest>.fromIterable(jsonDecode(data).values,
       key: (interest) => interest['id'],
-      value: (interest) => Interest.fromJson(interest)
+      value: (interest) => Interest.fromJson(interest),
     ),
   networkDecoder: (data) =>
     LinkedHashMap<int, Interest>.fromIterable(jsonDecode(data),
       key: (interest) => interest['id'],
-      value: (interest) => Interest.fromJson(interest)
+      value: (interest) => Interest.fromJson(interest),
     ),
   setCallback: (data, [key]) => onInterestsChanged?.call(),
 );
 Function onInterestsChanged;
+
+MappedCachedData<String, Map<String, dynamic>> moods = MappedCachedData(
+  url: 'moods/',
+  cacheFile: 'moods.json',
+  networkDecoder: (data) =>
+  LinkedHashMap<String, Map<String, dynamic>>.fromIterable(jsonDecode(data),
+    key: (mood) => mood['name'],
+    value: (mood) => mood,
+  ),
+);
+
 
 // users
 
@@ -137,12 +149,12 @@ MappedCachedData<int, Found> founds = MappedCachedData(
   decoder: (data) =>
     LinkedHashMap<int, Found>.fromIterable(jsonDecode(data).values,
       key: (found) => found['id'],
-      value: (found) => Found.fromJson(found)
+      value: (found) => Found.fromJson(found),
     ),
   networkDecoder: (data) =>
     LinkedHashMap<int, Found>.fromIterable(jsonDecode(data),
       key: (found) => found['id'],
-      value: (found) => Found.fromJson(found)
+      value: (found) => Found.fromJson(found),
     ),
   setCallback: (data, [int key]) {
     onChatListUpdate?.call(data);

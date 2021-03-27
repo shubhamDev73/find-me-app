@@ -6,6 +6,7 @@ class Found {
   int unreadNum;
   String nick;
   Map<String, dynamic> avatar;
+  String mood;
   bool retainRequestSent;
   bool retained;
 
@@ -17,6 +18,7 @@ class Found {
     this.unreadNum,
     this.nick,
     this.avatar,
+    this.mood,
     this.retainRequestSent,
     this.retained,
   });
@@ -29,6 +31,7 @@ class Found {
     unreadNum: json["unread_num"],
     nick: json["nick"],
     avatar: json["avatar"],
+    mood: json["mood"],
     retainRequestSent: json["retain_request_sent"],
     retained: json["retained"],
   );
@@ -42,6 +45,7 @@ class Found {
       "unread_num": unreadNum,
       "nick": nick,
       "avatar": avatar,
+      "mood": mood,
       "retain_request_send": retainRequestSent,
       "retained": retained,
     };

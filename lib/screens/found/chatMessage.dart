@@ -9,7 +9,6 @@ import 'package:findme/widgets/chatItems.dart';
 import 'package:findme/models/found.dart';
 import 'package:findme/constant.dart';
 import 'package:findme/assets.dart';
-import 'package:findme/API.dart';
 import 'package:findme/globals.dart' as globals;
 
 class ChatMessage extends StatelessWidget {
@@ -27,9 +26,9 @@ class ChatMessage extends StatelessWidget {
       });
     });
 
-    return SafeArea(
-      child: Scaffold(
-        body: Container(
+    return createFutureWidget<Map<String, dynamic>>(globals.moods.get(), (moods) => Scaffold(
+      body: SafeArea(
+        child: Container(
           child: Column(
             children: <Widget>[
               Expanded(
@@ -84,7 +83,10 @@ class ChatMessage extends StatelessWidget {
                 flex: 5,
                 child: Container(
                   decoration: BoxDecoration(
-                    image: DecorationImage(image: AssetImage("assets/mood/gloomy_bg.png"), fit: BoxFit.cover),
+                    image: DecorationImage(
+                      image: CachedNetworkImageProvider(moods[found.mood]['url']),
+                      fit: BoxFit.cover,
+                    ),
                   ),
                   child: ChatMessageList(found: found),
                 ),
@@ -135,7 +137,7 @@ class ChatMessage extends StatelessWidget {
           ),
         ),
       ),
-    );
+    ));
   }
 
   void submitChat (String text, Found found) {
