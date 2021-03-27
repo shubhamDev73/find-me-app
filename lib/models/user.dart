@@ -17,13 +17,16 @@ class User {
     this.mood,
   });
 
-  factory User.fromJson(Map<String, dynamic> json) => User(
-    nick: json["nick"],
-    avatar: json["avatar"],
-    personality: json["personality"],
-    interests: LinkedHashMap.fromIterable(json["interests"], key: (interest) => interest['id'], value: (interest) => Interest.fromJson(interest)),
-    mood: json["mood"],
-  );
+  factory User.fromJson(Map<String, dynamic> json) {
+    json['interests'].sort((dynamic a, dynamic b) => (b['amount'] as int).compareTo((a['amount'] as int)));
+    return User(
+      nick: json["nick"],
+      avatar: json["avatar"],
+      personality: json["personality"],
+      interests: LinkedHashMap.fromIterable(json["interests"], key: (interest) => interest['id'], value: (interest) => Interest.fromJson(interest)),
+      mood: json["mood"],
+    );
+  }
 
   Map<String, dynamic> toJson() =>
     {
