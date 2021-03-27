@@ -4,7 +4,7 @@ PageRouteBuilder animatedRoute (Map<String, Widget> routes, RouteSettings settin
   return PageRouteBuilder(
     pageBuilder: (context, animation, anotherAnimation) => routes[settings.name],
     settings: settings,
-    transitionDuration: Duration(milliseconds: 2000),
+    transitionDuration: Duration(milliseconds: 100),
     transitionsBuilder: (context, animation, anotherAnimation, child) {
       animation = CurvedAnimation(curve: Curves.easeIn, parent: animation);
       return FadeTransition(

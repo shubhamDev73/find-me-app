@@ -13,7 +13,7 @@ Future<http.Response> GET(String url) async {
 Future<T> GETResponse<T>(String url, {T Function(String) decoder, Function callback}) async {
   try{
     final response = await GET(url)
-        .timeout(Duration(minutes: 1));
+        .timeout(Duration(minutes: 2));
     if(response.statusCode == 200){
       T result = decoder?.call(response.body) ?? jsonDecode(response.body);
       callback?.call(result);
@@ -33,7 +33,7 @@ Future<void> POST(String url, Map<String, dynamic> body, {bool useToken = true, 
 
   try{
     final response = await http.post(baseURL + url, body: jsonEncode(body), headers: useToken ? {"Authorization": "Bearer $token"} : null)
-        .timeout(Duration(minutes: 1));
+        .timeout(Duration(minutes: 2));
     if(response.statusCode == 200)
       callback?.call(jsonDecode(response.body));
     else if(response.statusCode == 401)
