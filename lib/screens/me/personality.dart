@@ -14,6 +14,8 @@ import 'package:findme/models/user.dart';
 import 'package:findme/constant.dart';
 import 'package:findme/globals.dart' as globals;
 
+final random = new Random();
+
 class AdjectiveCarousel extends StatefulWidget {
 
   final List<dynamic> adjectives;
@@ -52,14 +54,17 @@ class _AdjectiveCarouselState extends State<AdjectiveCarousel> {
                       currentAdjIndex = index;
                     });
                   }),
-              items: widget.adjectives.map((adjective) => Builder(
-                builder: (BuildContext context) {
-                  return AdjListItem(
-                    name: adjective['name'],
-                    description: adjective['description'],
-                  );
-                },
-              )).toList(),
+              items: widget.adjectives.map((facetAdjectives) {
+                Map<String, dynamic> adjective = facetAdjectives[random.nextInt(facetAdjectives.length)];
+                return Builder(
+                  builder: (BuildContext context) {
+                    return AdjListItem(
+                      name: adjective['name'],
+                      description: adjective['description'],
+                    );
+                  },
+                );
+              }).toList(),
             ),
           ),
           Expanded(
@@ -221,10 +226,8 @@ class _PersonalityState extends State<Personality> {
             ),
             GestureDetector(
               onTap: () async {
-                final random = new Random();
-                List<String> urls = user.personality[trait]['url'];
-                int i = random.nextInt(urls.length);
-                String url = urls[i];
+                List<dynamic> urls = user.personality[trait]['url'];
+                String url = urls[random.nextInt(urls.length)];
                 if(await canLaunch(url)) await launch(url);
               },
               child: Container(
