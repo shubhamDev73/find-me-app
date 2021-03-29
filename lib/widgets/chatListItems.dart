@@ -78,7 +78,7 @@ class _ChatListItemState extends State<ChatListItem> {
             arguments: widget.found);
       },
       child: ColoredBox(
-        color: widget.index % 2 == 0 ? Colors.grey[300] : Colors.white,
+        color: ThemeColors.chatListColors[widget.index % 2 == 0],
         child: Container(
           child: createFirebaseStreamWidget(lastMessage, (messages) {
             dynamic message = messages.length > 0 ? messages[0] : null;

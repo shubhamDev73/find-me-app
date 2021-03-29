@@ -80,7 +80,7 @@ class _AdjectiveCarouselState extends State<AdjectiveCarousel> {
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
                     border: currentAdjIndex == index ? null : Border.all(color: Colors.black),
-                    color: currentAdjIndex == index ? Color(0xFF000000) : Color(0xFFFFFFFF),
+                    color: currentAdjIndex == index ? Colors.black : Colors.white,
                   ),
                 );
               }).toList(),

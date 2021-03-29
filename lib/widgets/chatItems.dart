@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:firebase_database/firebase_database.dart';
 
+import 'package:findme/constant.dart';
 import 'package:findme/models/found.dart';
 import 'package:findme/widgets/misc.dart';
 import 'package:findme/globals.dart' as globals;
@@ -72,7 +73,7 @@ class ChatMessageItem extends StatelessWidget {
             constraints: BoxConstraints(minWidth: 70, maxWidth: 250),
             padding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 6.0),
             decoration: BoxDecoration(
-              color: me ? Color(0xFFF0FBFD) : Color(0xFF82D6E1),
+              color: ThemeColors.chatMessageColors[me],
               borderRadius: BorderRadius.only(
                 topLeft: me ? circleRadius : getCornerRadius(bottom: false),
                 bottomLeft: me ? circleRadius : getCornerRadius(bottom: true),

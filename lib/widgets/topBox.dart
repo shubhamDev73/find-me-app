@@ -1,5 +1,6 @@
-import 'package:findme/constant.dart';
 import 'package:flutter/material.dart';
+
+import 'package:findme/constant.dart';
 
 class TopBox extends StatelessWidget {
 
@@ -30,7 +31,7 @@ class TopBox extends StatelessWidget {
             children: [
               Container(
                 height: 150,
-                color: Color(0xffDFF7F9),
+                color: ThemeColors.topBoxColor,
                 child: Column(
                   children: [
                     Container(
