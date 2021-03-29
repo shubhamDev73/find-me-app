@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:collection';
 
+import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:uuid/uuid.dart';
 
@@ -186,24 +187,26 @@ CachedData<List<dynamic>> posts = CachedData(
   setCallback: _makePostCalls,
 );
 
-void addPostCall(String url, Map<String, dynamic> body, {bool Function(Map<String, dynamic>) overwrite, Function(String) onError}) {
+void addPostCall(String url, Map<String, dynamic> body, {bool Function(Map<String, dynamic>) overwrite}) {
   posts.update((postsList) {
     bool present = false;
     if(overwrite != null){
       for(Map<String, dynamic> post in postsList){
         if(post['url'] == url && overwrite(post['body'])){
           post['body'] = body;
-          post['onError'] = onError;
+          post['first'] = true;
           present = true;
           break;
         }
       }
     }
-    if(!present) postsList.add({"url": url, "body": body, "onError": onError, "id": uuid.v1()});
+    if(!present) postsList.add({"url": url, "body": body, "first": true, "id": uuid.v1()});
     return postsList;
   });
 }
 
+GlobalKey<ScaffoldState> scaffoldKey = new GlobalKey<ScaffoldState>();
+bool isOnline = true;
 Set<String> _runningTasks = Set();
 void _makePostCalls(List<dynamic> postsList) {
   for(Map<String, dynamic> post in postsList){
@@ -212,13 +215,18 @@ void _makePostCalls(List<dynamic> postsList) {
         callback: (data) => posts.update((postsList) {
           postsList.remove(post);
           _runningTasks.remove(post['id']);
+          if(!isOnline){
+            isOnline = true;
+            scaffoldKey.currentState.showSnackBar(SnackBar(content: Text("Now online!")));
+          }
           return postsList;
         }),
         onError: (errorText) {
-          if(post.containsKey('onError')){
-            post['onError'](errorText);
-            post.remove('onError');
+          if(post['first']){
+            scaffoldKey.currentState.showSnackBar(SnackBar(content: Text(errorText)));
+            post['first'] = false;
           }
+          isOnline = false;
           _runningTasks.remove(post['id']);
           posts.update((data) => data);
         },

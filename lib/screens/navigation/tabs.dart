@@ -53,10 +53,7 @@ class _TabbedScreenState extends State<TabbedScreen> {
 
   void saveToken () async {
     String fcmToken = await _fcm.getToken();
-    globals.addPostCall('notification/token/', {"fcm_token": fcmToken},
-      overwrite: (body) => true,
-      onError: (errorText) => Scaffold.of(context).showSnackBar(SnackBar(content: Text(errorText))),
-    );
+    globals.addPostCall('notification/token/', {"fcm_token": fcmToken}, overwrite: (body) => true);
     configureFCM();
   }
 

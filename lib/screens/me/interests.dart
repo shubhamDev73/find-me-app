@@ -159,7 +159,6 @@ class _QuestionsWidgetState extends State<QuestionsWidget> {
       'me/interests/$interestId/update/',
       {"question": questionId, "answer": answer},
       overwrite: (body) => body['question'] == questionId,
-      onError: (errorText) => Scaffold.of(context).showSnackBar(SnackBar(content: Text(errorText))),
     );
 
     globals.meUser.update((User user) {

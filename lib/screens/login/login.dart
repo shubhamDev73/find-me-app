@@ -86,8 +86,7 @@ class _LoginState extends State<Login> {
                           constraints: const BoxConstraints(maxWidth: 500),
                           child: RaisedButton(
                             onPressed: () {
-                              if (_formKey.currentState.validate())
-                                submitForm(_scaffoldKey);
+                              if(_formKey.currentState.validate()) submitForm();
                             },
                             color: Colors.white,
                             shape: RoundedRectangleBorder(
@@ -132,7 +131,7 @@ class _LoginState extends State<Login> {
     );
   }
 
-  void submitForm (GlobalKey<ScaffoldState> scaffoldKey) async {
+  void submitForm() {
 
     setState(() {
       isLoading = true;
@@ -148,12 +147,12 @@ class _LoginState extends State<Login> {
       if(json.containsKey('token'))
         globals.token.set(json['token']);
       else
-        scaffoldKey.currentState.showSnackBar(SnackBar(content: Text("${json['error']}")));
+        globals.scaffoldKey.currentState.showSnackBar(SnackBar(content: Text("${json['error']}")));
     }, onError: (String errorText) {
       setState(() {
         isLoading = false;
       });
-      scaffoldKey.currentState.showSnackBar(SnackBar(content: Text(errorText)));
+      globals.scaffoldKey.currentState.showSnackBar(SnackBar(content: Text(errorText)));
     });
 
   }

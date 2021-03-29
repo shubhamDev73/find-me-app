@@ -31,9 +31,16 @@ class _AppState extends State<App> {
     if(isLoggedIn == null)
       return createFutureWidget(globals.token.get(), (String token) {
         isLoggedIn = token != '';
-        return isLoggedIn ? TabbedScreen() : LoginScreens();
+        return screen();
       });
     else
-      return isLoggedIn ? TabbedScreen() : LoginScreens();
+      return screen();
+  }
+
+  Widget screen() {
+    return Scaffold(
+        key: globals.scaffoldKey,
+        body: isLoggedIn ? TabbedScreen() : LoginScreens(),
+    );
   }
 }
