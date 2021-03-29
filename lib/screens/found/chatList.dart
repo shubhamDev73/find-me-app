@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:firebase_database/firebase_database.dart';
 
 import 'package:findme/widgets/chatItems.dart';
 import 'package:findme/widgets/chatListItems.dart';
@@ -146,6 +147,14 @@ class _ChatListState extends State<ChatList> {
   @override
   void dispose () {
     globals.onChatListUpdate = null;
+
+    for(Found found in foundList)
+      FirebaseDatabase.instance.reference().child("${found.id}-${found.me}").update({
+        'online': false,
+        'lastSeen': DateTime.now().millisecondsSinceEpoch,
+        'typing': false,
+      });
+
     super.dispose();
   }
 
