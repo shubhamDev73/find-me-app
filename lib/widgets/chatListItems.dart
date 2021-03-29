@@ -56,87 +56,85 @@ class ChatListItem extends StatelessWidget {
         Navigator.of(context).pushNamed('/message',
             arguments: found);
       },
-      child: ColoredBox(
+      child: Container(
         color: ThemeColors.chatListColors[index % 2 == 0],
-        child: Container(
-          child: createFirebaseStreamWidget(lastMessage, (messages) {
-            dynamic message = messages.length > 0 ? messages[0] : null;
-            DateTime dateTime;
-            if(message != null){
-              dateTime = message['timestamp'] is String ? DateTime.parse(message['timestamp']) : message['timestamp'].toDate();
-              if(dateTime.compareTo(lastMessageTime) > 0)
-                globals.founds.mappedUpdate(found.id, (Found found) {
-                  found.lastMessage = globals.getMessageJSON(message);
-                  if(message['user'] != found.me)
-                    found.unreadNum++;
-                  return found;
-                });
-            }
+        child: createFirebaseStreamWidget(lastMessage, (messages) {
+          dynamic message = messages.length > 0 ? messages[0] : null;
+          DateTime dateTime;
+          if(message != null){
+            dateTime = message['timestamp'] is String ? DateTime.parse(message['timestamp']) : message['timestamp'].toDate();
+            if(dateTime.compareTo(lastMessageTime) > 0)
+              globals.founds.mappedUpdate(found.id, (Found found) {
+                found.lastMessage = globals.getMessageJSON(message);
+                if(message['user'] != found.me)
+                  found.unreadNum++;
+                return found;
+              });
+          }
 
-            return Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: <Widget>[
-                Row(
-                  children: <Widget>[
-                    Container(
-                      padding: const EdgeInsets.fromLTRB(17.0, 17.0, 17.0, 14.0),
-                      child: CachedNetworkImage(imageUrl: found.avatar['v1'], height: 40),
-                    ),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
-                        Text(
-                          found.nick,
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 20.0,
-                          ),
-                        ),
-                        Container(
-                          constraints: BoxConstraints(maxWidth: 200, maxHeight: 20),
-                          child: Text(
-                            message == null ? 'New connect!' : message['message'],
-                            style: TextStyle(
-                              color: Colors.black,
-                              fontSize: 14.0,
-                              fontStyle: message == null ? FontStyle.italic : FontStyle.normal,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ]
-                ),
-                message == null ? Container() : createStreamWidget<int>(unreadNumController.stream, (int num) => Container(
-                  margin: EdgeInsets.symmetric(horizontal: 10.0),
-                  child: num > 0 ? Column(
-                    crossAxisAlignment: CrossAxisAlignment.end,
+          return Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: <Widget>[
+              Row(
+                children: <Widget>[
+                  Container(
+                    padding: EdgeInsets.all(17),
+                    child: CachedNetworkImage(imageUrl: found.avatar['v1'], height: 40),
+                  ),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
-                      DateWidget(endDate: dateTime, textStyle: TextStyle(
-                        color: Colors.black,
-                        fontSize: 12,
-                      )),
-                      Container(
-                        padding: EdgeInsets.all(7.0),
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          color: ThemeColors.primaryColor,
+                      Text(
+                        found.nick,
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 20.0,
                         ),
+                      ),
+                      Container(
+                        constraints: BoxConstraints(maxWidth: 200, maxHeight: 20),
                         child: Text(
-                          "$num",
+                          message == null ? 'New connect!' : message['message'],
                           style: TextStyle(
-                            color: Colors.white,
+                            color: Colors.black,
                             fontSize: 14.0,
+                            fontStyle: message == null ? FontStyle.italic : FontStyle.normal,
                           ),
                         ),
                       ),
                     ],
-                  ) : Container(),
-                ), fullPage: false),
-              ],
-            );
-          }, fullPage: false, cacheObj: [found.lastMessage == null ? null : FakeDocument(id: found.lastMessage['id'], data: found.lastMessage)]),
-        ),
+                  ),
+                ]
+              ),
+              message == null ? Container() : createStreamWidget<int>(unreadNumController.stream, (int num) => Container(
+                margin: EdgeInsets.symmetric(horizontal: 10.0),
+                child: num > 0 ? Column(
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: <Widget>[
+                    DateWidget(endDate: dateTime, textStyle: TextStyle(
+                      color: Colors.black,
+                      fontSize: 12,
+                    )),
+                    Container(
+                      padding: EdgeInsets.all(7.0),
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: ThemeColors.primaryColor,
+                      ),
+                      child: Text(
+                        "$num",
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 14.0,
+                        ),
+                      ),
+                    ),
+                  ],
+                ) : Container(),
+              ), fullPage: false),
+            ],
+          );
+        }, fullPage: false, cacheObj: [found.lastMessage == null ? null : FakeDocument(id: found.lastMessage['id'], data: found.lastMessage)]),
       ),
     );
   }

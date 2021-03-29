@@ -25,7 +25,7 @@ class FindListItem extends StatelessWidget {
         Navigator.of(context).pushNamed('/user');
       },
       child: Container(
-        margin: EdgeInsets.symmetric(vertical: 32, horizontal: 8),
+        margin: EdgeInsets.symmetric(vertical: 28, horizontal: 8),
         child: Column(
           children: [
             Container(

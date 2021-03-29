@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+import 'package:findme/constant.dart';
 import 'package:findme/widgets/interestButton.dart';
 import 'package:findme/widgets/misc.dart';
 import 'package:findme/models/interests.dart';
@@ -84,10 +85,7 @@ class _QuestionsWidgetState extends State<QuestionsWidget> {
                         ),
                         child: Container(
                           child: Center(
-                            child: Icon(
-                              Icons.arrow_back_ios,
-                              color: Colors.grey.shade800,
-                            ),
+                            child: Icon(Icons.arrow_back_ios),
                           ),
                         ),
                       ),
@@ -101,10 +99,7 @@ class _QuestionsWidgetState extends State<QuestionsWidget> {
                         ),
                         child: Container(
                           child: Center(
-                            child: Icon(
-                              Icons.arrow_forward_ios,
-                              color: Colors.grey.shade800,
-                            ),
+                            child: Icon(Icons.arrow_forward_ios),
                           ),
                         ),
                       ),
@@ -263,8 +258,8 @@ class _InterestsState extends State<Interests> {
               Expanded(
                 flex: 6,
                 child: Container(
-                  padding: const EdgeInsets.fromLTRB(0.0, 17.0, 0.0, 0.0),
-                  color: Color(0xfff0fbfd),
+                  padding: EdgeInsets.symmetric(vertical: 17, horizontal: 10),
+                  color: ThemeColors.lightColor,
                   child: ListView(
                     children: getInterestList(user.interests.values.toList(), (int newInterestId) => setState(() {
                       interestId = newInterestId;

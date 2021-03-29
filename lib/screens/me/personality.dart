@@ -38,7 +38,7 @@ class _AdjectiveCarouselState extends State<AdjectiveCarousel> {
         color: ThemeColors.boxColor,
         borderRadius: BorderRadius.circular(15),
       ),
-      margin: EdgeInsets.fromLTRB(10.0, 0.0, 10.0, 0.0),
+      margin: EdgeInsets.symmetric(horizontal: 10),
       child: Column(
         children: [
           Expanded(
