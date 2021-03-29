@@ -23,6 +23,7 @@ class TabbedScreen extends StatefulWidget {
 class _TabbedScreenState extends State<TabbedScreen> {
 
   PageTab _currentTab;
+  List<PageTab> _tabHistory;
 
   final FirebaseMessaging _fcm = FirebaseMessaging();
   StreamSubscription iosSubscription;
@@ -30,6 +31,7 @@ class _TabbedScreenState extends State<TabbedScreen> {
   @override
   void initState() {
     super.initState();
+    _tabHistory = new List<PageTab>();
     Firebase.initializeApp();
     globals.interests.get(forceNetwork: true);
     globals.moods.get(forceNetwork: true);
@@ -107,7 +109,18 @@ class _TabbedScreenState extends State<TabbedScreen> {
       if(_currentTab == null) _currentTab = cachedTab;
 
       return WillPopScope(
-        onWillPop: () async => !await navigatorKeys[_currentTab].currentState.maybePop(),
+        onWillPop: () async {
+          bool canPop = await navigatorKeys[_currentTab].currentState.maybePop();
+          if(!canPop){
+            if(_tabHistory.isEmpty)
+              return true;
+            setState(() {
+              _currentTab = _tabHistory.removeLast();
+            });
+            return false;
+          }
+          return false;
+        },
         child: Scaffold(
           body: Stack(
             children: PageTab.values.map<Widget>((PageTab tab) => Offstage(
@@ -125,12 +138,16 @@ class _TabbedScreenState extends State<TabbedScreen> {
               currentIndex: PageTab.values.indexOf(_currentTab),
               onTap: (index) {
                 PageTab newTab = PageTab.values[index];
-                globals.currentTab.set(newTab);
-                if(newTab == _currentTab && _currentTab == PageTab.found)
-                  navigatorKeys[_currentTab].currentState.popUntil(ModalRoute.withName('/'));
-                setState(() {
-                  _currentTab = newTab;
-                });
+                if(newTab == _currentTab){
+                  if(_currentTab == PageTab.found)
+                    navigatorKeys[_currentTab].currentState.popUntil(ModalRoute.withName('/'));
+                }else{
+                  globals.currentTab.set(newTab);
+                  setState(() {
+                    _tabHistory.add(_currentTab);
+                    _currentTab = newTab;
+                  });
+                }
               },
               showSelectedLabels: false,
               showUnselectedLabels: false,
