@@ -79,6 +79,16 @@ MappedCachedData<String, Map<String, dynamic>> moods = MappedCachedData(
   ),
 );
 
+MappedCachedData<String, Map<String, dynamic>> avatars = MappedCachedData(
+  url: 'avatars/',
+  cacheFile: 'avatars.json',
+  networkDecoder: (data) =>
+  LinkedHashMap<String, Map<String, dynamic>>.fromIterable(jsonDecode(data),
+    key: (avatar) => avatar['name'],
+    value: (avatar) => avatar,
+  ),
+);
+
 
 // users
 

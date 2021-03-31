@@ -35,6 +35,7 @@ class _TabbedScreenState extends State<TabbedScreen> {
     Firebase.initializeApp();
     globals.interests.get(forceNetwork: true);
     globals.moods.get(forceNetwork: true);
+    globals.avatars.get(forceNetwork: true);
     globals.meUser.get(forceNetwork: true);
     createToken();
   }
