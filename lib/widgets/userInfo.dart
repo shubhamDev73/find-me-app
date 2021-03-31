@@ -33,8 +33,9 @@ class UserInfo extends StatelessWidget {
                   height: 25,
                   width: 25,
                   decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(2),
-                      color: Colors.white),
+                    borderRadius: BorderRadius.circular(2),
+                    color: Colors.white,
+                  ),
                   child: SvgPicture.asset(
                     Assets.edit,
                     height: 50,

@@ -37,24 +37,4 @@ class Assets {
       "positive": "assets/traits/earth_positive.svg",
     },
   };
-
-  static const moods = {
-    "Cheerful": {
-      "avatar": "assets/mood/happy1.png",
-      "weather": "assets/mood/Rainbow.svg",
-    },
-    "Gloomy": {
-      "avatar": "assets/mood/gloomy1.png",
-      "weather": "assets/mood/Cloud.svg",
-    },
-    "Mysterious": {
-      "avatar": "assets/mood/mysterious1.png",
-      "weather": "assets/mood/Thunder.svg",
-    },
-    "Angry": {
-      "avatar": "assets/mood/angry1.png",
-      "weather": "assets/mood/Sun.svg",
-    },
-  };
-
 }
