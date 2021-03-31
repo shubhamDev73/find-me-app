@@ -5,7 +5,7 @@ import 'package:findme/screens/me/profile.dart';
 import 'package:findme/screens/me/interests.dart';
 import 'package:findme/screens/me/personality.dart';
 import 'package:findme/screens/me/addInterests.dart';
-import 'package:findme/screens/me/moodSet.dart';
+import 'package:findme/screens/me/mood.dart';
 
 class MeTab extends StatelessWidget {
 
@@ -18,7 +18,7 @@ class MeTab extends StatelessWidget {
       '/': Profile(me: me),
       '/personality': Personality(me: me),
       '/interests': Interests(me: me),
-      '/mood': MoodSet(me: me),
+      '/mood': Mood(me: me),
       '/interests/add': AddInterests(),
     };
   }
