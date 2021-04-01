@@ -244,7 +244,7 @@ class _ChatMessageListState extends State<ChatMessageList> {
             else if (index == 0 || messages[index - 1]['user'] != message['user']) borderState = 2;
             return ChatMessageItem(
               message: message['message'],
-              time: formatDate(timestamp: message['timestamp']),
+              time: formatDate(timestamp: message['timestamp'].toDate()),
               me: message['user'] == widget.found.me,
               borderState: borderState,
             );

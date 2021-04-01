@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 import 'package:findme/assets.dart';
@@ -42,6 +43,8 @@ class _MoodState extends State<Mood> {
 
   String mood;
   bool isTimeline;
+  DateTime timestamp;
+  final CarouselController timelineController = new CarouselController();
 
   @override
   void initState() {
@@ -94,6 +97,7 @@ class _MoodState extends State<Mood> {
                   Expanded(
                     flex: 4,
                     child: CarouselSlider(
+                      carouselController: timelineController,
                       options: CarouselOptions(
                         height: 100,
                         viewportFraction: 0.2,
@@ -104,6 +108,7 @@ class _MoodState extends State<Mood> {
                         scrollDirection: Axis.horizontal,
                         onPageChanged: (index, reason) => setState(() {
                           mood = user.timeline[index]['mood'];
+                          timestamp = DateTime.parse(user.timeline[index]['timestamp']);
                           isTimeline = (index != user.timeline.length - 1);
                         }),
                       ),
@@ -177,6 +182,9 @@ class _MoodState extends State<Mood> {
                                   "mood": avatar['mood'],
                                   "base_avatar": user.baseAvatar,
                                 });
+                                SchedulerBinding.instance.addPostFrameCallback((timeStamp) =>
+                                  timelineController.animateToPage(user.timeline.length, duration: Duration(milliseconds: 100))
+                                );
                                 return user;
                               });
                             },
@@ -196,11 +204,11 @@ class _MoodState extends State<Mood> {
                         children: <Widget>[
                           Expanded(
                             flex: 1,
-                            child: Text('felt ' + mood + ' on (date)'),
+                            child: Text('felt ' + mood + ' ' + formatDate(endDate: timestamp)),
                           ),
                           Expanded(
                             flex: 1,
-                            child: Text('(date)'),
+                            child: Text(formatDate(timestamp: timestamp)),
                           ),
                           Expanded(
                             flex: 2,

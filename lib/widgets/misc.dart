@@ -14,8 +14,8 @@ class WidgetBuilder<T> {
 
   Widget Function(BuildContext, AsyncSnapshot<T>) getBuilder ({bool fullPage = true}) {
     return (BuildContext context, AsyncSnapshot<T> snapshot) {
-      if (snapshot.hasData) return widgetCreator(snapshot.data);
-      else if (snapshot.hasError) return Text("${snapshot.error}");
+      if(snapshot.hasData) return widgetCreator(snapshot.data);
+      else if(snapshot.hasError) return Text("${snapshot.error}");
       return LoadingScreen(fullPage: fullPage);
     };
   }
@@ -40,8 +40,8 @@ StreamBuilder<QuerySnapshot> createFirebaseStreamWidget(Stream<QuerySnapshot> st
   return StreamBuilder<QuerySnapshot>(
     stream: streamObj,
     builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
-      if (snapshot.hasData) return widgetCreator(snapshot.data.docs);
-      else if (snapshot.hasError) return Text("${snapshot.error}");
+      if(snapshot.hasData) return widgetCreator(snapshot.data.docs);
+      else if(snapshot.hasError) return Text("${snapshot.error}");
 
       if(cacheObj != null) return widgetCreator(cacheObj);
       return LoadingScreen(fullPage: fullPage);
@@ -49,11 +49,11 @@ StreamBuilder<QuerySnapshot> createFirebaseStreamWidget(Stream<QuerySnapshot> st
   );
 }
 
-String formatDate ({Timestamp timestamp, DateTime endDate}) {
-  var format = DateFormat('yyyy-MM-dd H:m');
+String formatDate ({DateTime timestamp, DateTime endDate}) {
+  var format = DateFormat('dd/MM/yyyy h:M a');
 
   if(timestamp != null)
-    return format.format(timestamp.toDate());
+    return format.format(timestamp);
   if(endDate != null){
     Duration diff = DateTime.now().difference(endDate);
     int num = diff.inMinutes;
