@@ -27,52 +27,38 @@ class UserInfo extends StatelessWidget {
                 ),
               ),
               Positioned(
-                top: 30,
-                left: 150,
-                child: Container(
-                  height: 25,
+                top: 10,
+                left: 165,
+                child: SvgPicture.asset(
+                  Assets.edit,
                   width: 25,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(2),
-                    color: Colors.white,
-                  ),
-                  child: SvgPicture.asset(
-                    Assets.edit,
-                    height: 50,
-                  ),
                 ),
               ),
             ],
           ),
         ),
-        Container(
-          child: Column(
-            children: [
-              SizedBox(
-                height: 4,
-              ),
-              Text(
-                user.nick,
-                style: TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                ),
-                textAlign: TextAlign.center,
-              ),
-              SizedBox(
-                height: 8,
-              ),
-              Text(
-                "Lorem ipsum dolor sit amet",
-                style: TextStyle(
-                  fontSize: 15,
-                  color: Colors.grey.shade500,
-                  fontWeight: FontWeight.w400,
-                ),
-                textAlign: TextAlign.center,
-              ),
-            ],
+        SizedBox(
+          height: 4,
+        ),
+        Text(
+          user.nick,
+          style: TextStyle(
+            fontSize: 20,
+            fontWeight: FontWeight.bold,
           ),
+          textAlign: TextAlign.center,
+        ),
+        SizedBox(
+          height: 8,
+        ),
+        Text(
+          "Lorem ipsum dolor sit amet",
+          style: TextStyle(
+            fontSize: 15,
+            color: Colors.grey.shade500,
+            fontWeight: FontWeight.w400,
+          ),
+          textAlign: TextAlign.center,
         ),
       ],
     );

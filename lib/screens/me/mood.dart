@@ -70,7 +70,7 @@ class _MoodState extends State<Mood> {
     return createFutureWidget(globals.avatars.get(), (avatars) =>
       createFutureWidget(globals.moods.get(), (moods) =>
         createFutureWidget(globals.getUser(me: widget.me), (User user) {
-          if (mood == null) mood = user.mood;
+          if(mood == null) mood = user.mood;
           return Scaffold(
             body: SafeArea(
               child: Column(
@@ -141,7 +141,7 @@ class _MoodState extends State<Mood> {
                                 left: 165,
                                 child: SvgPicture.asset(
                                   Assets.edit,
-                                  height: 25,
+                                  width: 25,
                                 ),
                               ),
                             ],
@@ -161,10 +161,10 @@ class _MoodState extends State<Mood> {
                       ],
                     ),
                   ),
-                  Visibility(
-                    visible: !isTimeline,
-                    child: Expanded(
-                      flex: 4,
+                  Expanded(
+                    flex: 6,
+                    child: Visibility(
+                      visible: !isTimeline,
                       child: ListView(
                         scrollDirection: Axis.horizontal,
                         children: (avatars[user.baseAvatar]['avatars'].values).map<Widget>((avatar) => Builder(
@@ -197,18 +197,12 @@ class _MoodState extends State<Mood> {
                           ),
                         )).toList(),
                       ),
-                    ),
-                    replacement: SizedBox(
-                      height: 200, // Some height
-                      child: Column(
+                      replacement: Column(
                         children: <Widget>[
+                          SizedBox(height: 50),
                           Expanded(
                             flex: 1,
-                            child: Text('felt ' + mood + ' ' + formatDate(endDate: timestamp)),
-                          ),
-                          Expanded(
-                            flex: 1,
-                            child: Text(formatDate(timestamp: timestamp)),
+                            child: Text('felt ' + mood.toLowerCase() + ' ' + formatDate(endDate: timestamp)),
                           ),
                           Expanded(
                             flex: 2,
