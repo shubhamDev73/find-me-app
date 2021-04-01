@@ -29,14 +29,22 @@ CachedData<String> token = CachedData(
   cacheFile: 'token.txt',
   setCallback: (token) {
     if(token == ''){
-      currentTab.clear();
+      // clearing data
       interests.clear();
       moods.clear();
+      avatars.clear();
+
+      // clearing user data
       meUser.clear();
+      _anotherUser.clear();
       requests.clear();
       finds.clear();
       founds.clear();
+
+      // clearing app data specific to user
+      currentTab.clear();
       posts.clear();
+
       onLogout();
     } else onLogin();
   },
