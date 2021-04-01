@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 import 'package:findme/widgets/misc.dart';
 import 'package:findme/widgets/userInfo.dart';
@@ -17,7 +18,7 @@ class HistoryItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        CachedNetworkImage(imageUrl: icon, width: 50),
+        SvgPicture.network(icon, width: 50),
         Container(
           width: 1,
           height: 20,
@@ -47,9 +48,18 @@ class _MoodState extends State<Mood> {
   @override
   void initState() {
     super.initState();
-    mood = 'Cheerful'; //FIXME: Set and Get from futureUser
-    currentmood = mood;
-    set = 1;
+    isTimeline = false;
+    if(widget.me) globals.onUserChanged['mood'] = () => setState(() {});
+    globals.onAvatarsChanged = () => setState(() {});
+    globals.onMoodsChanged = () => setState(() {});
+  }
+
+  @override
+  void dispose() {
+    if(widget.me) globals.onUserChanged.remove('mood');
+    globals.onAvatarsChanged = null;
+    globals.onMoodsChanged = null;
+    super.dispose();
   }
 
   void _setMood(String a) {
@@ -61,6 +71,8 @@ class _MoodState extends State<Mood> {
 
   @override
   Widget build(BuildContext context) {
+    globals.avatars.get();
+    globals.moods.get();
     return createFutureWidget(globals.avatars.get(), (avatars) =>
       createFutureWidget(globals.moods.get(), (moods) =>
         createFutureWidget(globals.getUser(me: widget.me), (User user) => Scaffold(

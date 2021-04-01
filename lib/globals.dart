@@ -77,7 +77,9 @@ MappedCachedData<String, Map<String, dynamic>> moods = MappedCachedData(
     key: (mood) => mood['name'],
     value: (mood) => mood,
   ),
+  setCallback: (data, [key]) => onMoodsChanged?.call(),
 );
+Function onMoodsChanged;
 
 MappedCachedData<String, Map<String, dynamic>> avatars = MappedCachedData(
   url: 'avatars/',
@@ -87,7 +89,9 @@ MappedCachedData<String, Map<String, dynamic>> avatars = MappedCachedData(
     key: (avatar) => avatar['name'],
     value: (avatar) => avatar,
   ),
+  setCallback: (data, [key]) => onAvatarsChanged?.call(),
 );
+Function onAvatarsChanged;
 
 
 // users
