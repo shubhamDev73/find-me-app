@@ -3,8 +3,8 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
+import 'package:findme/assets.dart';
 import 'package:findme/widgets/misc.dart';
-import 'package:findme/widgets/userInfo.dart';
 import 'package:findme/models/user.dart';
 import 'package:findme/globals.dart' as globals;
 
@@ -41,9 +41,8 @@ class Mood extends StatefulWidget {
 class _MoodState extends State<Mood> {
 
   String mood = '';
-  String currentmood = '';
   var moodHistory = ["Cheerful", "Mysterious", "Gloomy", "Angry"];
-  int set;
+  bool isTimeline;
 
   @override
   void initState() {
@@ -60,13 +59,6 @@ class _MoodState extends State<Mood> {
     globals.onAvatarsChanged = null;
     globals.onMoodsChanged = null;
     super.dispose();
-  }
-
-  void _setMood(String a) {
-    setState(() {
-      mood = a;
-      currentmood = a;
-    });
   }
 
   @override
@@ -111,12 +103,11 @@ class _MoodState extends State<Mood> {
                       scrollDirection: Axis.horizontal,
                       onPageChanged: (index, reason) {
                         setState(() {
-                          mood = (moodHistory + [currentmood])[index];
-                          if(index != moodHistory.length) set = 0;
-                          else set = 1;
+                          mood = (moodHistory + [user.mood])[index];
+                          isTimeline = (index != moodHistory.length);
                         });
                       }),
-                    items: (moodHistory + [currentmood]).map((mood) => Builder(
+                    items: (moodHistory + [user.mood]).map((mood) => Builder(
                       builder: (BuildContext context) => HistoryItem(
                         icon: moods[mood]['url']['icon'],
                       ),
@@ -125,17 +116,58 @@ class _MoodState extends State<Mood> {
                 ),
                 Expanded(
                   flex: 8,
-                  child: UserInfo(user),
+                  child: Column(
+                    children: [
+                      Container(
+                      height: 190,
+                      width: 190,
+                      child: Stack(
+                        alignment: AlignmentDirectional.center,
+                        children: [
+                          Container(
+                            child: Center(
+                              child: CachedNetworkImage(imageUrl: avatars[user.baseAvatar]['avatars'][mood]['url']['v2']),
+                            ),
+                          ),
+                          Positioned(
+                            top: 10,
+                            left: 165,
+                            child: SvgPicture.asset(
+                              Assets.edit,
+                              height: 25,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                      SizedBox(
+                        height: 4,
+                      ),
+                      Text(
+                        user.nick,
+                        style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                    ],
+                  ),
                 ),
                 Visibility(
-                  visible: set == 1,
+                  visible: !isTimeline,
                   child: Expanded(
                     flex: 4,
                     child: ListView(
                       scrollDirection: Axis.horizontal,
-                      children: (avatars[user.baseAvatar]['avatars']).map<Widget>((avatar) => Builder(
+                      children: (avatars[user.baseAvatar]['avatars'].values).map<Widget>((avatar) => Builder(
                         builder: (BuildContext context) => GestureDetector(
-                          onTap: () => _setMood(avatar['mood']),
+                          onTap: () {
+                            globals.addPostCall('me/avatar/update/', {"id": avatar['id']});
+                            setState(() {
+                              mood = avatar['mood'];
+                            });
+                          },
                           child: Column(
                             children: [
                               CachedNetworkImage(imageUrl: avatar['url']['v1'], width: 160),

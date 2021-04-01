@@ -84,11 +84,21 @@ Function onMoodsChanged;
 MappedCachedData<String, Map<String, dynamic>> avatars = MappedCachedData(
   url: 'avatars/',
   cacheFile: 'avatars.json',
-  networkDecoder: (data) =>
-  LinkedHashMap<String, Map<String, dynamic>>.fromIterable(jsonDecode(data),
-    key: (avatar) => avatar['name'],
-    value: (avatar) => avatar,
-  ),
+  networkDecoder: (data) {
+    LinkedHashMap<String, Map<String, dynamic>> avatars =
+      LinkedHashMap<String, Map<String, dynamic>>.fromIterable(jsonDecode(data),
+        key: (avatar) => avatar['name'],
+        value: (avatar) => avatar,
+      );
+    for(Map<String, dynamic> avatar in avatars.values){
+      avatar['avatars'] =
+        LinkedHashMap<String, Map<String, dynamic>>.fromIterable(avatar['avatars'],
+          key: (avatar) => avatar['mood'],
+          value: (avatar) => avatar,
+        );
+    }
+    return avatars;
+  },
   setCallback: (data, [key]) => onAvatarsChanged?.call(),
 );
 Function onAvatarsChanged;
