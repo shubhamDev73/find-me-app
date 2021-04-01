@@ -40,7 +40,7 @@ class Mood extends StatefulWidget {
 
 class _MoodState extends State<Mood> {
 
-  String mood = '';
+  String mood;
   var moodHistory = ["Cheerful", "Mysterious", "Gloomy", "Angry"];
   bool isTimeline;
 
@@ -67,141 +67,150 @@ class _MoodState extends State<Mood> {
     globals.moods.get();
     return createFutureWidget(globals.avatars.get(), (avatars) =>
       createFutureWidget(globals.moods.get(), (moods) =>
-        createFutureWidget(globals.getUser(me: widget.me), (User user) => Scaffold(
-          body: SafeArea(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                Expanded(
-                  flex: 1,
-                  child: Column(
-                    children: [
-                      Container(
-                        //color: Color(0xffE0F7FA),
-                        padding: const EdgeInsets.all(12.0),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          children: [
-                            Icon(Icons.more_vert),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                Expanded(
-                  flex: 4,
-                  child: CarouselSlider(
-                    options: CarouselOptions(
-                      height: 100,
-                      viewportFraction: 0.2,
-                      enlargeCenterPage: true,
-                      enableInfiniteScroll: false,
-                      initialPage: moodHistory.length,
-                      aspectRatio: 2.0,
-                      scrollDirection: Axis.horizontal,
-                      onPageChanged: (index, reason) {
-                        setState(() {
-                          mood = (moodHistory + [user.mood])[index];
-                          isTimeline = (index != moodHistory.length);
-                        });
-                      }),
-                    items: (moodHistory + [user.mood]).map((mood) => Builder(
-                      builder: (BuildContext context) => HistoryItem(
-                        icon: moods[mood]['url']['icon'],
-                      ),
-                    )).toList(),
-                  ),
-                ),
-                Expanded(
-                  flex: 8,
-                  child: Column(
-                    children: [
-                      Container(
-                      height: 190,
-                      width: 190,
-                      child: Stack(
-                        alignment: AlignmentDirectional.center,
-                        children: [
-                          Container(
-                            child: Center(
-                              child: CachedNetworkImage(imageUrl: avatars[user.baseAvatar]['avatars'][mood]['url']['v2']),
-                            ),
-                          ),
-                          Positioned(
-                            top: 10,
-                            left: 165,
-                            child: SvgPicture.asset(
-                              Assets.edit,
-                              height: 25,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                      SizedBox(
-                        height: 4,
-                      ),
-                      Text(
-                        user.nick,
-                        style: TextStyle(
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
-                        ),
-                        textAlign: TextAlign.center,
-                      ),
-                    ],
-                  ),
-                ),
-                Visibility(
-                  visible: !isTimeline,
-                  child: Expanded(
-                    flex: 4,
-                    child: ListView(
-                      scrollDirection: Axis.horizontal,
-                      children: (avatars[user.baseAvatar]['avatars'].values).map<Widget>((avatar) => Builder(
-                        builder: (BuildContext context) => GestureDetector(
-                          onTap: () {
-                            globals.addPostCall('me/avatar/update/', {"id": avatar['id']});
-                            setState(() {
-                              mood = avatar['mood'];
-                            });
-                          },
-                          child: Column(
+        createFutureWidget(globals.getUser(me: widget.me), (User user) {
+          if (mood == null) mood = user.mood;
+          return Scaffold(
+            body: SafeArea(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  Expanded(
+                    flex: 1,
+                    child: Column(
+                      children: [
+                        Container(
+                          //color: Color(0xffE0F7FA),
+                          padding: const EdgeInsets.all(12.0),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.end,
                             children: [
-                              CachedNetworkImage(imageUrl: avatar['url']['v1'], width: 160),
-                              Text(avatar['mood']),
+                              Icon(Icons.more_vert),
                             ],
                           ),
-                        ),
-                      )).toList(),
-                    ),
-                  ),
-                  replacement: SizedBox(
-                    height: 200, // Some height
-                    child: Column(
-                      children: <Widget>[
-                        Expanded(
-                          flex: 1,
-                          child: Text('felt ' + mood + ' on (date)'),
-                        ),
-                        Expanded(
-                          flex: 1,
-                          child: Text('(date)'),
-                        ),
-                        Expanded(
-                          flex: 2,
-                          child: Text('FIXME: comment goes here'),
                         ),
                       ],
                     ),
                   ),
-                ),
-              ],
+                  Expanded(
+                    flex: 4,
+                    child: CarouselSlider(
+                      options: CarouselOptions(
+                        height: 100,
+                        viewportFraction: 0.2,
+                        enlargeCenterPage: true,
+                        enableInfiniteScroll: false,
+                        initialPage: moodHistory.length,
+                        aspectRatio: 2.0,
+                        scrollDirection: Axis.horizontal,
+                        onPageChanged: (index, reason) => setState(() {
+                          mood = (moodHistory + [user.mood])[index];
+                          isTimeline = (index != moodHistory.length);
+                        }),
+                      ),
+                      items: (moodHistory + [user.mood]).map((mood) => Builder(
+                        builder: (BuildContext context) => HistoryItem(
+                          icon: moods[mood]['url']['icon'],
+                        ),
+                      )).toList(),
+                    ),
+                  ),
+                  Expanded(
+                    flex: 8,
+                    child: Column(
+                      children: [
+                        Container(
+                          height: 190,
+                          width: 190,
+                          child: Stack(
+                            alignment: AlignmentDirectional.center,
+                            children: [
+                              Container(
+                                child: Center(
+                                  child: CachedNetworkImage(
+                                    imageUrl: avatars[user.baseAvatar]['avatars'][mood]['url']['v2'],
+                                  ),
+                                ),
+                              ),
+                              Positioned(
+                                top: 10,
+                                left: 165,
+                                child: SvgPicture.asset(
+                                  Assets.edit,
+                                  height: 25,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        SizedBox(
+                          height: 4,
+                        ),
+                        Text(
+                          user.nick,
+                          style: TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
+                      ],
+                    ),
+                  ),
+                  Visibility(
+                    visible: !isTimeline,
+                    child: Expanded(
+                      flex: 4,
+                      child: ListView(
+                        scrollDirection: Axis.horizontal,
+                        children: (avatars[user.baseAvatar]['avatars'].values).map<Widget>((avatar) => Builder(
+                          builder: (BuildContext context) => GestureDetector(
+                            onTap: () {
+                              globals.addPostCall('me/avatar/update/', {"id": avatar['id']});
+                              setState(() {
+                                mood = avatar['mood'];
+                              });
+                              globals.meUser.update((user) {
+                                user.mood = avatar['mood'];
+                                user.avatar = avatar['url'];
+                                return user;
+                              });
+                            },
+                            child: Column(
+                              children: [
+                                CachedNetworkImage(imageUrl: avatar['url']['v1'], width: 160),
+                                Text(avatar['mood']),
+                              ],
+                            ),
+                          ),
+                        )).toList(),
+                      ),
+                    ),
+                    replacement: SizedBox(
+                      height: 200, // Some height
+                      child: Column(
+                        children: <Widget>[
+                          Expanded(
+                            flex: 1,
+                            child: Text('felt ' + mood + ' on (date)'),
+                          ),
+                          Expanded(
+                            flex: 1,
+                            child: Text('(date)'),
+                          ),
+                          Expanded(
+                            flex: 2,
+                            child: Text('FIXME: comment goes here'),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
+              ),
             ),
-          ),
-        )),
+          );
+        }),
       ),
     );
   }
