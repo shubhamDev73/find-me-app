@@ -41,7 +41,6 @@ class Mood extends StatefulWidget {
 class _MoodState extends State<Mood> {
 
   String mood;
-  var moodHistory = ["Cheerful", "Mysterious", "Gloomy", "Angry"];
   bool isTimeline;
 
   @override
@@ -100,17 +99,17 @@ class _MoodState extends State<Mood> {
                         viewportFraction: 0.2,
                         enlargeCenterPage: true,
                         enableInfiniteScroll: false,
-                        initialPage: moodHistory.length,
+                        initialPage: user.timeline.length,
                         aspectRatio: 2.0,
                         scrollDirection: Axis.horizontal,
                         onPageChanged: (index, reason) => setState(() {
-                          mood = (moodHistory + [user.mood])[index];
-                          isTimeline = (index != moodHistory.length);
+                          mood = user.timeline[index]['mood'];
+                          isTimeline = (index != user.timeline.length - 1);
                         }),
                       ),
-                      items: (moodHistory + [user.mood]).map((mood) => Builder(
+                      items: user.timeline.map((timeline) => Builder(
                         builder: (BuildContext context) => HistoryItem(
-                          icon: moods[mood]['url']['icon'],
+                          icon: moods[timeline['mood']]['url']['icon'],
                         ),
                       )).toList(),
                     ),
@@ -173,6 +172,11 @@ class _MoodState extends State<Mood> {
                               globals.meUser.update((user) {
                                 user.mood = avatar['mood'];
                                 user.avatar = avatar['url'];
+                                user.timeline.add({
+                                  "timestamp": DateTime.now().toString(),
+                                  "mood": avatar['mood'],
+                                  "base_avatar": user.baseAvatar,
+                                });
                                 return user;
                               });
                             },

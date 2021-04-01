@@ -9,6 +9,7 @@ class User {
   Map<String, dynamic> personality;
   LinkedHashMap<int, Interest> interests;
   String mood;
+  List<dynamic> timeline;
 
   User({
     this.nick,
@@ -17,6 +18,7 @@ class User {
     this.personality,
     this.interests,
     this.mood,
+    this.timeline,
   });
 
   factory User.fromJson(Map<String, dynamic> json) {
@@ -28,6 +30,7 @@ class User {
       personality: json["personality"],
       interests: LinkedHashMap.fromIterable(json["interests"], key: (interest) => interest['id'], value: (interest) => Interest.fromJson(interest)),
       mood: json["mood"],
+      timeline: json["avatar_timeline"],
     );
   }
 
@@ -39,6 +42,7 @@ class User {
       "personality": personality,
       "interests": interests.values.map((value) => value.toJson()).toList(),
       "mood": mood,
+      "avatar_timeline": timeline,
     };
 
 }

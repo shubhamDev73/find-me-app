@@ -84,7 +84,7 @@ class ChatMessage extends StatelessWidget {
                 child: Container(
                   decoration: BoxDecoration(
                     image: DecorationImage(
-                      image: CachedNetworkImageProvider(moods[found.mood]['url']),
+                      image: CachedNetworkImageProvider(moods[found.mood]['url']['weather']),
                       fit: BoxFit.cover,
                     ),
                   ),
