@@ -45,6 +45,7 @@ class _MoodState extends State<Mood> {
   bool isTimeline;
   DateTime timestamp;
   final CarouselController timelineController = new CarouselController();
+  final CarouselController moodController = new CarouselController();
 
   @override
   void initState() {
@@ -165,10 +166,19 @@ class _MoodState extends State<Mood> {
                     flex: 6,
                     child: Visibility(
                       visible: !isTimeline,
-                      child: ListView(
-                        scrollDirection: Axis.horizontal,
-                        children: (avatars[user.baseAvatar]['avatars'].values).map<Widget>((avatar) => Builder(
-                          builder: (BuildContext context) => GestureDetector(
+                      child: CarouselSlider(
+                        carouselController: moodController,
+                        options: CarouselOptions(
+                          height: 180,
+                          viewportFraction: 0.3,
+                          enlargeCenterPage: true,
+                          enableInfiniteScroll: true,
+                          initialPage: 0,
+                          scrollDirection: Axis.horizontal,
+                        ),
+                        items: (avatars[user.baseAvatar]['avatars'].values).map<Widget>((avatar) => Container(
+                          margin: EdgeInsets.symmetric(horizontal: 10),
+                          child: GestureDetector(
                             onTap: () {
                               globals.addPostCall('me/avatar/update/', {"id": avatar['id']});
                               setState(() {
