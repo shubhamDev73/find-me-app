@@ -284,9 +284,18 @@ class _MoodState extends State<Mood> {
                               Expanded(
                                 flex: 1,
                                 child: Text(
-                                  isTimeline ? 'felt ' + mood.toLowerCase() + ' ' + formatDate(endDate: timestamp)
+                                  isTimeline ? 'felt ' + mood.toLowerCase() + ' on'
                                   : 'is feeling ' + mood.toLowerCase()
                                 ),
+                              ),
+                              Expanded(
+                                flex: 2,
+                                child: isTimeline ? Text(
+                                  formatDate(timestamp: timestamp),
+                                  style: TextStyle(
+                                    fontSize: 18,
+                                  ),
+                                ) : Container(),
                               ),
                               Expanded(
                                 flex: 2,

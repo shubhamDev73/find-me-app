@@ -50,7 +50,7 @@ StreamBuilder<QuerySnapshot> createFirebaseStreamWidget(Stream<QuerySnapshot> st
 }
 
 String formatDate ({DateTime timestamp, DateTime endDate}) {
-  var format = DateFormat('dd/MM/yyyy h:M a');
+  var format = DateFormat('dd/MM/yyyy');
 
   if(timestamp != null)
     return format.format(timestamp);
