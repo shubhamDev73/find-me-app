@@ -164,62 +164,69 @@ class _MoodState extends State<Mood> {
                   ),
                   Expanded(
                     flex: 4,
-                    child: Visibility(
-                      visible: !isTimeline,
-                      child: CarouselSlider(
-                        carouselController: moodController,
-                        options: CarouselOptions(
-                          height: 180,
-                          viewportFraction: 0.3,
-                          enlargeCenterPage: true,
-                          enableInfiniteScroll: true,
-                          initialPage: 0,
-                          scrollDirection: Axis.horizontal,
-                        ),
-                        items: (avatars[user.baseAvatar]['avatars'].values).map<Widget>((avatar) => Container(
-                          margin: EdgeInsets.symmetric(horizontal: 10),
-                          child: GestureDetector(
-                            onTap: () {
-                              globals.addPostCall('me/avatar/update/', {"id": avatar['id']});
-                              setState(() {
-                                mood = avatar['mood'];
-                              });
-                              globals.meUser.update((user) {
-                                user.mood = avatar['mood'];
-                                user.avatar = avatar['url'];
-                                user.timeline.add({
-                                  "timestamp": DateTime.now().toString(),
-                                  "mood": avatar['mood'],
-                                  "base_avatar": user.baseAvatar,
-                                });
-                                SchedulerBinding.instance.addPostFrameCallback((timeStamp) =>
-                                  timelineController.animateToPage(user.timeline.length, duration: Duration(milliseconds: 100))
-                                );
-                                return user;
-                              });
-                            },
-                            child: Column(
-                              children: [
-                                CachedNetworkImage(imageUrl: avatar['url']['v1'], width: 160),
-                                Text(avatar['mood']),
-                              ],
+                    child: Stack(
+                      children: [
+                        Offstage(
+                          offstage: isTimeline,
+                          child: CarouselSlider(
+                            carouselController: moodController,
+                            options: CarouselOptions(
+                              height: 180,
+                              viewportFraction: 0.3,
+                              enlargeCenterPage: true,
+                              enableInfiniteScroll: true,
+                              initialPage: 0,
+                              scrollDirection: Axis.horizontal,
                             ),
+                            items: (avatars[user.baseAvatar]['avatars'].values).map<Widget>((avatar) => Container(
+                              margin: EdgeInsets.symmetric(horizontal: 10),
+                              child: GestureDetector(
+                                onTap: () {
+                                  globals.addPostCall('me/avatar/update/', {"id": avatar['id']});
+                                  setState(() {
+                                    mood = avatar['mood'];
+                                  });
+                                  globals.meUser.update((user) {
+                                    user.mood = avatar['mood'];
+                                    user.avatar = avatar['url'];
+                                    user.timeline.add({
+                                      "timestamp": DateTime.now().toString(),
+                                      "mood": avatar['mood'],
+                                      "base_avatar": user.baseAvatar,
+                                    });
+                                    SchedulerBinding.instance.addPostFrameCallback((timeStamp) =>
+                                      timelineController.animateToPage(user.timeline.length, duration: Duration(milliseconds: 100))
+                                    );
+                                    return user;
+                                  });
+                                },
+                                child: Column(
+                                  children: [
+                                    CachedNetworkImage(imageUrl: avatar['url']['v1'], width: 160),
+                                    Text(avatar['mood']),
+                                  ],
+                                ),
+                              ),
+                            )).toList(),
                           ),
-                        )).toList(),
-                      ),
-                      replacement: Column(
-                        children: <Widget>[
-                          SizedBox(height: 50),
-                          Expanded(
-                            flex: 1,
-                            child: Text('felt ' + mood.toLowerCase() + ' ' + formatDate(endDate: timestamp)),
+                        ),
+                        Offstage(
+                          offstage: !isTimeline,
+                          child: Column(
+                            children: <Widget>[
+                              SizedBox(height: 50),
+                              Expanded(
+                                flex: 1,
+                                child: Text('felt ' + mood.toLowerCase() + ' ' + formatDate(endDate: timestamp)),
+                              ),
+                              Expanded(
+                                flex: 2,
+                                child: Text('FIXME: comment goes here'),
+                              ),
+                            ],
                           ),
-                          Expanded(
-                            flex: 2,
-                            child: Text('FIXME: comment goes here'),
-                          ),
-                        ],
-                      ),
+                        ),
+                      ],
                     ),
                   ),
                 ],
