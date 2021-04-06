@@ -21,9 +21,9 @@ class HistoryItem extends StatelessWidget {
       children: [
         SvgPicture.network(icon, width: 50),
         Container(
-          width: 1,
-          height: 20,
-          color: Colors.black,
+          width: 1.5,
+          height: 16,
+          color: Colors.grey.shade500,
         ),
       ],
     );
@@ -96,12 +96,12 @@ class _MoodState extends State<Mood> {
                     ),
                   ),
                   Expanded(
-                    flex: 4,
+                    flex: 2,
                     child: CarouselSlider(
                       carouselController: timelineController,
                       options: CarouselOptions(
                         height: 100,
-                        viewportFraction: 0.2,
+                        viewportFraction: 0.18,
                         enlargeCenterPage: true,
                         enableInfiniteScroll: false,
                         initialPage: user.timeline.length,
@@ -121,7 +121,7 @@ class _MoodState extends State<Mood> {
                     ),
                   ),
                   Expanded(
-                    flex: 8,
+                    flex: 4,
                     child: Column(
                       children: [
                         Container(
@@ -163,7 +163,7 @@ class _MoodState extends State<Mood> {
                     ),
                   ),
                   Expanded(
-                    flex: 6,
+                    flex: 4,
                     child: Visibility(
                       visible: !isTimeline,
                       child: CarouselSlider(
