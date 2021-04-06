@@ -202,38 +202,78 @@ class _MoodState extends State<Mood> {
                       children: [
                         Offstage(
                           offstage: !widget.me || isTimeline,
-                          child: widget.me ? CarouselSlider(
-                            carouselController: moodController,
-                            options: CarouselOptions(
-                              height: 180,
-                              viewportFraction: 0.3,
-                              enlargeCenterPage: true,
-                              enableInfiniteScroll: true,
-                              initialPage: 0,
-                              scrollDirection: Axis.horizontal,
-                            ),
-                            items: (avatars[user.baseAvatar]['avatars'].values).map<Widget>((avatar) => MoodItem(
-                              avatar: avatar,
-                              onTap: () {
-                                globals.addPostCall('me/avatar/update/', {"id": avatar['id']});
-                                setState(() {
-                                  mood = avatar['mood'];
-                                });
-                                globals.meUser.update((user) {
-                                  user.mood = avatar['mood'];
-                                  user.avatar = avatar['url'];
-                                  user.timeline.add({
-                                    "timestamp": DateTime.now().toString(),
-                                    "mood": avatar['mood'],
-                                    "base_avatar": user.baseAvatar,
-                                  });
-                                  SchedulerBinding.instance.addPostFrameCallback((timeStamp) =>
-                                    timelineController.animateToPage(user.timeline.length, duration: Duration(milliseconds: 100))
-                                  );
-                                  return user;
-                                });
-                              },
-                            )).toList(),
+                          child: widget.me ?
+                            Stack(
+                              children: [
+                                CarouselSlider(
+                                carouselController: moodController,
+                                options: CarouselOptions(
+                                  height: 180,
+                                  viewportFraction: 0.3,
+                                  enlargeCenterPage: true,
+                                  enableInfiniteScroll: true,
+                                  initialPage: 0,
+                                  scrollDirection: Axis.horizontal,
+                                ),
+                                items: (avatars[user.baseAvatar]['avatars'].values).map<Widget>((avatar) => MoodItem(
+                                  avatar: avatar,
+                                  onTap: () {
+                                    globals.addPostCall('me/avatar/update/', {"id": avatar['id']});
+                                    setState(() {
+                                      mood = avatar['mood'];
+                                    });
+                                    globals.meUser.update((user) {
+                                      user.mood = avatar['mood'];
+                                      user.avatar = avatar['url'];
+                                      user.timeline.add({
+                                        "timestamp": DateTime.now().toString(),
+                                        "mood": avatar['mood'],
+                                        "base_avatar": user.baseAvatar,
+                                      });
+                                      SchedulerBinding.instance.addPostFrameCallback((timeStamp) =>
+                                        timelineController.animateToPage(user.timeline.length, duration: Duration(milliseconds: 100))
+                                      );
+                                      return user;
+                                    });
+                                  },
+                                )).toList(),
+                              ),
+                              Positioned(
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Padding(
+                                      padding: const EdgeInsets.only(left: 12.0),
+                                      child: InkWell(
+                                        onTap: () => moodController.previousPage(
+                                          duration: Duration(milliseconds: 300),
+                                          curve: Curves.decelerate,
+                                        ),
+                                        child: Container(
+                                          child: Center(
+                                            child: Icon(Icons.arrow_back_ios),
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.only(right: 12.0),
+                                      child: InkWell(
+                                        onTap: () => moodController.nextPage(
+                                          duration: Duration(milliseconds: 300),
+                                          curve: Curves.decelerate,
+                                        ),
+                                        child: Container(
+                                          child: Center(
+                                            child: Icon(Icons.arrow_forward_ios),
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
                           ) : Container(),
                         ),
                         Offstage(
