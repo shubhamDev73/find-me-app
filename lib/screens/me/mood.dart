@@ -167,8 +167,8 @@ class _MoodState extends State<Mood> {
                     child: Stack(
                       children: [
                         Offstage(
-                          offstage: isTimeline,
-                          child: CarouselSlider(
+                          offstage: !widget.me || isTimeline,
+                          child: widget.me ? CarouselSlider(
                             carouselController: moodController,
                             options: CarouselOptions(
                               height: 180,
@@ -208,16 +208,19 @@ class _MoodState extends State<Mood> {
                                 ),
                               ),
                             )).toList(),
-                          ),
+                          ) : Container(),
                         ),
                         Offstage(
-                          offstage: !isTimeline,
+                          offstage: widget.me && !isTimeline,
                           child: Column(
                             children: <Widget>[
                               SizedBox(height: 50),
                               Expanded(
                                 flex: 1,
-                                child: Text('felt ' + mood.toLowerCase() + ' ' + formatDate(endDate: timestamp)),
+                                child: Text(
+                                  isTimeline ? 'felt ' + mood.toLowerCase() + ' ' + formatDate(endDate: timestamp)
+                                  : 'is feeling ' + mood.toLowerCase()
+                                ),
                               ),
                               Expanded(
                                 flex: 2,
