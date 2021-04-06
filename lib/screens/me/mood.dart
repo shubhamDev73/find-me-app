@@ -9,21 +9,56 @@ import 'package:findme/widgets/misc.dart';
 import 'package:findme/models/user.dart';
 import 'package:findme/globals.dart' as globals;
 
-class HistoryItem extends StatelessWidget {
+class TimelineItem extends StatelessWidget {
 
   final String icon;
 
-  HistoryItem({this.icon});
+  TimelineItem({this.icon});
 
   @override
   Widget build(BuildContext context) {
     return Column(
+      mainAxisAlignment: MainAxisAlignment.start,
       children: [
         SvgPicture.network(icon, width: 50),
+        SizedBox(height: 10),
         Container(
           width: 1.5,
           height: 16,
           color: Colors.grey.shade500,
+        ),
+      ],
+    );
+  }
+}
+
+class MoodItem extends StatelessWidget {
+
+  final Map<String, dynamic> avatar;
+  final Function onTap;
+  MoodItem({this.avatar, this.onTap});
+
+  @override
+  Widget build(BuildContext context) {
+    return Stack(
+      children: [
+        Positioned(
+          child: Container(
+            width: 5,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              color: Colors.grey,
+            ),
+          ),
+        ),
+        GestureDetector(
+          onTap: onTap,
+          child: Column(
+            children: [
+              CachedNetworkImage(imageUrl: avatar['url']['v1'], width: 160),
+              Text(avatar['mood']),
+            ],
+          ),
         ),
       ],
     );
@@ -105,7 +140,6 @@ class _MoodState extends State<Mood> {
                         enlargeCenterPage: true,
                         enableInfiniteScroll: false,
                         initialPage: user.timeline.length,
-                        aspectRatio: 2.0,
                         scrollDirection: Axis.horizontal,
                         onPageChanged: (index, reason) => setState(() {
                           mood = user.timeline[index]['mood'];
@@ -114,7 +148,7 @@ class _MoodState extends State<Mood> {
                         }),
                       ),
                       items: user.timeline.map((timeline) => Builder(
-                        builder: (BuildContext context) => HistoryItem(
+                        builder: (BuildContext context) => TimelineItem(
                           icon: moods[timeline['mood']]['url']['icon'],
                         ),
                       )).toList(),
@@ -178,35 +212,27 @@ class _MoodState extends State<Mood> {
                               initialPage: 0,
                               scrollDirection: Axis.horizontal,
                             ),
-                            items: (avatars[user.baseAvatar]['avatars'].values).map<Widget>((avatar) => Container(
-                              margin: EdgeInsets.symmetric(horizontal: 10),
-                              child: GestureDetector(
-                                onTap: () {
-                                  globals.addPostCall('me/avatar/update/', {"id": avatar['id']});
-                                  setState(() {
-                                    mood = avatar['mood'];
+                            items: (avatars[user.baseAvatar]['avatars'].values).map<Widget>((avatar) => MoodItem(
+                              avatar: avatar,
+                              onTap: () {
+                                globals.addPostCall('me/avatar/update/', {"id": avatar['id']});
+                                setState(() {
+                                  mood = avatar['mood'];
+                                });
+                                globals.meUser.update((user) {
+                                  user.mood = avatar['mood'];
+                                  user.avatar = avatar['url'];
+                                  user.timeline.add({
+                                    "timestamp": DateTime.now().toString(),
+                                    "mood": avatar['mood'],
+                                    "base_avatar": user.baseAvatar,
                                   });
-                                  globals.meUser.update((user) {
-                                    user.mood = avatar['mood'];
-                                    user.avatar = avatar['url'];
-                                    user.timeline.add({
-                                      "timestamp": DateTime.now().toString(),
-                                      "mood": avatar['mood'],
-                                      "base_avatar": user.baseAvatar,
-                                    });
-                                    SchedulerBinding.instance.addPostFrameCallback((timeStamp) =>
-                                      timelineController.animateToPage(user.timeline.length, duration: Duration(milliseconds: 100))
-                                    );
-                                    return user;
-                                  });
-                                },
-                                child: Column(
-                                  children: [
-                                    CachedNetworkImage(imageUrl: avatar['url']['v1'], width: 160),
-                                    Text(avatar['mood']),
-                                  ],
-                                ),
-                              ),
+                                  SchedulerBinding.instance.addPostFrameCallback((timeStamp) =>
+                                    timelineController.animateToPage(user.timeline.length, duration: Duration(milliseconds: 100))
+                                  );
+                                  return user;
+                                });
+                              },
                             )).toList(),
                           ) : Container(),
                         ),
