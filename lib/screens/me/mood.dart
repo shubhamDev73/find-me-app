@@ -218,21 +218,30 @@ class _MoodState extends State<Mood> {
                                 items: (avatars[user.baseAvatar]['avatars'].values).map<Widget>((avatar) => MoodItem(
                                   avatar: avatar,
                                   onTap: () {
-                                    globals.addPostCall('me/avatar/update/', {"id": avatar['id']});
                                     setState(() {
                                       mood = avatar['mood'];
                                     });
                                     globals.meUser.update((user) {
                                       user.mood = avatar['mood'];
                                       user.avatar = avatar['url'];
-                                      user.timeline.add({
-                                        "timestamp": DateTime.now().toString(),
-                                        "mood": avatar['mood'],
-                                        "base_avatar": user.baseAvatar,
-                                      });
-                                      SchedulerBinding.instance.addPostFrameCallback((timeStamp) =>
-                                        timelineController.animateToPage(user.timeline.length, duration: Duration(milliseconds: 100))
-                                      );
+
+                                      Map<String, dynamic> lastTimeline = user.timeline[user.timeline.length - 1];
+                                      Duration diff = DateTime.now().difference(DateTime.parse(lastTimeline['timestamp']));
+                                      if(diff.inDays > 0 || diff.inHours >= 4){
+                                        user.timeline.add({
+                                          "timestamp": DateTime.now().toString(),
+                                          "mood": avatar['mood'],
+                                          "base_avatar": user.baseAvatar,
+                                        });
+                                        SchedulerBinding.instance.addPostFrameCallback((timeStamp) =>
+                                          timelineController.animateToPage(user.timeline.length - 1, duration: Duration(milliseconds: 100))
+                                        );
+                                        globals.addPostCall('me/avatar/update/', {"id": avatar['id']});
+                                      }else{
+                                        lastTimeline['mood'] = avatar['mood'];
+                                        lastTimeline['base_avatar'] = user.baseAvatar;
+                                      }
+
                                       return user;
                                     });
                                   },
