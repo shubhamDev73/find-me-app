@@ -51,14 +51,11 @@ class MoodItem extends StatelessWidget {
             ),
           ),
         ),
-        GestureDetector(
-          onTap: onTap,
-          child: Column(
-            children: [
-              CachedNetworkImage(imageUrl: avatar['url']['v1'], width: 160),
-              Text(avatar['mood']),
-            ],
-          ),
+        Column(
+          children: [
+            CachedNetworkImage(imageUrl: avatar['url']['v1'], width: 160),
+            Text(avatar['mood']),
+          ],
         ),
       ],
     );
@@ -107,6 +104,8 @@ class _MoodState extends State<Mood> {
       createFutureWidget(globals.moods.get(), (moods) =>
         createFutureWidget(globals.getUser(me: widget.me), (User user) {
           if(mood == null) mood = user.mood;
+          Map<String, dynamic> userAvatars = avatars[user.baseAvatar]['avatars'];
+          List<Map<String, dynamic>> avatarList = userAvatars.values.toList();
           return Scaffold(
             body: SafeArea(
               child: Column(
@@ -167,7 +166,7 @@ class _MoodState extends State<Mood> {
                               Container(
                                 child: Center(
                                   child: CachedNetworkImage(
-                                    imageUrl: avatars[user.baseAvatar]['avatars'][mood]['url']['v2'],
+                                    imageUrl: userAvatars[mood]['url']['v2'],
                                   ),
                                 ),
                               ),
@@ -202,25 +201,24 @@ class _MoodState extends State<Mood> {
                       children: [
                         Offstage(
                           offstage: !widget.me || isTimeline,
-                          child: widget.me ?
-                            Stack(
-                              children: [
-                                CarouselSlider(
+                          child: widget.me ? Stack(
+                            children: [
+                              CarouselSlider(
                                 carouselController: moodController,
                                 options: CarouselOptions(
                                   height: 180,
                                   viewportFraction: 0.3,
                                   enlargeCenterPage: true,
                                   enableInfiniteScroll: true,
-                                  initialPage: 0,
+                                  initialPage: avatarList.indexWhere((avatar) => avatar['mood'] == user.mood),
                                   scrollDirection: Axis.horizontal,
-                                ),
-                                items: (avatars[user.baseAvatar]['avatars'].values).map<Widget>((avatar) => MoodItem(
-                                  avatar: avatar,
-                                  onTap: () {
+                                  onPageChanged: (index, reason) {
+                                    Map<String, dynamic> avatar = avatarList[index];
+
                                     setState(() {
                                       mood = avatar['mood'];
                                     });
+
                                     globals.meUser.update((user) {
                                       user.mood = avatar['mood'];
                                       user.avatar = avatar['url'];
@@ -245,6 +243,9 @@ class _MoodState extends State<Mood> {
                                       return user;
                                     });
                                   },
+                                ),
+                                items: (avatarList).map<Widget>((avatar) => MoodItem(
+                                  avatar: avatar,
                                 )).toList(),
                               ),
                               Positioned(
