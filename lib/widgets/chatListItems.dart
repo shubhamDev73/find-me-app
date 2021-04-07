@@ -61,7 +61,7 @@ class ChatListItem extends StatelessWidget {
         child: createFirebaseStreamWidget(lastMessage, (messages) {
           dynamic message = messages.length > 0 ? messages[0] : null;
           DateTime dateTime;
-          if(message != null){
+          if(message != null && message['timestamp'] != null){
             dateTime = message['timestamp'] is String ? DateTime.parse(message['timestamp']) : message['timestamp'].toDate();
             if(dateTime.compareTo(lastMessageTime) > 0)
               globals.founds.mappedUpdate(found.id, (Found found) {
