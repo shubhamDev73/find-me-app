@@ -33,49 +33,49 @@ class ChatMessage extends StatelessWidget {
             children: <Widget>[
               Expanded(
                 flex: 1,
-                child: Container(
-                  color: ThemeColors.primaryColor,
-                  child: Row(
-                    children: <Widget>[
-                      InkWell(
-                        onTap: () {
-                          globals.setAnotherUser('/found/${found.id}');
-                          Navigator.of(context).pushNamed('/user');
-                        },
-                        child: Container(
+                child: InkWell(
+                  onTap: () {
+                    globals.setAnotherUser('/found/${found.id}');
+                    Navigator.of(context).pushNamed('/user');
+                  },
+                  child: Container(
+                    color: ThemeColors.primaryColor,
+                    child: Row(
+                      children: <Widget>[
+                        Container(
                           width: 50,
                           margin: EdgeInsets.symmetric(horizontal: 12.0),
                           child: CachedNetworkImage(imageUrl: found.avatar['v1']),
                         ),
-                      ),
-                      Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: <Widget>[
-                          Container(
-                            child: Text(
-                              found.nick,
-                              textAlign: TextAlign.left,
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 18,
+                        Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: <Widget>[
+                            Container(
+                              child: Text(
+                                found.nick,
+                                textAlign: TextAlign.left,
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 18,
+                                ),
                               ),
                             ),
-                          ),
-                          Container(
-                            child: LastSeenWidget(found: found),
-                          ),
-                        ],
-                      ),
-                      Expanded(
-                        flex: 4,
-                        child: Container(),
-                      ),
-                      Expanded(
-                        flex: 1,
-                        child: Icon(Icons.more_vert),
-                      ),
-                    ],
+                            Container(
+                              child: LastSeenWidget(found: found),
+                            ),
+                          ],
+                        ),
+                        Expanded(
+                          flex: 4,
+                          child: Container(),
+                        ),
+                        Expanded(
+                          flex: 1,
+                          child: Icon(Icons.more_vert),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ),
