@@ -4,7 +4,6 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
-import 'package:findme/assets.dart';
 import 'package:findme/widgets/misc.dart';
 import 'package:findme/models/user.dart';
 import 'package:findme/globals.dart' as globals;
@@ -40,23 +39,10 @@ class MoodItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
+    return Column(
       children: [
-        Positioned(
-          child: Container(
-            width: 5,
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              color: Colors.grey,
-            ),
-          ),
-        ),
-        Column(
-          children: [
-            CachedNetworkImage(imageUrl: avatar['url']['v1'], width: 160),
-            Text(avatar['mood']),
-          ],
-        ),
+        CachedNetworkImage(imageUrl: avatar['url']['v1'], height: 120),
+        Text(avatar['mood'], style: TextStyle(fontSize: 18)),
       ],
     );
   }
@@ -74,15 +60,11 @@ class Mood extends StatefulWidget {
 class _MoodState extends State<Mood> {
 
   String mood;
-  bool isTimeline;
-  DateTime timestamp;
-  final CarouselController timelineController = new CarouselController();
   final CarouselController moodController = new CarouselController();
 
   @override
   void initState() {
     super.initState();
-    isTimeline = false;
     if(widget.me) globals.onUserChanged['mood'] = () => setState(() {});
     globals.onAvatarsChanged = () => setState(() {});
     globals.onMoodsChanged = () => setState(() {});
@@ -100,7 +82,7 @@ class _MoodState extends State<Mood> {
   Widget build(BuildContext context) {
     globals.avatars.get();
     globals.moods.get();
-    return createFutureWidget(globals.avatars.get(), (avatars) =>
+    return createFutureWidget(globals.avatars.get(), (Map<String, dynamic> avatars) =>
       createFutureWidget(globals.moods.get(), (moods) =>
         createFutureWidget(globals.getUser(me: widget.me), (User user) {
           if(mood == null) mood = user.mood;
@@ -130,25 +112,28 @@ class _MoodState extends State<Mood> {
                     ),
                   ),
                   Expanded(
-                    flex: 2,
-                    child: CarouselSlider(
-                      carouselController: timelineController,
-                      options: CarouselOptions(
-                        height: 100,
-                        viewportFraction: 0.18,
-                        enlargeCenterPage: true,
-                        enableInfiniteScroll: false,
-                        initialPage: user.timeline.length,
-                        scrollDirection: Axis.horizontal,
-                        onPageChanged: (index, reason) => setState(() {
-                          mood = user.timeline[index]['mood'];
-                          timestamp = DateTime.parse(user.timeline[index]['timestamp']);
-                          isTimeline = (index != user.timeline.length - 1);
-                        }),
-                      ),
-                      items: user.timeline.map((timeline) => Builder(
-                        builder: (BuildContext context) => TimelineItem(
-                          icon: moods[timeline['mood']]['url']['icon'],
+                    flex: 3,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: avatars.values.map((avatar) => Container(
+                        padding: EdgeInsets.symmetric(horizontal: 15),
+                        child: GestureDetector(
+                          onTap: () => setState(() {
+                            Map<String, dynamic> moodAvatar = avatar['avatars'][user.mood];
+                            globals.meUser.update((user) {
+                              user.avatar = moodAvatar['url'];
+                              user.baseAvatar = avatar['name'];
+                              globals.addPostCall('me/avatar/update/', {"id": moodAvatar['id']});
+                              return user;
+                            });
+                            SchedulerBinding.instance.addPostFrameCallback((timeStamp) =>
+                                moodController.jumpToPage(avatar['avatars'].values.toList().indexWhere((avatar) => avatar['mood'] == user.mood))
+                            );
+                          }),
+                          child: CachedNetworkImage(
+                            imageUrl: avatar['url'],
+                            width: 30,
+                          ),
                         ),
                       )).toList(),
                     ),
@@ -160,34 +145,21 @@ class _MoodState extends State<Mood> {
                         Container(
                           height: 190,
                           width: 190,
-                          child: Stack(
-                            alignment: AlignmentDirectional.center,
-                            children: [
-                              Container(
-                                child: Center(
-                                  child: CachedNetworkImage(
-                                    imageUrl: userAvatars[mood]['url']['v2'],
-                                  ),
-                                ),
+                          child: Container(
+                            child: Center(
+                              child: CachedNetworkImage(
+                                imageUrl: userAvatars[mood]['url']['v2'],
                               ),
-                              Positioned(
-                                top: 10,
-                                left: 165,
-                                child: SvgPicture.asset(
-                                  Assets.edit,
-                                  width: 25,
-                                ),
-                              ),
-                            ],
+                            ),
                           ),
                         ),
                         SizedBox(
-                          height: 4,
+                          height: 12,
                         ),
                         Text(
                           user.nick,
                           style: TextStyle(
-                            fontSize: 20,
+                            fontSize: 28,
                             fontWeight: FontWeight.bold,
                           ),
                           textAlign: TextAlign.center,
@@ -196,120 +168,82 @@ class _MoodState extends State<Mood> {
                     ),
                   ),
                   Expanded(
-                    flex: 4,
+                    flex: 3,
                     child: Stack(
                       children: [
-                        Offstage(
-                          offstage: !widget.me || isTimeline,
-                          child: widget.me ? Stack(
-                            children: [
-                              CarouselSlider(
-                                carouselController: moodController,
-                                options: CarouselOptions(
-                                  height: 180,
-                                  viewportFraction: 0.3,
-                                  enlargeCenterPage: true,
-                                  enableInfiniteScroll: true,
-                                  initialPage: avatarList.indexWhere((avatar) => avatar['mood'] == user.mood),
-                                  scrollDirection: Axis.horizontal,
-                                  onPageChanged: (index, reason) {
-                                    Map<String, dynamic> avatar = avatarList[index];
+                        CarouselSlider(
+                          carouselController: moodController,
+                          options: CarouselOptions(
+                            height: 300,
+                            viewportFraction: 0.3,
+                            enlargeCenterPage: true,
+                            enableInfiniteScroll: true,
+                            initialPage: avatarList.indexWhere((avatar) => avatar['mood'] == user.mood),
+                            scrollDirection: Axis.horizontal,
+                            onPageChanged: (index, reason) {
+                              Map<String, dynamic> avatar = avatarList[index];
 
-                                    setState(() {
-                                      mood = avatar['mood'];
-                                    });
+                              setState(() {
+                                mood = avatar['mood'];
+                              });
 
-                                    globals.meUser.update((user) {
-                                      user.mood = avatar['mood'];
-                                      user.avatar = avatar['url'];
+                              globals.meUser.update((user) {
+                                user.mood = avatar['mood'];
+                                user.avatar = avatar['url'];
 
-                                      Map<String, dynamic> lastTimeline = user.timeline[user.timeline.length - 1];
-                                      Duration diff = DateTime.now().difference(DateTime.parse(lastTimeline['timestamp']));
-                                      if(diff.inDays > 0 || diff.inHours >= 4){
-                                        user.timeline.add({
-                                          "timestamp": DateTime.now().toString(),
-                                          "mood": avatar['mood'],
-                                          "base_avatar": user.baseAvatar,
-                                        });
-                                        SchedulerBinding.instance.addPostFrameCallback((timeStamp) =>
-                                          timelineController.animateToPage(user.timeline.length - 1, duration: Duration(milliseconds: 100))
-                                        );
-                                        globals.addPostCall('me/avatar/update/', {"id": avatar['id']});
-                                      }else{
-                                        lastTimeline['mood'] = avatar['mood'];
-                                        lastTimeline['base_avatar'] = user.baseAvatar;
-                                      }
+                                Map<String, dynamic> lastTimeline = user.timeline[user.timeline.length - 1];
+                                Duration diff = DateTime.now().difference(DateTime.parse(lastTimeline['timestamp']));
+                                if(diff.inDays > 0 || diff.inHours >= 4){
+                                  user.timeline.add({
+                                    "timestamp": DateTime.now().toString(),
+                                    "mood": avatar['mood'],
+                                    "base_avatar": user.baseAvatar,
+                                  });
+                                  globals.addPostCall('me/avatar/update/', {"id": avatar['id']});
+                                }else{
+                                  lastTimeline['mood'] = avatar['mood'];
+                                  lastTimeline['base_avatar'] = user.baseAvatar;
+                                }
 
-                                      return user;
-                                    });
-                                  },
-                                ),
-                                items: (avatarList).map<Widget>((avatar) => MoodItem(
-                                  avatar: avatar,
-                                )).toList(),
-                              ),
-                              Positioned(
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Padding(
-                                      padding: const EdgeInsets.only(left: 12.0),
-                                      child: InkWell(
-                                        onTap: () => moodController.previousPage(
-                                          duration: Duration(milliseconds: 300),
-                                          curve: Curves.decelerate,
-                                        ),
-                                        child: Container(
-                                          child: Center(
-                                            child: Icon(Icons.arrow_back_ios),
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                    Padding(
-                                      padding: const EdgeInsets.only(right: 12.0),
-                                      child: InkWell(
-                                        onTap: () => moodController.nextPage(
-                                          duration: Duration(milliseconds: 300),
-                                          curve: Curves.decelerate,
-                                        ),
-                                        child: Container(
-                                          child: Center(
-                                            child: Icon(Icons.arrow_forward_ios),
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ],
-                          ) : Container(),
+                                return user;
+                              });
+                            },
+                          ),
+                          items: (avatarList).map<Widget>((avatar) => MoodItem(
+                            avatar: avatar,
+                          )).toList(),
                         ),
-                        Offstage(
-                          offstage: widget.me && !isTimeline,
-                          child: Column(
-                            children: <Widget>[
-                              SizedBox(height: 50),
-                              Expanded(
-                                flex: 1,
-                                child: Text(
-                                  isTimeline ? 'felt ' + mood.toLowerCase() + ' on'
-                                  : 'is feeling ' + mood.toLowerCase()
+                        Positioned(
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.only(left: 12.0),
+                                child: GestureDetector(
+                                  onTap: () => moodController.previousPage(
+                                    duration: Duration(milliseconds: 300),
+                                    curve: Curves.decelerate,
+                                  ),
+                                  child: Container(
+                                    child: Center(
+                                      child: Icon(Icons.arrow_back_ios),
+                                    ),
+                                  ),
                                 ),
                               ),
-                              Expanded(
-                                flex: 2,
-                                child: isTimeline ? Text(
-                                  formatDate(timestamp: timestamp),
-                                  style: TextStyle(
-                                    fontSize: 18,
+                              Padding(
+                                padding: const EdgeInsets.only(right: 12.0),
+                                child: GestureDetector(
+                                  onTap: () => moodController.nextPage(
+                                    duration: Duration(milliseconds: 300),
+                                    curve: Curves.decelerate,
                                   ),
-                                ) : Container(),
-                              ),
-                              Expanded(
-                                flex: 2,
-                                child: Text('FIXME: comment goes here'),
+                                  child: Container(
+                                    child: Center(
+                                      child: Icon(Icons.arrow_forward_ios),
+                                    ),
+                                  ),
+                                ),
                               ),
                             ],
                           ),
