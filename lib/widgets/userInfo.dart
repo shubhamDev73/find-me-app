@@ -38,25 +38,13 @@ class UserInfo extends StatelessWidget {
           ),
         ),
         SizedBox(
-          height: 4,
+          height: 12,
         ),
         Text(
           user.nick,
           style: TextStyle(
-            fontSize: 20,
+            fontSize: 28,
             fontWeight: FontWeight.bold,
-          ),
-          textAlign: TextAlign.center,
-        ),
-        SizedBox(
-          height: 8,
-        ),
-        Text(
-          "Lorem ipsum dolor sit amet",
-          style: TextStyle(
-            fontSize: 15,
-            color: Colors.grey.shade500,
-            fontWeight: FontWeight.w400,
           ),
           textAlign: TextAlign.center,
         ),
