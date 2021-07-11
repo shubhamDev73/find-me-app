@@ -1,54 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:firebase_database/firebase_database.dart';
 
 import 'package:findme/constant.dart';
 import 'package:findme/models/found.dart';
 import 'package:findme/widgets/misc.dart';
-import 'package:findme/globals.dart' as globals;
-
-class FindListItem extends StatelessWidget {
-
-  final int id;
-  final String avatar;
-  final String nick;
-  final bool isRequest;
-
-  FindListItem({this.id, this.avatar, this.nick, this.isRequest = false});
-
-  @override
-  Widget build (BuildContext context) {
-    return InkWell(
-      onTap: () {
-        String baseUrl = isRequest ? 'requests' : 'find';
-        globals.setAnotherUser('/$baseUrl/$id');
-        Navigator.of(context).pushNamed('/user');
-      },
-      child: Container(
-        margin: EdgeInsets.symmetric(vertical: 28, horizontal: 8),
-        child: Column(
-          children: [
-            Container(
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: isRequest ? Colors.white : Colors.transparent,
-                border: Border.all(color: Colors.white),
-              ),
-              margin: EdgeInsets.symmetric(vertical: 5),
-              padding: const EdgeInsets.all(7.0),
-              child: CachedNetworkImage(imageUrl: avatar, width: 50),
-            ),
-            Text(
-              nick,
-              style: TextStyle(color: Colors.white, fontSize: 13),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-}
 
 class ChatMessageItem extends StatelessWidget {
 
