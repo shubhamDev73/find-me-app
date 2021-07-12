@@ -259,10 +259,15 @@ class _InterestsState extends State<Interests> {
                 child: Container(
                   padding: EdgeInsets.symmetric(vertical: 17, horizontal: 10),
                   color: ThemeColors.lightColor,
-                  child: ListView(
-                    children: getInterestList(user.interests.values.toList(), (int newInterestId) => setState(() {
-                      interestId = newInterestId;
-                    }), interestId),
+                  child: Scrollbar(
+                    controller: ScrollController(),
+                    thickness: 5,
+                    radius: Radius.elliptical(5, 10),
+                    child: ListView(
+                      children: getInterestList(user.interests.values.toList(), (int newInterestId) => setState(() {
+                        interestId = newInterestId;
+                      }), interestId),
+                    ),
                   ),
                 ),
               ),

@@ -17,7 +17,6 @@ class AddInterests extends StatefulWidget {
 }
 
 class _AddInterestsState extends State<AddInterests> {
-  final ScrollController scrollController = ScrollController();
 
   @override
   void initState() {
@@ -53,11 +52,10 @@ class _AddInterestsState extends State<AddInterests> {
                 child: Container(
                   margin: EdgeInsets.symmetric(horizontal: 20),
                   child: Scrollbar(
-                    thickness: 0,
-                    isAlwaysShown: true,
-                    controller: scrollController,
+                    controller: ScrollController(),
+                    thickness: 5,
+                    radius: Radius.elliptical(5, 10),
                     child: GridView(
-                      controller: scrollController,
                       shrinkWrap: true,
                       scrollDirection: Axis.vertical,
                       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
@@ -66,9 +64,10 @@ class _AddInterestsState extends State<AddInterests> {
                         crossAxisSpacing: 10,
                         crossAxisCount: 3,
                       ),
-                      children: interests.values.map<Widget>((Interest interest) => InterestButton(
+                      children: <Widget>[Container(), Container(), Container()] + interests.values.toList().reversed.map<Widget>((Interest interest) => InterestButton(
                         name: interest.name,
-                        onClick: (amount) {
+                        isSvg: interest.id == 0,
+                        onClick: interest.id == 0 ? null : (amount) {
                           interest.amount = amount;
 
                           globals.addPostCall(
@@ -94,7 +93,7 @@ class _AddInterestsState extends State<AddInterests> {
                           });
                         },
                         amount: user.interests.containsKey(interest.id) ? user.interests[interest.id].amount : 0,
-                        canChangeAmount: true,
+                        canChangeAmount: interest.id != 0,
                       )).toList(),
                     ),
                   ),
