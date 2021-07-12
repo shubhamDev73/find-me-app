@@ -81,6 +81,7 @@ class _RegisterState extends State<Register> {
                         label: "UserName",
                         errMsg: "Please enter your Username.",
                         autofocus: true,
+                        autofillHints: [AutofillHints.email, AutofillHints.nickname, AutofillHints.name, AutofillHints.username, AutofillHints.newUsername],
                       ),
                       textFieldForRegistration(
                         editingController: phoneController,
@@ -88,6 +89,7 @@ class _RegisterState extends State<Register> {
                         isPhone: true,
                         label: "Phone",
                         errMsg: "Please enter your Phone.",
+                        autofillHints: [AutofillHints.telephoneNumber],
                       ),
                       PasswordField(passwordController: passwordController),
                       Container(

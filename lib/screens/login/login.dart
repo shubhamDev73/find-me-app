@@ -79,6 +79,7 @@ class _LoginState extends State<Login> {
                           label: "Username",
                           errMsg: "Please enter your Username.",
                           autofocus: true,
+                          autofillHints: [AutofillHints.email, AutofillHints.nickname, AutofillHints.name, AutofillHints.username],
                         ),
                         PasswordField(passwordController: passwordController),
                         Container(

@@ -12,6 +12,7 @@ Widget textFieldForRegistration({
   bool autofocus = false,
   String errMsg,
   String label,
+  List<String> autofillHints,
 }) {
   bool showHint = false;
   return TextFormField(
@@ -20,6 +21,7 @@ Widget textFieldForRegistration({
     controller: editingController,
     keyboardType: keyType,
     obscureText: obscureText,
+    autofillHints: autofillHints,
     validator: (value) {
       if (value == null || value.isEmpty) {
         return errMsg;
@@ -64,6 +66,7 @@ class _PasswordFieldState extends State<PasswordField> {
           label: "Password",
           errMsg: "Please enter your Password.",
           obscureText: obscured,
+          autofillHints: [AutofillHints.password],
         ),
         Positioned(
           top: 25,
