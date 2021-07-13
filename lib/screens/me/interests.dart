@@ -48,7 +48,7 @@ class _QuestionsWidgetState extends State<QuestionsWidget> {
               CarouselSlider(
                 carouselController: buttonCarouselController,
                 items: widget.questions.map((question) => Container(
-                  margin: EdgeInsets.symmetric(horizontal: 10),
+                  padding: EdgeInsets.symmetric(horizontal: 50),
                   child: Center(
                     child: Text(
                       question['question'],
@@ -62,11 +62,10 @@ class _QuestionsWidgetState extends State<QuestionsWidget> {
                 )).toList(),
                 options: CarouselOptions(
                   initialPage: 0,
-                  enlargeCenterPage: true,
-                  autoPlay: false,
                   scrollDirection: Axis.horizontal,
                   enableInfiniteScroll: true,
-                  aspectRatio: 2.0,
+                  height: 200,
+                  viewportFraction: 1.0,
                   onPageChanged: (index, reason) => setState(() {
                     currentQuestion = widget.questions[index];
                   }),
@@ -78,7 +77,7 @@ class _QuestionsWidgetState extends State<QuestionsWidget> {
                   children: [
                     Padding(
                       padding: const EdgeInsets.only(left: 12.0),
-                      child: InkWell(
+                      child: GestureDetector(
                         onTap: () => buttonCarouselController.previousPage(
                           duration: Duration(milliseconds: 300),
                           curve: Curves.decelerate,
@@ -92,7 +91,7 @@ class _QuestionsWidgetState extends State<QuestionsWidget> {
                     ),
                     Padding(
                       padding: const EdgeInsets.only(right: 12.0),
-                      child: InkWell(
+                      child: GestureDetector(
                         onTap: () => buttonCarouselController.nextPage(
                           duration: Duration(milliseconds: 300),
                           curve: Curves.decelerate,
@@ -111,11 +110,12 @@ class _QuestionsWidgetState extends State<QuestionsWidget> {
           ),
         ),
         Container(
-          margin: EdgeInsets.symmetric(horizontal: 80, vertical: 0),
+          margin: EdgeInsets.symmetric(horizontal: 60),
           child: widget.me ? TextField(
             controller: answerController,
             onSubmitted: (text) => updateAnswer(widget.interestId, currentQuestion['id'], text),
             textAlign: TextAlign.center,
+            maxLines: null,
             style: GoogleFonts.quicksand(
               textStyle: TextStyle(
                 fontSize: 25,
@@ -178,7 +178,7 @@ class _QuestionsWidgetState extends State<QuestionsWidget> {
 
 List<Widget> getInterestList(List<Interest> obj, Function onClick, int id) {
 
-  List<Widget> widgetList = [];
+  List<Widget> widgetList = [SizedBox(height: 17)];
   int itemCounter = 0;
 
   for(int i = 0; i <= (obj.length ~/ 5) * 2; i++){
@@ -257,7 +257,7 @@ class _InterestsState extends State<Interests> {
               Expanded(
                 flex: 6,
                 child: Container(
-                  padding: EdgeInsets.symmetric(vertical: 17, horizontal: 10),
+                  padding: EdgeInsets.symmetric(horizontal: 10),
                   color: ThemeColors.lightColor,
                   child: Scrollbar(
                     controller: ScrollController(),

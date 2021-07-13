@@ -37,7 +37,7 @@ class _InterestButtonState extends State<InterestButton> {
 
   @override
   Widget build(BuildContext context) {
-    return InkWell(
+    return GestureDetector(
       onTap: widget.canChangeAmount ? () {
         setState(() {
           amount = (amount + 1) % 4;
@@ -50,7 +50,7 @@ class _InterestButtonState extends State<InterestButton> {
           color: ThemeColors.interestColors[widget.canChangeAmount ? amount : widget.amount],
           border: widget.selected ? Border.all(
             color: Colors.black,
-            width: 2,
+            width: 1,
           ) : null,
         ),
         height: 35,
