@@ -6,6 +6,12 @@ import 'package:flutter_svg/svg.dart';
 import 'package:findme/assets.dart';
 import 'package:findme/constant.dart';
 
+double traitGap = 9;
+double normalIconSize = 50;
+double selectedIconSize = 64;
+double normalSvgSize = 28;
+double selectedSvgSize = 36;
+
 class TraitsElements extends StatelessWidget {
 
   final String selectedElement;
@@ -31,11 +37,11 @@ class TraitsElements extends StatelessWidget {
           icon: SvgPicture.asset(
             Assets.traits[trait]['icon'],
             color: value >= 0 ? ThemeColors.positiveTraitColor : ThemeColors.negativeTraitColor,
-            width: selected ? 40 : 32,
-            height: selected ? 40 : 32,
+            width: selected ? selectedSvgSize : normalSvgSize,
+            height: selected ? selectedSvgSize : normalSvgSize,
           ),
           progress: value.abs(),
-          iconSize: selected ? 70 : 55,
+          iconSize: selected ? selectedIconSize : normalIconSize,
         ),
       ),
     );
@@ -44,16 +50,20 @@ class TraitsElements extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Positioned(
-      top: selectedElement == null ? 115 : 115,
+      top: selectedElement == null ? 115 : 135,
       child: Row(
         mainAxisSize: MainAxisSize.max,
-        mainAxisAlignment: MainAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          createButton("Water"),
-          createButton("Space"),
-          createButton("Fire"),
-          createButton("Earth"),
           createButton("Air"),
+          SizedBox(width: traitGap),
+          createButton("Space"),
+          SizedBox(width: traitGap),
+          createButton("Water"),
+          SizedBox(width: traitGap),
+          createButton("Earth"),
+          SizedBox(width: traitGap),
+          createButton("Fire"),
         ],
       ),
     );

@@ -6,7 +6,6 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import 'package:findme/widgets/adjectiveListItems.dart';
-import 'package:findme/widgets/topBox.dart';
 import 'package:findme/widgets/misc.dart';
 import 'package:findme/widgets/traitBar.dart';
 import 'package:findme/assets.dart';
@@ -32,7 +31,7 @@ class _AdjectiveCarouselState extends State<AdjectiveCarousel> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 206,
+      height: 180,
       width: 340,
       decoration: BoxDecoration(
         color: ThemeColors.boxColor,
@@ -42,7 +41,7 @@ class _AdjectiveCarouselState extends State<AdjectiveCarousel> {
       child: Column(
         children: [
           Expanded(
-            flex: 2,
+            flex: 3,
             child: CarouselSlider(
               options: CarouselOptions(
                   viewportFraction: 1.0,
@@ -129,100 +128,105 @@ class _PersonalityState extends State<Personality> {
           children: <Widget>[
             Expanded(
               flex: 9,
-              child: TopBox(
-                title: trait,
-                desc: user.personality[trait]['description'],
-                widget: TraitsElements(
-                  onClick: (String traitString) {
-                    setState(() {
-                      trait = traitString;
-                    });
-                  },
-                  personality: user.personality,
-                  selectedElement: trait,
-                ),
-              ),
-            ),
-            Expanded(
-              flex: 4,
-              child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Container(
-                        padding: EdgeInsets.symmetric(horizontal: 10.0),
-                        child: SvgPicture.asset(Assets.traits[trait]['negative']),
-                      ),
-                      Container(
-                        width: 220,
-                        child: Stack(
-                          overflow: Overflow.visible,
-                          children: <Widget>[
-                            Divider(
-                              color: Colors.black,
-                              height: 20,
-                              thickness: 1,
-                            ),
-                            Positioned(
-                              left: ((user.personality[trait]['value'] + 1) / 2) * 220 - 4,
-                              child: Container(
-                                height: 20,
-                                width: 8,
-                                decoration: BoxDecoration(
-                                  color: ThemeColors.boxColor,
-                                  border: Border.all(),
-                                  borderRadius: BorderRadius.circular(12.0),
+              child: Column(
+                children: [
+                  Container(
+                    padding: const EdgeInsets.all(12.0),
+                    color: ThemeColors.boxColor,
+                  ),
+                  Container(
+                    height: 234,
+                    child: Stack(
+                      alignment: Alignment.topCenter,
+                      children: [
+                        Container(
+                          height: 170,
+                          color: ThemeColors.boxColor,
+                          child: Column(
+                            children: [
+                              SizedBox(height: 24),
+                              Container(
+                                height: 50,
+                                child: Text(
+                                  trait,
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                    fontSize: 30,
+                                    fontWeight: FontWeight.w600,
+                                  ),
                                 ),
                               ),
-                            ),
-                          ],
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Container(
+                                    padding: EdgeInsets.symmetric(horizontal: 10.0),
+                                    width: 50,
+                                    child: SvgPicture.asset(Assets.traits[trait]['negative']),
+                                  ),
+                                  Container(
+                                    width: 220,
+                                    child: Stack(
+                                      overflow: Overflow.visible,
+                                      children: <Widget>[
+                                        Divider(
+                                          color: Colors.black,
+                                          height: 20,
+                                          thickness: 1,
+                                        ),
+                                        Positioned(
+                                          left: ((user.personality[trait]['value'] + 1) / 2) * 220 - 4,
+                                          child: Container(
+                                            height: 20,
+                                            width: 8,
+                                            decoration: BoxDecoration(
+                                              color: ThemeColors.boxColor,
+                                              border: Border.all(),
+                                              borderRadius: BorderRadius.circular(12.0),
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  Container(
+                                    padding: EdgeInsets.symmetric(horizontal: 10.0),
+                                    width: 50,
+                                    child: SvgPicture.asset(Assets.traits[trait]['positive']),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
                         ),
-                      ),
-                      Container(
-                        padding: EdgeInsets.symmetric(horizontal: 10.0),
-                        child: SvgPicture.asset(Assets.traits[trait]['positive']),
-                      ),
-                    ],
+                        TraitsElements(
+                          onClick: (String traitString) {
+                            setState(() {
+                              trait = traitString;
+                            });
+                          },
+                          personality: user.personality,
+                          selectedElement: trait,
+                        ),
+                      ],
+                    ),
                   ),
+                ],
+              ),
             ),
-            widget.me ?
-            GestureDetector(
-              onTap: () async {
-                String url = 'https://tripetto.app/run/YK2S455EX3/?nick=${user.nick}';
-                if(await canLaunch(url)) await launch(url);
-              },
+            Expanded(
+              flex: 5,
               child: Container(
-                height: 42,
-                width: 125,
-                decoration: BoxDecoration(
-                  color: Colors.black,
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                padding: EdgeInsets.symmetric(horizontal: 25, vertical: 10),
-                child: Center(
-                  child: Text(
-                    "Take a Test",
-                    style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
-                    textAlign: TextAlign.center,
+                padding: EdgeInsets.symmetric(horizontal: 32, vertical: 25),
+                child: Text(
+                  user.personality[trait]['description'],
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
                   ),
                 ),
               ),
-            ) :
-            Container(),
-            Expanded(
-              flex: 2,
-              child: Container(),
-            ),
-            Expanded(
-              flex: 1,
-              child: Text(
-                "Your attributes for this trait",
-                style: TextStyle(fontSize: 17),
-              ),
-            ),
-            AdjectiveCarousel(adjectives: user.personality[trait]['adjectives']),
-            Expanded(
-              flex: 1,
-              child: Container(),
             ),
             GestureDetector(
               onTap: () async {
@@ -244,6 +248,55 @@ class _PersonalityState extends State<Personality> {
                     style: TextStyle(color: Colors.white, fontSize: 14),
                     textAlign: TextAlign.center,
                   ),
+                ),
+              ),
+            ),
+            Expanded(
+              flex: 1,
+              child: Container(),
+            ),
+            Expanded(
+              flex: 1,
+              child: Text(
+                "Your attributes for this trait",
+                style: TextStyle(fontSize: 18),
+              ),
+            ),
+            AdjectiveCarousel(adjectives: user.personality[trait]['adjectives']),
+            Expanded(
+              flex: 1,
+              child: Container(),
+            ),
+            widget.me ?
+            GestureDetector(
+              onTap: () async {
+                String url = 'https://tripetto.app/run/YK2S455EX3/?nick=${user.nick}';
+                if(await canLaunch(url)) await launch(url);
+              },
+              child: Container(
+                height: 42,
+                width: 125,
+                decoration: BoxDecoration(
+                  color: Colors.black,
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                padding: EdgeInsets.symmetric(horizontal: 25, vertical: 10),
+                child: Center(
+                  child: Text(
+                    "Take a Test",
+                    style: TextStyle(color: Colors.white),
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+              ),
+            ) :
+            Container(),
+            Expanded(
+              flex: 2,
+              child: Container(
+                margin: EdgeInsets.symmetric(vertical: 14),
+                child: Text(
+                  "Taking test helps us find better conversations for you",
                 ),
               ),
             ),
