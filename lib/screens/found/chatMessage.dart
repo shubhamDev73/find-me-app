@@ -148,12 +148,14 @@ class ChatMessage extends StatelessWidget {
   }
 
   void submitChat (String text, Found found) {
-    FirebaseFirestore.instance.collection('chats').doc(found.chatId).collection('chats').add({
-      'message': text,
-      'user': found.me,
-      'timestamp': FieldValue.serverTimestamp(),
-    });
-    messageController.clear();
+    if(text.isNotEmpty){
+      FirebaseFirestore.instance.collection('chats').doc(found.chatId).collection('chats').add({
+        'message': text,
+        'user': found.me,
+        'timestamp': FieldValue.serverTimestamp(),
+      });
+      messageController.clear();
+    }
     realtimeDB.child("${found.id}-${found.me}").update({
       'typing': false,
     });
