@@ -26,7 +26,7 @@ class ChatMessageItem extends StatelessWidget {
         children: <Widget>[
           Container(
             constraints: BoxConstraints(minWidth: 70, maxWidth: 250),
-            padding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 6.0),
+            padding: EdgeInsets.symmetric(horizontal: 14.0, vertical: 10.0),
             decoration: BoxDecoration(
               color: ThemeColors.chatMessageColors[me],
               borderRadius: BorderRadius.only(
@@ -37,7 +37,12 @@ class ChatMessageItem extends StatelessWidget {
                 bottomRight: me ? getCornerRadius(bottom: true) : circleRadius,
               ),
             ),
-            child: Text(message),
+            child: Text(
+                message,
+                style: TextStyle(
+                  fontSize: 15,
+                ),
+            ),
           ),
         ],
       ),
@@ -67,6 +72,7 @@ class LastSeenWidget extends StatelessWidget {
       if(data['online']){
         return Text(
           data['typing'] ? "typing..." : "currently active",
+          textAlign: TextAlign.right,
           style: TextStyle(
             color: Colors.white,
             fontSize: 11,
@@ -74,10 +80,12 @@ class LastSeenWidget extends StatelessWidget {
           ),
         );
       }else{
-        return DateWidget(endDate: DateTime.fromMillisecondsSinceEpoch(data['lastSeen']), prefix: 'last seen ', textStyle: TextStyle(
+        return DateWidget(endDate: DateTime.fromMillisecondsSinceEpoch(data['lastSeen']), prefix: 'last seen\n', textStyle: TextStyle(
           color: Colors.white,
           fontSize: 11,
-        ));
+        ),
+          align: TextAlign.right
+        );
       }
     }, fullPage: false);
   }

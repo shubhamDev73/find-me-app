@@ -57,18 +57,26 @@ class ChatMessage extends StatelessWidget {
                                 textAlign: TextAlign.left,
                                 style: TextStyle(
                                   color: Colors.white,
-                                  fontSize: 18,
+                                  fontSize: 20,
                                 ),
                               ),
                             ),
                             Container(
-                              child: LastSeenWidget(found: found),
+                              child: Text(
+                                "tap to view profile",
+                                style: TextStyle(
+                                  color: Colors.white,
+                                ),
+                              ),
                             ),
                           ],
                         ),
                         Expanded(
                           flex: 4,
                           child: Container(),
+                        ),
+                        Container(
+                          child: LastSeenWidget(found: found),
                         ),
                         Expanded(
                           flex: 1,
@@ -85,34 +93,31 @@ class ChatMessage extends StatelessWidget {
                   decoration: BoxDecoration(
                     image: DecorationImage(
                       image: CachedNetworkImageProvider(moods[found.mood]['url']['weather']),
-                      fit: BoxFit.cover,
+                      fit: BoxFit.contain,
                     ),
                   ),
                   child: ChatMessageList(found: found),
                 ),
               ),
               Container(
-                height: 50,
-                margin: EdgeInsets.symmetric(vertical: 3.0, horizontal: 10.0),
-                padding: EdgeInsets.all(10.0),
-                decoration: BoxDecoration(
-                  color: ThemeColors.messageBoxColor,
-                  borderRadius: BorderRadius.circular(12.0),
-                ),
+                margin: EdgeInsets.symmetric(vertical: 3.0, horizontal: 4.0),
+                padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
                 child: Row(
                   children: <Widget>[
                     Expanded(
                       child: Container(
                         padding: EdgeInsets.symmetric(horizontal: 12.0),
                         decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(16.0),
+                          color: ThemeColors.chatMessageColors[true],
+                          borderRadius: BorderRadius.circular(10.0),
+                          border: Border.all(color: ThemeColors.chatMessageColors[false])
                         ),
                         child: TextField(
+                          maxLines: null,
                           controller: messageController,
                           onSubmitted: (text) => submitChat(text, found),
                           style: TextStyle(
-                            fontSize: 15,
+                            fontSize: 16,
                           ),
                           decoration: InputDecoration(
                             border: InputBorder.none,
@@ -121,7 +126,9 @@ class ChatMessage extends StatelessWidget {
                       ),
                     ),
                     Container(
+                      margin: EdgeInsets.symmetric(horizontal: 8),
                       width: 30,
+                      height: 30,
                       child: InkWell(
                         onTap: () {
                           submitChat(messageController.text, found);

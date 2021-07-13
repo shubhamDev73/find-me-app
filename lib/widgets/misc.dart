@@ -75,8 +75,9 @@ class DateWidget extends StatefulWidget {
   final DateTime endDate;
   final TextStyle textStyle;
   final String prefix;
+  final TextAlign align;
 
-  DateWidget({this.endDate, this.textStyle, this.prefix = ''});
+  DateWidget({this.endDate, this.textStyle, this.prefix = '', this.align = TextAlign.left});
 
   @override
   _DateWidgetState createState() => _DateWidgetState();
@@ -97,6 +98,7 @@ class _DateWidgetState extends State<DateWidget> {
     return Text(
       widget.prefix + formatDate(endDate: widget.endDate),
       style: widget.textStyle,
+      textAlign: widget.align,
     );
   }
 
