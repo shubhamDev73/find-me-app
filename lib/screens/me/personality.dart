@@ -14,6 +14,7 @@ import 'package:findme/constant.dart';
 import 'package:findme/globals.dart' as globals;
 
 final random = new Random();
+final int numberOfAdjectives = 5;
 
 class AdjectiveCarousel extends StatefulWidget {
 
@@ -44,26 +45,23 @@ class _AdjectiveCarouselState extends State<AdjectiveCarousel> {
             flex: 3,
             child: CarouselSlider(
               options: CarouselOptions(
-                  viewportFraction: 1.0,
-                  enlargeCenterPage: false,
-                  initialPage: 0,
-                  aspectRatio: 2.0,
-                  onPageChanged: (index, reason) {
-                    setState(() {
-                      currentAdjIndex = index;
-                    });
-                  }),
-              items: widget.adjectives.map((facetAdjectives) {
-                Map<String, dynamic> adjective = facetAdjectives[random.nextInt(facetAdjectives.length)];
-                return Builder(
-                  builder: (BuildContext context) {
-                    return AdjListItem(
-                      name: adjective['name'],
-                      description: adjective['description'],
-                    );
-                  },
-                );
-              }).toList(),
+                viewportFraction: 1.0,
+                enlargeCenterPage: false,
+                initialPage: 0,
+                aspectRatio: 2.0,
+                onPageChanged: (index, reason) {
+                  setState(() {
+                    currentAdjIndex = index;
+                  });
+                }),
+              items: widget.adjectives.map<Widget>((adjective) => Builder(
+                builder: (BuildContext context) {
+                  return AdjListItem(
+                    name: adjective['name'],
+                    description: adjective['description'],
+                  );
+                },
+              )).toList(),
             ),
           ),
           Expanded(
@@ -103,11 +101,40 @@ class Personality extends StatefulWidget {
 class _PersonalityState extends State<Personality> {
 
   String trait;
+  Map<String, List<dynamic>> adjectives = {};
+
+  void createRandomAdjectives(User user) {
+    adjectives.clear();
+
+    for(String trait in user.personality.keys) {
+      List<dynamic> randomAdjectives = new List();
+      List<dynamic> allAdjectives = new List();
+
+      for (List<dynamic> facetAdjectives in user.personality[trait]['adjectives']) {
+        allAdjectives.add(facetAdjectives[random.nextInt(facetAdjectives.length)]);
+      }
+
+      int length = allAdjectives.length;
+      if (length <= numberOfAdjectives)
+        randomAdjectives = allAdjectives;
+      else {
+        for (int i = 0; i < numberOfAdjectives; i++) {
+          dynamic adjective = allAdjectives[random.nextInt(length)];
+          while (randomAdjectives.contains(adjective)) {
+            adjective = allAdjectives[random.nextInt(length)];
+          }
+          randomAdjectives.add(adjective);
+        }
+      }
+
+      adjectives[trait] = randomAdjectives;
+    }
+  }
 
   @override
   void initState() {
     super.initState();
-    if(widget.me) globals.onUserChanged['personality'] = () => setState(() {});
+    if(widget.me) globals.onUserChanged['personality'] = () => setState(() {adjectives.clear();});
   }
 
   @override
@@ -120,7 +147,10 @@ class _PersonalityState extends State<Personality> {
   Widget build(BuildContext context) {
     if (trait == null) trait = ModalRoute.of(context).settings.arguments;
 
-    return createFutureWidget<User>(globals.getUser(me: widget.me), (User user) => Scaffold(
+    return createFutureWidget<User>(globals.getUser(me: widget.me), (User user) {
+      if (adjectives.isEmpty) createRandomAdjectives(user);
+
+      return Scaffold(
       body: SafeArea(
         child: Column(
           mainAxisSize: MainAxisSize.min,
@@ -262,7 +292,7 @@ class _PersonalityState extends State<Personality> {
                 style: TextStyle(fontSize: 18),
               ),
             ),
-            AdjectiveCarousel(adjectives: user.personality[trait]['adjectives']),
+            AdjectiveCarousel(adjectives: adjectives[trait]),
             Expanded(
               flex: 1,
               child: Container(),
@@ -307,6 +337,7 @@ class _PersonalityState extends State<Personality> {
           ],
         ),
       ),
-    ));
+    );
+  });
   }
 }
