@@ -198,24 +198,14 @@ class _PersonalityState extends State<Personality> {
                                   ),
                                   Container(
                                     width: 220,
+                                    height: 30,
                                     child: Stack(
-                                      overflow: Overflow.visible,
-                                      children: <Widget>[
-                                        Divider(
-                                          color: Colors.black,
-                                          height: 20,
-                                          thickness: 1,
-                                        ),
+                                      children: [
                                         Positioned(
-                                          left: ((user.personality[trait]['value'] + 1) / 2) * 220 - 4,
-                                          child: Container(
-                                            height: 20,
-                                            width: 8,
-                                            decoration: BoxDecoration(
-                                              color: ThemeColors.boxColor,
-                                              border: Border.all(),
-                                              borderRadius: BorderRadius.circular(12.0),
-                                            ),
+                                          left: ((user.personality[trait]['value'] + 1) / 2) * (305 - 90) - 305, // -90,// -305
+                                          child: SvgPicture.asset(
+                                            Assets.personalityBar,
+                                            fit: BoxFit.fitHeight,
                                           ),
                                         ),
                                       ],
