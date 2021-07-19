@@ -147,7 +147,9 @@ class _PersonalityState extends State<Personality> {
   Widget build(BuildContext context) {
     if (trait == null) trait = ModalRoute.of(context).settings.arguments;
 
-    return createFutureWidget<User>(globals.getUser(me: widget.me), (User user) {
+    return createFutureWidget<User>(globals.getUser(me: widget.me), (User user) =>
+      createFutureWidget<Map<String, dynamic>>(globals.questionnaires.get(), (Map<String, dynamic> questionnaires) {
+      globals.questionnaires.get(forceNetwork: true);
       if (adjectives.isEmpty) createRandomAdjectives(user);
 
       return Scaffold(
@@ -300,7 +302,8 @@ class _PersonalityState extends State<Personality> {
             widget.me ?
             GestureDetector(
               onTap: () async {
-                String url = 'https://tripetto.app/run/YK2S455EX3/?nick=${user.nick}';
+                List<dynamic> allUrls = questionnaires['all'];
+                String url = '${allUrls[random.nextInt(allUrls.length)]}?nick=${user.nick}';
                 if(await canLaunch(url)) await launch(url);
               },
               child: Container(
@@ -338,6 +341,6 @@ class _PersonalityState extends State<Personality> {
         ),
       ),
     );
-  });
+  }));
   }
 }

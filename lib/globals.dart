@@ -142,6 +142,11 @@ void setAnotherUser (String url) {
   }
 }
 
+MappedCachedData<String, dynamic> questionnaires = MappedCachedData(
+  url: 'me/personality/update/',
+  cacheFile: 'questionnaires.json',
+);
+
 
 // found
 
