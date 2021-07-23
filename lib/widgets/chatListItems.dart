@@ -58,6 +58,7 @@ class ChatListItem extends StatelessWidget {
       },
       child: Container(
         color: ThemeColors.chatListColors[index % 2 == 0],
+        padding: EdgeInsets.symmetric(vertical: 10),
         child: createFirebaseStreamWidget(lastMessage, (messages) {
           dynamic message = messages.length > 0 ? messages[0] : null;
           DateTime dateTime;
@@ -95,6 +96,7 @@ class ChatListItem extends StatelessWidget {
                         constraints: BoxConstraints(maxWidth: 200, maxHeight: 20),
                         child: Text(
                           message == null ? 'New connect!' : message['message'],
+                          overflow: TextOverflow.ellipsis,
                           style: TextStyle(
                             color: Colors.black,
                             fontSize: 14.0,

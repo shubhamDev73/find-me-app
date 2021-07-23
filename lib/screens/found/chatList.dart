@@ -13,47 +13,90 @@ class FoundPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return createFutureWidget<User>(globals.getUser(), (User user) =>
-      createFutureWidget<Map<int, Found>>(globals.founds.get(), (Map<int, Found> founds) {
-        globals.founds.get(forceNetwork: true);
-        return Scaffold(
-          body: SafeArea(
-            child: Container(
-              child: Column(
-                children: [
-                  Container(
-                    height: 150,
-                    color: ThemeColors.primaryColor,
-                    child: Container(
-                      child: Row(
-                        children: <Widget>[
-                          Expanded(
-                            flex: 3,
-                            child: CachedNetworkImage(
-                                imageUrl: user.avatar['v1'], height: 75),
-                          ),
-                          Container(
-                            width: 7,
-                            decoration: BoxDecoration(
-                              shape: BoxShape.circle,
-                              color: Colors.black,
+    return createFutureWidget<Map<int, Found>>(globals.founds.get(), (Map<int, Found> founds) {
+      globals.founds.get(forceNetwork: true);
+      return Scaffold(
+        body: SafeArea(
+          child: Container(
+            child: Column(
+              children: [
+                Container(
+                  height: 150,
+                  color: ThemeColors.primaryColor,
+                  child: Container(
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        Expanded(
+                          flex: 2,
+                          child: Row(
+                            children: [
+                              SizedBox(
+                                width: 10,
+                              ),
+                              ProfilePic(),
+                              Container(
+                                margin: EdgeInsets.symmetric(horizontal: 10),
+                                width: 5,
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  color: Colors.black,
+                                ),
+                              ),
+                            ]
+                          )
+                        ),
+                        Expanded(
+                          flex: 4,
+                          child: Text(
+                            "find people",
+                            style: TextStyle(
+                              fontSize: 28,
                             ),
                           ),
-                        ],
-                      ),
+                        ),
+                      ],
                     ),
                   ),
-                  Expanded(
-                    child: Container(
-                      child: ChatList(founds: founds),
-                    ),
+                ),
+                Expanded(
+                  child: Container(
+                    child: ChatList(founds: founds),
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
           ),
-        );
-      }),
+        ),
+      );
+    });
+  }
+}
+
+class ProfilePic extends StatefulWidget {
+
+  @override
+  _ProfilePicState createState() => _ProfilePicState();
+}
+
+class _ProfilePicState extends State<ProfilePic> {
+
+  @override
+  void initState() {
+    super.initState();
+    globals.onUserChanged['found'] = () => setState(() {});
+  }
+
+  @override
+  void dispose() {
+    globals.onUserChanged.remove('found');
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return createFutureWidget<User>(globals.getUser(), (User user) =>
+        CachedNetworkImage(imageUrl: user.avatar['v1'], height: 75),
     );
   }
 }
@@ -110,12 +153,11 @@ class _ChatListState extends State<ChatList> {
 
   @override
   Widget build(BuildContext context) {
-    return ListView.builder(
-      itemBuilder: (context, index) => ChatListItem(
-        found: foundList[index],
-        index: index,
-      ),
-      itemCount: foundList.length,
+    return ListView(
+      children: foundList.map((found) => ChatListItem(
+        found: found,
+        index: foundList.indexOf(found),
+      )).toList(),
     );
   }
 }
