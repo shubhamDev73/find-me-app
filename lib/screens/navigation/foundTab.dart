@@ -4,6 +4,7 @@ import 'package:findme/screens/navigation/animatedRoute.dart';
 import 'package:findme/screens/found/chatList.dart';
 import 'package:findme/screens/found/chatMessage.dart';
 import 'package:findme/screens/navigation/meTab.dart';
+import 'package:findme/screens/settings.dart';
 
 class FoundTab extends StatelessWidget {
 
@@ -14,6 +15,7 @@ class FoundTab extends StatelessWidget {
   final Map<String, Widget> routes = {
     '/': FoundPage(),
     '/message': ChatMessage(),
+    '/settings': SettingsScreen(),
   };
 
   @override

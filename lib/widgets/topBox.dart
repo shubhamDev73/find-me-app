@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 
 import 'package:findme/constant.dart';
+import 'package:findme/models/appSettings.dart';
+import 'package:findme/API.dart';
+import 'package:findme/globals.dart' as globals;
 
 class TopBox extends StatelessWidget {
 
@@ -20,7 +23,12 @@ class TopBox extends StatelessWidget {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
-              Icon(Icons.more_vert),
+              InkWell(
+                onTap: () {
+                  Navigator.of(context).pushNamed('/settings', arguments: List.of({AppSettings(text: "Test", onTap: () => print("success"))}));
+                },
+                child: Icon(Icons.more_vert),
+              ),
             ],
           ),
         ),
