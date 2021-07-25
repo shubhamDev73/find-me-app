@@ -241,15 +241,6 @@ class _InterestsState extends State<Interests> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Container(
-                padding: const EdgeInsets.all(12.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    Icon(Icons.more_vert),
-                  ],
-                ),
-              ),
               Expanded(
                 flex: 6,
                 child: QuestionsWidget(me: widget.me, interestId: interestId, questions: user.interests[interestId].questions),

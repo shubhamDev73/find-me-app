@@ -7,6 +7,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:findme/widgets/misc.dart';
 import 'package:findme/widgets/chatItems.dart';
 import 'package:findme/models/found.dart';
+import 'package:findme/models/appSettings.dart';
 import 'package:findme/constant.dart';
 import 'package:findme/assets.dart';
 import 'package:findme/globals.dart' as globals;
@@ -79,8 +80,20 @@ class ChatMessage extends StatelessWidget {
                           child: LastSeenWidget(found: found),
                         ),
                         Expanded(
-                          flex: 1,
-                          child: Icon(Icons.more_vert),
+                          flex: 2,
+                          child: InkWell(
+                            onTap: () {
+                              List<AppSettings> settings = List.of({
+                                AppSettings(text: "Search", onTap: () => globals.scaffoldKey.currentState.showSnackBar(SnackBar(content: Text("Not implemented")))),
+                                AppSettings(text: "Retain", onTap: () => globals.addPostCall('found/retain/', {"id": found.id})),
+                                AppSettings(text: "Block", onTap: () => globals.scaffoldKey.currentState.showSnackBar(SnackBar(content: Text("Not implemented")))),
+                                AppSettings(text: "Never see again", onTap: () => globals.scaffoldKey.currentState.showSnackBar(SnackBar(content: Text("Not implemented")))),
+                              });
+
+                              Navigator.of(context).pushNamed('/settings', arguments: settings);
+                            },
+                            child: Icon(Icons.more_vert),
+                          ),
                         ),
                       ],
                     ),

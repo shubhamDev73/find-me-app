@@ -6,8 +6,10 @@ import 'package:findme/widgets/chatListItems.dart';
 import 'package:findme/widgets/misc.dart';
 import 'package:findme/models/user.dart';
 import 'package:findme/models/found.dart';
+import 'package:findme/models/appSettings.dart';
 import 'package:findme/constant.dart';
 import 'package:findme/globals.dart' as globals;
+import 'package:findme/API.dart';
 
 class FoundPage extends StatelessWidget {
 
@@ -28,7 +30,7 @@ class FoundPage extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: <Widget>[
                         Expanded(
-                          flex: 2,
+                          flex: 12,
                           child: Row(
                             children: [
                               SizedBox(
@@ -47,13 +49,38 @@ class FoundPage extends StatelessWidget {
                           )
                         ),
                         Expanded(
-                          flex: 4,
+                          flex: 14,
                           child: Text(
                             "find people",
                             style: TextStyle(
                               fontSize: 28,
                             ),
                           ),
+                        ),
+                        InkWell(
+                          onTap: () {
+                            List<AppSettings> settings = List.of({
+                              AppSettings(text: "Search", onTap: () => globals.scaffoldKey.currentState.showSnackBar(SnackBar(content: Text("Not implemented")))),
+                              AppSettings(text: "Privacy", onTap: () => globals.scaffoldKey.currentState.showSnackBar(SnackBar(content: Text("Not implemented")))),
+                              AppSettings(text: "About", onTap: () => globals.scaffoldKey.currentState.showSnackBar(SnackBar(content: Text("Not implemented")))),
+                              AppSettings(text: "Logout", onTap: () {
+                                POST('logout/', null);
+                                globals.token.clear();
+                              }),
+                              AppSettings(text: "Mute notifications", onTap: () => globals.addPostCall('notification/token/', {"fcm_token": ""}, overwrite: (body) => true)),
+                              AppSettings(text: "Change password", onTap: ()  {
+                                POST('logout/', null);
+                                globals.token.clear();
+                              }),
+                            });
+
+                            Navigator.of(context).pushNamed('/settings', arguments: settings);
+                          },
+                          child: Icon(Icons.more_vert),
+                        ),
+                        Expanded(
+                            flex: 1,
+                            child: Container()
                         ),
                       ],
                     ),

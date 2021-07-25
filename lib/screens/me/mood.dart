@@ -95,24 +95,7 @@ class _MoodState extends State<Mood> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
                   Expanded(
-                    flex: 1,
-                    child: Column(
-                      children: [
-                        Container(
-                          //color: Color(0xffE0F7FA),
-                          padding: const EdgeInsets.all(12.0),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.end,
-                            children: [
-                              Icon(Icons.more_vert),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  Expanded(
-                    flex: 3,
+                    flex: 4,
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: avatars.values.map((avatar) => Container(

@@ -69,6 +69,7 @@ class _ProfileState extends State<Profile> {
               child: TopBox(
                 title: "Konichiwa",
                 desc: "Did you know the US armys traning bumbelbees to sniff out explosive?",
+                settings: true,
                 widget: TraitsElements(
                   onClick: (String trait) {
                     Navigator.of(context).pushNamed('/personality', arguments: trait);

@@ -10,8 +10,9 @@ class TopBox extends StatelessWidget {
   final String title;
   final String desc;
   final Widget widget;
+  final bool settings;
 
-  const TopBox({this.title, this.desc = '', this.widget});
+  const TopBox({this.title, this.desc = '', this.widget, this.settings = false});
 
   @override
   Widget build(BuildContext context) {
@@ -23,12 +24,27 @@ class TopBox extends StatelessWidget {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
-              InkWell(
+              settings ? InkWell(
                 onTap: () {
-                  Navigator.of(context).pushNamed('/settings', arguments: List.of({AppSettings(text: "Test", onTap: () => print("success"))}));
+                  List<AppSettings> settings = List.of({
+                    AppSettings(text: "Change nick", onTap: () => globals.scaffoldKey.currentState.showSnackBar(SnackBar(content: Text("Not implemented")))),
+                    AppSettings(text: "Privacy", onTap: () => globals.scaffoldKey.currentState.showSnackBar(SnackBar(content: Text("Not implemented")))),
+                    AppSettings(text: "About", onTap: () => globals.scaffoldKey.currentState.showSnackBar(SnackBar(content: Text("Not implemented")))),
+                    AppSettings(text: "Logout", onTap: () {
+                      POST('logout/', null);
+                      globals.token.clear();
+                    }),
+                    AppSettings(text: "Mute notifications", onTap: () => globals.addPostCall('notification/token/', {"fcm_token": ""}, overwrite: (body) => true)),
+                    AppSettings(text: "Change password", onTap: ()  {
+                      POST('logout/', null);
+                      globals.token.clear();
+                    }),
+                  });
+
+                  Navigator.of(context).pushNamed('/settings', arguments: settings);
                 },
                 child: Icon(Icons.more_vert),
-              ),
+              ) : Container(),
             ],
           ),
         ),
