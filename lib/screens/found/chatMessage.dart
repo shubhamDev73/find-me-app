@@ -167,6 +167,7 @@ class ChatMessage extends StatelessWidget {
         'user': found.me,
         'timestamp': FieldValue.serverTimestamp(),
       });
+      globals.addPostCall('notification/send/', {"type": "chat", "id": found.id, "message": text});
       messageController.clear();
     }
     realtimeDB.child("${found.id}-${found.me}").update({

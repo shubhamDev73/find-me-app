@@ -7,6 +7,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 
 import 'package:findme/models/pageTab.dart';
+import 'package:findme/models/found.dart';
 import 'package:findme/constant.dart';
 import 'package:findme/widgets/misc.dart';
 import 'package:findme/globals.dart' as globals;
@@ -59,7 +60,7 @@ class _TabbedScreenState extends State<TabbedScreen> {
   }
 
   void configureFCM () {
-    void Function(Map<String, dynamic>) onNotification = (Map<String, dynamic> message) {
+    void Function(Map<String, dynamic>) onNotification = (Map<String, dynamic> message) async {
       switch(message['data']['type']){
         case 'Found':
           globals.founds.get(forceNetwork: true);
@@ -73,29 +74,44 @@ class _TabbedScreenState extends State<TabbedScreen> {
         case 'Personality':
           globals.meUser.get(forceNetwork: true);
           break;
+        case 'Chat':
+          int id = int.parse(message['data']['id']);
+          Map<int, Found> founds = await globals.founds.get();
+          globals.currentTab.set(PageTab.found);
+          setState(() {
+            _tabHistory.add(_currentTab);
+            _currentTab = PageTab.found;
+            navigatorKeys[_currentTab].currentState.pushNamed('/message', arguments: founds[id]);
+          });
+          break;
       }
     };
 
     _fcm.configure(
       onMessage: (Map<String, dynamic> message) async {
-        onNotification(message);
-        showDialog(
-          context: context,
-          builder: (context) => AlertDialog(
-            content: ListTile(
-              title: Text(message['notification']['title']),
-              subtitle: Text(message['notification']['body']),
-            ),
-            actions: <Widget>[
-              FlatButton(
-                child: Text('Ok'),
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
+        bool display = true;
+        if(message['data'].contains('display')) display = message['data']['display'] == 'true';
+
+        if(display){
+          showDialog(
+            context: context,
+            builder: (context) => AlertDialog(
+              content: ListTile(
+                title: Text(message['notification']['title']),
+                subtitle: Text(message['notification']['body']),
               ),
-            ],
-          ),
-        );
+              actions: <Widget>[
+                FlatButton(
+                  child: Text('Ok'),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                    onNotification(message);
+                  },
+                ),
+              ],
+            ),
+          );
+        }
       },
       onLaunch: onNotification,
       onResume: onNotification,
