@@ -18,23 +18,10 @@ class UserInfo extends StatelessWidget {
         Container(
           height: 190,
           width: 190,
-          child: Stack(
-            alignment: AlignmentDirectional.center,
-            children: [
-              Container(
-                child: Center(
-                  child: CachedNetworkImage(imageUrl: user.avatar['v2']),
-                ),
-              ),
-              Positioned(
-                top: 10,
-                left: 165,
-                child: SvgPicture.asset(
-                  Assets.edit,
-                  width: 25,
-                ),
-              ),
-            ],
+          child: Container(
+            child: Center(
+              child: CachedNetworkImage(imageUrl: user.avatar['v2']),
+            ),
           ),
         ),
         SizedBox(

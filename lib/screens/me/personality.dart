@@ -329,9 +329,10 @@ class _PersonalityState extends State<Personality> {
               flex: 2,
               child: Container(
                 margin: EdgeInsets.symmetric(vertical: 14),
-                child: Text(
+                child: widget.me ?
+                Text(
                   "Taking test helps us find better conversations for you",
-                ),
+                ): Container(),
               ),
             ),
             Expanded(

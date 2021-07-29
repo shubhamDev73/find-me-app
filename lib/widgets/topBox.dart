@@ -57,7 +57,7 @@ class TopBox extends StatelessWidget {
             alignment: Alignment.topCenter,
             children: [
               Container(
-                height: 150,
+                height: 143,
                 color: ThemeColors.topBoxColor,
                 child: Column(
                   children: [

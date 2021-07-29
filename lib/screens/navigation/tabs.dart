@@ -153,8 +153,7 @@ class _TabbedScreenState extends State<TabbedScreen> {
               onTap: (index) {
                 PageTab newTab = PageTab.values[index];
                 if(newTab == _currentTab){
-                  if(_currentTab == PageTab.found)
-                    navigatorKeys[_currentTab].currentState.popUntil(ModalRoute.withName('/'));
+                  navigatorKeys[_currentTab].currentState.popUntil(ModalRoute.withName('/'));
                 }else{
                   globals.currentTab.set(newTab);
                   setState(() {
