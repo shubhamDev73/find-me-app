@@ -119,7 +119,7 @@ CachedData<User> meUser = CachedData(
   url: 'me/',
   cacheFile: 'user.json',
   encoder: (User user) => jsonEncode(user.toJson()),
-  decoder: (String userString) => User.fromJson(jsonDecode(userString)),
+  decoder: (String userString) => User.fromJson(jsonDecode(userString), true),
   setCallback: (data) => onUserChanged.forEach((key, value) => value()),
 );
 Map<String, Function> onUserChanged = {};
@@ -128,7 +128,7 @@ CachedData<User> _anotherUser = CachedData(
   emptyValue: User(),
   url: '',
   encoder: (User user) => jsonEncode(user.toJson()),
-  decoder: (String userString) => User.fromJson(jsonDecode(userString)),
+  decoder: (String userString) => User.fromJson(jsonDecode(userString), false),
 );
 
 Future<User> getUser ({bool me = true}) async {

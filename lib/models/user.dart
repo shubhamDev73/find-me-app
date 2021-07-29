@@ -21,8 +21,22 @@ class User {
     this.timeline,
   });
 
-  factory User.fromJson(Map<String, dynamic> json) {
-    json['interests'].sort((dynamic a, dynamic b) => DateTime.parse(b['timestamp']).compareTo(DateTime.parse(a['timestamp'])));
+  factory User.fromJson(Map<String, dynamic> json, bool me) {
+    if(me){
+      json['interests'].sort((dynamic a, dynamic b) => DateTime.parse(b['timestamp']).compareTo(DateTime.parse(a['timestamp'])));
+    }else{
+      json['interests'].sort((dynamic a, dynamic b) {
+        int answersA = 0;
+        for(dynamic question in a['questions']){
+          if(question['answer'] != '') answersA++;
+        }
+        int answersB = 0;
+        for(dynamic question in b['questions']){
+          if(question['answer'] != '') answersB++;
+        }
+        return answersB.compareTo(answersA);
+      });
+    }
     return User(
       nick: json["nick"],
       baseAvatar: json["base_avatar"],

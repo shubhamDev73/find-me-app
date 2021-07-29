@@ -22,7 +22,7 @@ class QuestionsWidget extends StatefulWidget {
 
 class _QuestionsWidgetState extends State<QuestionsWidget> {
 
-  final CarouselController buttonCarouselController = CarouselController();
+  final CarouselController questionsController = CarouselController();
   Map<String, dynamic> currentQuestion;
   String errorText;
 
@@ -30,6 +30,12 @@ class _QuestionsWidgetState extends State<QuestionsWidget> {
   void initState() {
     super.initState();
     currentQuestion = widget.questions[0];
+  }
+
+  @override
+  void didUpdateWidget(QuestionsWidget oldWidget){
+    questionsController.jumpToPage(0);
+    super.didUpdateWidget(oldWidget);
   }
 
   @override
@@ -46,7 +52,7 @@ class _QuestionsWidgetState extends State<QuestionsWidget> {
             alignment: Alignment.center,
             children: [
               CarouselSlider(
-                carouselController: buttonCarouselController,
+                carouselController: questionsController,
                 items: widget.questions.map((question) => Container(
                   padding: EdgeInsets.symmetric(horizontal: 50),
                   child: Center(
@@ -78,7 +84,7 @@ class _QuestionsWidgetState extends State<QuestionsWidget> {
                     Padding(
                       padding: const EdgeInsets.only(left: 12.0),
                       child: GestureDetector(
-                        onTap: () => buttonCarouselController.previousPage(
+                        onTap: () => questionsController.previousPage(
                           duration: Duration(milliseconds: 300),
                           curve: Curves.decelerate,
                         ),
@@ -92,7 +98,7 @@ class _QuestionsWidgetState extends State<QuestionsWidget> {
                     Padding(
                       padding: const EdgeInsets.only(right: 12.0),
                       child: GestureDetector(
-                        onTap: () => buttonCarouselController.nextPage(
+                        onTap: () => questionsController.nextPage(
                           duration: Duration(milliseconds: 300),
                           curve: Curves.decelerate,
                         ),
