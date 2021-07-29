@@ -24,25 +24,44 @@ class ChatMessageItem extends StatelessWidget {
       child: Row(
         mainAxisAlignment: me ? MainAxisAlignment.end : MainAxisAlignment.start,
         children: <Widget>[
-          Container(
-            constraints: BoxConstraints(minWidth: 70, maxWidth: 250),
-            padding: EdgeInsets.symmetric(horizontal: 14.0, vertical: 10.0),
-            decoration: BoxDecoration(
-              color: ThemeColors.chatMessageColors[me],
-              borderRadius: BorderRadius.only(
-                topLeft: me ? circleRadius : getCornerRadius(bottom: false),
-                bottomLeft: me ? circleRadius : getCornerRadius(bottom: true),
+          Stack(
+            overflow: Overflow.visible,
+            children: [
+              Container(
+                constraints: BoxConstraints(minWidth: 90, maxWidth: 250),
+                padding: EdgeInsets.symmetric(horizontal: 18, vertical: 14),
+                decoration: BoxDecoration(
+                  color: ThemeColors.chatMessageColors[me],
+                  borderRadius: BorderRadius.only(
+                    topLeft: me ? circleRadius : getCornerRadius(bottom: false),
+                    bottomLeft: me ? circleRadius : getCornerRadius(bottom: true),
 
-                topRight: me ? getCornerRadius(bottom: false) : circleRadius,
-                bottomRight: me ? getCornerRadius(bottom: true) : circleRadius,
-              ),
-            ),
-            child: Text(
-                message,
-                style: TextStyle(
-                  fontSize: 15,
+                    topRight: me ? getCornerRadius(bottom: false) : circleRadius,
+                    bottomRight: me ? getCornerRadius(bottom: true) : circleRadius,
+                  ),
                 ),
-            ),
+                child: Text(
+                    message,
+                    textAlign: me ? TextAlign.right : TextAlign.left,
+                    style: TextStyle(
+                      fontSize: 15,
+                    ),
+                ),
+              ),
+              Positioned(
+                bottom: 3,
+                right: 10,
+                child: Container(
+                  child: Text(
+                    time,
+                    style: TextStyle(
+                      fontSize: 10,
+                      color: Colors.black26,
+                    ),
+                  ),
+                ),
+              ),
+            ],
           ),
         ],
       ),

@@ -50,10 +50,11 @@ StreamBuilder<QuerySnapshot> createFirebaseStreamWidget(Stream<QuerySnapshot> st
 }
 
 String formatDate ({DateTime timestamp, DateTime endDate}) {
-  var format = DateFormat('dd/MM/yyyy');
-
-  if(timestamp != null)
+  if(timestamp != null) {
+    Duration diff = DateTime.now().difference(timestamp);
+    var format = DateFormat(diff.inDays > 0 ? 'dd/MM - hh:mm a' : 'hh:mm a');
     return format.format(timestamp);
+  }
   if(endDate != null){
     Duration diff = DateTime.now().difference(endDate);
     int num = diff.inMinutes;
