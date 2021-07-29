@@ -114,7 +114,7 @@ class _MoodState extends State<Mood> {
                   ),
                   Expanded(
                     flex: 3,
-                    child: Row(
+                    child: widget.me ? Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: avatars.values.map((avatar) => Container(
                         padding: EdgeInsets.symmetric(horizontal: 15),
@@ -137,7 +137,7 @@ class _MoodState extends State<Mood> {
                           ),
                         ),
                       )).toList(),
-                    ),
+                    ) : Container(),
                   ),
                   Expanded(
                     flex: 5,
@@ -165,12 +165,22 @@ class _MoodState extends State<Mood> {
                           ),
                           textAlign: TextAlign.center,
                         ),
+                        SizedBox(
+                          height: 50,
+                        ),
+                        widget.me ? Container() : Text(
+                          "is feeling",
+                          style: TextStyle(
+                            fontSize: 24,
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
                       ],
                     ),
                   ),
                   Expanded(
                     flex: 3,
-                    child: Stack(
+                    child: widget.me ? Stack(
                       children: [
                         CarouselSlider(
                           carouselController: moodController,
@@ -237,6 +247,12 @@ class _MoodState extends State<Mood> {
                           ),
                         ),
                       ],
+                    ) : Text(
+                      user.mood,
+                      style: TextStyle(
+                        fontSize: 32,
+                      ),
+                      textAlign: TextAlign.center,
                     ),
                   ),
                 ],
