@@ -39,11 +39,14 @@ class MoodItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        CachedNetworkImage(imageUrl: avatar['url']['v1'], height: 120),
-        Text(avatar['mood'], style: TextStyle(fontSize: 18)),
-      ],
+    return InkWell(
+      onTap: onTap,
+      child: Column(
+        children: [
+          CachedNetworkImage(imageUrl: avatar['url']['v1'], height: 120),
+          Text(avatar['mood'], style: TextStyle(fontSize: 18)),
+        ],
+      ),
     );
   }
 }
@@ -193,8 +196,9 @@ class _MoodState extends State<Mood> {
                               });
                             },
                           ),
-                          items: (avatarList).map<Widget>((avatar) => MoodItem(
+                          items: avatarList.map<Widget>((avatar) => MoodItem(
                             avatar: avatar,
+                            onTap: () => moodController.animateToPage(avatarList.indexOf(avatar)),
                           )).toList(),
                         ),
                         Positioned(
