@@ -44,8 +44,15 @@ class ChatMessage extends StatelessWidget {
                     child: Row(
                       children: <Widget>[
                         Container(
+                          padding: EdgeInsets.fromLTRB(12, 0, 0, 0),
+                          child: InkWell(
+                            onTap: () => Navigator.of(context).pop(),
+                            child: Icon(Icons.arrow_back_ios),
+                          ),
+                        ),
+                        Container(
                           width: 50,
-                          margin: EdgeInsets.symmetric(horizontal: 12.0),
+                          margin: EdgeInsets.fromLTRB(0, 0, 12, 0),
                           child: CachedNetworkImage(imageUrl: found.avatar['v1']),
                         ),
                         Column(

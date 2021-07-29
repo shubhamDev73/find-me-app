@@ -22,7 +22,7 @@ class TopBox extends StatelessWidget {
           color: ThemeColors.boxColor,
           padding: const EdgeInsets.all(12.0),
           child: Row(
-            mainAxisAlignment: MainAxisAlignment.end,
+            mainAxisAlignment: settings ? MainAxisAlignment.end : MainAxisAlignment.start,
             children: [
               settings ? InkWell(
                 onTap: () {
@@ -44,7 +44,10 @@ class TopBox extends StatelessWidget {
                   Navigator.of(context).pushNamed('/settings', arguments: settings);
                 },
                 child: Icon(Icons.more_vert),
-              ) : Container(),
+              ) : InkWell(
+                onTap: () => Navigator.of(context).pop(),
+                child: Icon(Icons.arrow_back_ios),
+              ),
             ],
           ),
         ),

@@ -95,6 +95,21 @@ class _MoodState extends State<Mood> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
                   Expanded(
+                    flex: 1,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        Container(
+                          padding: EdgeInsets.symmetric(horizontal: 12),
+                          child: InkWell(
+                            onTap: () => Navigator.of(context).pop(),
+                            child: Icon(Icons.arrow_back_ios),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Expanded(
                     flex: 4,
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,

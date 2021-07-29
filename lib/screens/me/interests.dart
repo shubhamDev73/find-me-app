@@ -242,7 +242,22 @@ class _InterestsState extends State<Interests> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Expanded(
-                flex: 6,
+                flex: 1,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    Container(
+                      padding: EdgeInsets.symmetric(horizontal: 12),
+                      child: InkWell(
+                        onTap: () => Navigator.of(context).pop(),
+                        child: Icon(Icons.arrow_back_ios),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              Expanded(
+                flex: 5,
                 child: QuestionsWidget(me: widget.me, interestId: interestId, questions: user.interests[interestId].questions),
               ),
               Expanded(

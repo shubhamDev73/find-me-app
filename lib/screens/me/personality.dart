@@ -176,7 +176,18 @@ class _PersonalityState extends State<Personality> {
                           color: ThemeColors.boxColor,
                           child: Column(
                             children: [
-                              SizedBox(height: 24),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+                                  Container(
+                                    padding: EdgeInsets.symmetric(horizontal: 12),
+                                    child: InkWell(
+                                      onTap: () => Navigator.of(context).pop(),
+                                      child: Icon(Icons.arrow_back_ios),
+                                    ),
+                                  ),
+                                ],
+                              ),
                               Container(
                                 height: 50,
                                 child: Text(
