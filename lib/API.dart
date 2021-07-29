@@ -18,7 +18,7 @@ Future<T> GETResponse<T>(String url, {T Function(String) decoder, Function callb
       T result = decoder?.call(response.body) ?? jsonDecode(response.body);
       callback?.call(result);
       return result;
-    }else if(response.statusCode == 401)
+    }else if(response.statusCode == 401 || response.statusCode == 403)
       globals.token.clear();
     else
       throw Exception('Something went wrong.');
