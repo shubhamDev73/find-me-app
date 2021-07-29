@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 
 import 'package:findme/widgets/textFields.dart';
 import 'package:findme/assets.dart';
@@ -7,6 +8,12 @@ import 'package:findme/constant.dart';
 import 'package:findme/screens/loading.dart';
 import 'package:findme/API.dart';
 import 'package:findme/globals.dart' as globals;
+
+GoogleSignIn _googleSignIn = GoogleSignIn(
+  scopes: <String>[
+    'email',
+  ],
+);
 
 class Login extends StatefulWidget {
 
@@ -23,6 +30,27 @@ class _LoginState extends State<Login> {
   final TextEditingController passwordController = TextEditingController();
 
   bool isLoading = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _googleSignIn.onCurrentUserChanged.listen((GoogleSignInAccount account) {
+      POST('login/external/', {"email": account.email, "external_id": {"google": account.id}}, useToken: false, callback: (json) {
+        setState(() {
+          isLoading = false;
+        });
+        if(json.containsKey('token'))
+          globals.token.set(json['token']);
+        else
+          globals.scaffoldKey.currentState.showSnackBar(SnackBar(content: Text("${json['error']}")));
+      }, onError: (String errorText) {
+        setState(() {
+          isLoading = false;
+        });
+        globals.scaffoldKey.currentState.showSnackBar(SnackBar(content: Text(errorText)));
+      });
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -100,6 +128,35 @@ class _LoginState extends State<Login> {
                                 children: <Widget>[
                                   Text(
                                     'Login',
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(color: ThemeColors.accentColor),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
+                        Container(
+                          margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                          constraints: const BoxConstraints(maxWidth: 500),
+                          child: RaisedButton(
+                            onPressed: () async {
+                              setState(() {
+                                isLoading = true;
+                              });
+                              _googleSignIn.signIn();
+                            },
+                            color: Colors.white,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(14),
+                            ),
+                            child: Container(
+                              padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: <Widget>[
+                                  Text(
+                                    'Login with Google',
                                     textAlign: TextAlign.center,
                                     style: TextStyle(color: ThemeColors.accentColor),
                                   ),
