@@ -113,7 +113,7 @@ class _MoodState extends State<Mood> {
                     ),
                   ),
                   Expanded(
-                    flex: 4,
+                    flex: 3,
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: avatars.values.map((avatar) => Container(
@@ -140,7 +140,7 @@ class _MoodState extends State<Mood> {
                     ),
                   ),
                   Expanded(
-                    flex: 4,
+                    flex: 5,
                     child: Column(
                       children: [
                         Container(

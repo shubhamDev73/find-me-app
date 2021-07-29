@@ -53,8 +53,12 @@ class ChatListItem extends StatelessWidget {
 
     return GestureDetector(
       onTap: () {
-        Navigator.of(context).pushNamed('/message',
-            arguments: found);
+        if(found.lastMessage == null){
+          globals.setAnotherUser('/found/${found.id}');
+          Navigator.of(context).pushNamed('/user', arguments: found);
+        }else{
+          Navigator.of(context).pushNamed('/message', arguments: found);
+        }
       },
       child: Container(
         color: ThemeColors.chatListColors[index % 2 == 0],

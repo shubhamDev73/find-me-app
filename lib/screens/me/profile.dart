@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import 'package:findme/globals.dart' as globals;
 import 'package:findme/widgets/topBox.dart';
@@ -112,6 +113,39 @@ class _ProfileState extends State<Profile> {
                       SizedBox(width: 12),
                       createInterest(user, context, 4),
                     ],
+                  ),
+                ],
+              ),
+            ),
+            Expanded(
+              flex: 2,
+              child: Column(
+                children: [
+                  GestureDetector(
+                    onTap: () async {
+                      if(widget.me){
+                        String url = '';
+                        if(await canLaunch(url)) await launch(url);
+                      }else{
+                        Navigator.of(context).pushNamed('/message', arguments: ModalRoute.of(context).settings.arguments);
+                      }
+                    },
+                    child: Container(
+                      height: 42,
+                      width: 125,
+                      decoration: BoxDecoration(
+                        color: Colors.black,
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      padding: EdgeInsets.symmetric(horizontal: 25, vertical: 10),
+                      child: Center(
+                        child: Text(
+                          widget.me ? "Feedback" : "Talk",
+                          style: TextStyle(color: Colors.white),
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
+                    ),
                   ),
                 ],
               ),

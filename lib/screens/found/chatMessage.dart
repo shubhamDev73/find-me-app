@@ -37,7 +37,7 @@ class ChatMessage extends StatelessWidget {
                 child: InkWell(
                   onTap: () {
                     globals.setAnotherUser('/found/${found.id}');
-                    Navigator.of(context).pushNamed('/user');
+                    Navigator.of(context).pushNamed('/user', arguments: found);
                   },
                   child: Container(
                     color: ThemeColors.primaryColor,
