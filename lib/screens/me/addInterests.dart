@@ -43,13 +43,13 @@ class _AddInterestsState extends State<AddInterests> {
               Expanded(
                 flex: 2,
                 child: TopBox(
+                  height: 100,
                   title: "Interests",
                   desc: "tap and tap",
-                  settings: false,
                 ),
               ),
               Expanded(
-                flex: 9,
+                flex: 8,
                 child: Container(
                   margin: EdgeInsets.symmetric(horizontal: 20),
                   child: Scrollbar(

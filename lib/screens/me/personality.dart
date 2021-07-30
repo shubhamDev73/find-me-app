@@ -8,6 +8,7 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:findme/widgets/adjectiveListItems.dart';
 import 'package:findme/widgets/misc.dart';
 import 'package:findme/widgets/traitBar.dart';
+import 'package:findme/widgets/topBox.dart';
 import 'package:findme/assets.dart';
 import 'package:findme/models/user.dart';
 import 'package:findme/constant.dart';
@@ -158,84 +159,49 @@ class _PersonalityState extends State<Personality> {
           mainAxisSize: MainAxisSize.min,
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            Stack(
-            children: [
-              Container(
-                height: 234,
-                color: ThemeColors.boxColor,
-              ),
-              Column(
+            TopBox(
+              title: trait,
+              secondaryWidget: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  SizedBox(height: 20),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      Container(
-                        padding: EdgeInsets.symmetric(horizontal: 12),
-                        child: InkWell(
-                          onTap: () => Navigator.of(context).pop(),
-                          child: Icon(Icons.arrow_back_ios),
-                        ),
-                      ),
-                    ],
+                  Container(
+                    padding: EdgeInsets.symmetric(horizontal: 10.0),
+                    height: 30,
+                    width: 50,
+                    child: SvgPicture.asset(Assets.traits[trait]['negative']),
                   ),
                   Container(
-                    margin: EdgeInsets.symmetric(vertical: 20),
-                    child: Text(
-                      trait,
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        fontSize: 30,
-                        fontWeight: FontWeight.w600,
-                      ),
+                    width: 220,
+                    height: 30,
+                    child: Stack(
+                      children: [
+                        Positioned(
+                          left: ((user.personality[trait]['value'] + 1) / 2) * (305 - 90) - 305, // -90,// -305
+                          child: SvgPicture.asset(
+                            Assets.personalityBar,
+                            fit: BoxFit.fitHeight,
+                          ),
+                        ),
+                      ],
                     ),
                   ),
-                  SizedBox(height: 10),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Container(
-                        padding: EdgeInsets.symmetric(horizontal: 10.0),
-                        height: 30,
-                        width: 50,
-                        child: SvgPicture.asset(Assets.traits[trait]['negative']),
-                      ),
-                      Container(
-                        width: 220,
-                        height: 30,
-                        child: Stack(
-                          children: [
-                            Positioned(
-                              left: ((user.personality[trait]['value'] + 1) / 2) * (305 - 90) - 305, // -90,// -305
-                              child: SvgPicture.asset(
-                                Assets.personalityBar,
-                                fit: BoxFit.fitHeight,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      Container(
-                        padding: EdgeInsets.symmetric(horizontal: 10.0),
-                        height: 30,
-                        width: 50,
-                        child: SvgPicture.asset(Assets.traits[trait]['positive']),
-                      ),
-                    ],
-                  ),
-                  SizedBox(height: 45),
-                  TraitsElements(
-                    onClick: (String traitString) {
-                      setState(() {
-                        trait = traitString;
-                      });
-                    },
-                    personality: user.personality,
-                    selectedElement: trait,
+                  Container(
+                    padding: EdgeInsets.symmetric(horizontal: 10.0),
+                    height: 30,
+                    width: 50,
+                    child: SvgPicture.asset(Assets.traits[trait]['positive']),
                   ),
                 ],
               ),
-             ],
+              widget: TraitsElements(
+                onClick: (String traitString) {
+                  setState(() {
+                    trait = traitString;
+                  });
+                },
+                personality: user.personality,
+                selectedElement: trait,
+              ),
             ),
             Expanded(
               flex: 5,
