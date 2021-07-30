@@ -16,81 +16,70 @@ class TopBox extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
+    return Stack(
       children: [
         Container(
+          height: 234,
           color: ThemeColors.boxColor,
-          padding: const EdgeInsets.all(12.0),
-          child: Row(
-            mainAxisAlignment: settings ? MainAxisAlignment.end : MainAxisAlignment.start,
-            children: [
-              settings ? InkWell(
-                onTap: () {
-                  List<AppSettings> settings = List.of({
-                    AppSettings(text: "Change nick", onTap: () => globals.scaffoldKey.currentState.showSnackBar(SnackBar(content: Text("Not implemented")))),
-                    AppSettings(text: "Privacy", onTap: () => globals.scaffoldKey.currentState.showSnackBar(SnackBar(content: Text("Not implemented")))),
-                    AppSettings(text: "About", onTap: () => globals.scaffoldKey.currentState.showSnackBar(SnackBar(content: Text("Not implemented")))),
-                    AppSettings(text: "Logout", onTap: () {
-                      POST('logout/', null);
-                      globals.token.clear();
-                    }),
-                    AppSettings(text: "Mute notifications", onTap: () => globals.addPostCall('notification/token/', {"fcm_token": ""}, overwrite: (body) => true)),
-                    AppSettings(text: "Change password", onTap: ()  {
-                      POST('logout/', null);
-                      globals.token.clear();
-                    }),
-                  });
-
-                  Navigator.of(context).pushNamed('/settings', arguments: settings);
-                },
-                child: Icon(Icons.more_vert),
-              ) : InkWell(
-                onTap: () => Navigator.of(context).pop(),
-                child: Icon(Icons.arrow_back_ios),
-              ),
-            ],
-          ),
         ),
-        Container(
-          height: 210,
-          child: Stack(
-            alignment: Alignment.topCenter,
-            children: [
-              Container(
-                height: 143,
-                color: ThemeColors.topBoxColor,
-                child: Column(
-                  children: [
-                    Container(
-                      padding: EdgeInsets.symmetric(vertical: 5),
-                      child: Center(
-                        child: Text(
-                          title,
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            fontSize: 24,
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                      ),
-                    ),
-                    Container(
-                      padding: EdgeInsets.symmetric(horizontal: 20, vertical: 5),
-                      child: Text(
-                        desc,
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          fontSize: 13,
-                          fontWeight: FontWeight.w200,
-                        ),
-                      ),
-                    ),
-                  ],
+        Column(
+          children: [
+            SizedBox(height: 20),
+            Row(
+              mainAxisAlignment: settings ? MainAxisAlignment.end : MainAxisAlignment.start,
+              children: [
+                SizedBox(width: 10),
+                settings ? InkWell(
+                  onTap: () {
+                    List<AppSettings> settings = List.of({
+                      AppSettings(text: "Change nick", onTap: () => globals.scaffoldKey.currentState.showSnackBar(SnackBar(content: Text("Not implemented")))),
+                      AppSettings(text: "Privacy", onTap: () => globals.scaffoldKey.currentState.showSnackBar(SnackBar(content: Text("Not implemented")))),
+                      AppSettings(text: "About", onTap: () => globals.scaffoldKey.currentState.showSnackBar(SnackBar(content: Text("Not implemented")))),
+                      AppSettings(text: "Logout", onTap: () {
+                        POST('logout/', null);
+                        globals.token.clear();
+                      }),
+                      AppSettings(text: "Mute notifications", onTap: () => globals.addPostCall('notification/token/', {"fcm_token": ""}, overwrite: (body) => true)),
+                      AppSettings(text: "Change password", onTap: ()  {
+                        POST('logout/', null);
+                        globals.token.clear();
+                      }),
+                    });
+
+                    Navigator.of(context).pushNamed('/settings', arguments: settings);
+                  },
+                  child: Icon(Icons.more_vert),
+                ) : InkWell(
+                  onTap: () => Navigator.of(context).pop(),
+                  child: Icon(Icons.arrow_back_ios),
+                ),
+                SizedBox(width: 10),
+              ],
+            ),
+            SizedBox(height: 20),
+            Text(
+              title,
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontSize: 30,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+            SizedBox(height: 20),
+            Container(
+              padding: EdgeInsets.symmetric(horizontal: 20, vertical: 5),
+              child: Text(
+                desc,
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: 13,
+                  fontWeight: FontWeight.w200,
                 ),
               ),
-              widget ?? Container(),
-            ],
-          ),
+            ),
+            SizedBox(height: 47),
+            widget ?? Container(),
+          ],
         ),
       ],
     );

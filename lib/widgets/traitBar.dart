@@ -12,6 +12,43 @@ double selectedIconSize = 64;
 double normalSvgSize = 28;
 double selectedSvgSize = 36;
 
+class TraitButton extends StatelessWidget {
+
+  final String trait;
+  final double value;
+  final Function onTap;
+  final bool selected;
+
+  TraitButton({this.trait, this.value, this.onTap, this.selected = false});
+
+  @override
+  Widget build (BuildContext context) {
+    return Container(
+      height: selectedIconSize,
+      width: selectedIconSize,
+      child: GestureDetector(
+        onTap: onTap,
+        child: Container(
+          height: selected ? selectedIconSize : normalIconSize,
+          width: selected ? selectedIconSize : normalIconSize,
+          padding: EdgeInsets.all(selected ? 0.0 : 5.0),
+          child: TraitIcon(
+            icon: SvgPicture.asset(
+              Assets.traits[trait]['icon'],
+              color: value >= 0 ? ThemeColors.positiveTraitColor : ThemeColors.negativeTraitColor,
+              width: selected ? selectedSvgSize : normalSvgSize,
+              height: selected ? selectedSvgSize : normalSvgSize,
+            ),
+            progress: value.abs(),
+            iconSize: selected ? selectedIconSize : normalIconSize,
+          ),
+        ),
+      ),
+    );
+  }
+
+}
+
 class TraitsElements extends StatelessWidget {
 
   final String selectedElement;
@@ -25,47 +62,30 @@ class TraitsElements extends StatelessWidget {
   });
 
   Widget createButton (String trait) {
-    double value = personality[trait] is double ? personality[trait] : personality[trait]['value'];
-    bool selected = selectedElement == trait;
-    return GestureDetector(
-      onTap: () {
-        onClick(trait);
-      },
-      child: Container(
-        padding: EdgeInsets.symmetric(horizontal: selected ? 0.0 : 5.0),
-        child: TraitIcon(
-          icon: SvgPicture.asset(
-            Assets.traits[trait]['icon'],
-            color: value >= 0 ? ThemeColors.positiveTraitColor : ThemeColors.negativeTraitColor,
-            width: selected ? selectedSvgSize : normalSvgSize,
-            height: selected ? selectedSvgSize : normalSvgSize,
-          ),
-          progress: value.abs(),
-          iconSize: selected ? selectedIconSize : normalIconSize,
-        ),
-      ),
+    return TraitButton(
+      trait: trait,
+      value: personality[trait] is double ? personality[trait] : personality[trait]['value'],
+      onTap: () => onClick?.call(trait),
+      selected: selectedElement == trait,
     );
   }
 
   @override
   Widget build(BuildContext context) {
-    return Positioned(
-      top: selectedElement == null ? 115 : 135,
-      child: Row(
-        mainAxisSize: MainAxisSize.max,
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          createButton("Air"),
-          SizedBox(width: traitGap),
-          createButton("Space"),
-          SizedBox(width: traitGap),
-          createButton("Water"),
-          SizedBox(width: traitGap),
-          createButton("Earth"),
-          SizedBox(width: traitGap),
-          createButton("Fire"),
-        ],
-      ),
+    return Row(
+      mainAxisSize: MainAxisSize.max,
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        createButton("Air"),
+        SizedBox(width: traitGap),
+        createButton("Space"),
+        SizedBox(width: traitGap),
+        createButton("Water"),
+        SizedBox(width: traitGap),
+        createButton("Earth"),
+        SizedBox(width: traitGap),
+        createButton("Fire"),
+      ],
     );
   }
 }
@@ -82,14 +102,11 @@ class TraitIcon extends StatelessWidget {
     return CustomPaint(
       foregroundPainter: CircleProgress(progress),
       child: Container(
-        decoration: BoxDecoration(shape: BoxShape.circle),
-        child: Container(
-          height: iconSize,
-          width: iconSize,
-          child: CircleAvatar(
-            backgroundColor: ThemeColors.primaryColor,
-            child: icon,
-          ),
+        height: iconSize,
+        width: iconSize,
+        child: CircleAvatar(
+          backgroundColor: ThemeColors.primaryColor,
+          child: icon,
         ),
       ),
     );
