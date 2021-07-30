@@ -29,11 +29,6 @@ CachedData<String> token = CachedData(
   cacheFile: 'token.txt',
   setCallback: (token) {
     if(token == ''){
-      // clearing data
-      interests.clear();
-      moods.clear();
-      avatars.clear();
-
       // clearing user data
       meUser.clear();
       _anotherUser.clear();
@@ -89,6 +84,27 @@ MappedCachedData<String, Map<String, dynamic>> moods = MappedCachedData(
 );
 Function onMoodsChanged;
 
+MappedCachedData<String, Map<String, dynamic>> personality = MappedCachedData(
+  url: 'personality/',
+  cacheFile: 'personality.json',
+  networkDecoder: (data) {
+    Map<String, Map<String, dynamic>> decoded = jsonDecode(data);
+    LinkedHashMap<String, Map<String, dynamic>> personality = LinkedHashMap<String, Map<String, dynamic>>();
+    for(String key in decoded['trait'].keys){
+      personality['trait'][key]['description'] = decoded['trait'][key]['description'];
+      personality['trait'][key]['url'] = decoded['trait'][key]['url'];
+      personality['trait'][key]['adjectives'] = LinkedHashMap<int, Map<String, dynamic>>.fromIterable(decoded['trait'][key]['adjectives'],
+        key: (adjective) => adjective['id'],
+        value: (adjective) => adjective,
+      );
+    }
+    personality['questionnaire'] = decoded['questionnaire'];
+    return personality;
+  },
+  setCallback: (data, [key]) => onPersonalityChanged?.call(),
+);
+Function onPersonalityChanged;
+
 MappedCachedData<String, Map<String, dynamic>> avatars = MappedCachedData(
   url: 'avatars/',
   cacheFile: 'avatars.json',
@@ -141,11 +157,6 @@ void setAnotherUser (String url) {
     _anotherUser.url = url;
   }
 }
-
-MappedCachedData<String, dynamic> questionnaires = MappedCachedData(
-  url: 'me/personality/update/',
-  cacheFile: 'questionnaires.json',
-);
 
 
 // found

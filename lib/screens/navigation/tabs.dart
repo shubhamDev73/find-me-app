@@ -37,6 +37,7 @@ class _TabbedScreenState extends State<TabbedScreen> {
     globals.interests.get(forceNetwork: true);
     globals.moods.get(forceNetwork: true);
     globals.avatars.get(forceNetwork: true);
+    globals.personality.get(forceNetwork: true);
     globals.meUser.get(forceNetwork: true);
     createToken();
   }
