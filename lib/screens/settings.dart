@@ -36,10 +36,14 @@ class SettingsScreen extends StatelessWidget {
                 children: settings.map((AppSettings setting) => InkWell(
                   onTap: setting.onTap,
                   child: Container(
-                    color: ThemeColors.chatListColors[settings.indexOf(setting) % 2 == 0],
+                    color: ThemeColors.interestColors[1 - settings.indexOf(setting) % 2],
                     padding: EdgeInsets.symmetric(horizontal: 10, vertical: 20),
                     child: Text(
-                      setting.text
+                      setting.text,
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontSize: 20,
+                      ),
                     ),
                   ),
                 )).toList(),
