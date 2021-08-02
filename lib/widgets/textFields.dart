@@ -13,8 +13,8 @@ Widget textFieldForRegistration({
   String errMsg,
   String label,
   List<String> autofillHints,
+  Function(String) validator,
 }) {
-  bool showHint = false;
   return TextFormField(
     autofocus: autofocus,
     maxLength: isPhone ? 10 : null,
@@ -22,14 +22,11 @@ Widget textFieldForRegistration({
     keyboardType: keyType,
     obscureText: obscureText,
     autofillHints: autofillHints,
-    validator: (value) {
+    validator: validator ?? (value) {
       if (value == null || value.isEmpty) {
         return errMsg;
       }
       return null;
-    },
-    onEditingComplete: () {
-      showHint = true;
     },
     decoration: InputDecoration(
       focusedBorder: UnderlineInputBorder(
@@ -46,7 +43,9 @@ Widget textFieldForRegistration({
 class PasswordField extends StatefulWidget {
 
   final TextEditingController passwordController;
-  PasswordField({this.passwordController});
+  final String label;
+  final Function(String) validator;
+  PasswordField({this.passwordController, this.label = "password", this.validator});
 
   @override
   _PasswordFieldState createState() => _PasswordFieldState();
@@ -63,10 +62,11 @@ class _PasswordFieldState extends State<PasswordField> {
         textFieldForRegistration(
           editingController: widget.passwordController,
           keyType: TextInputType.visiblePassword,
-          label: "Password",
-          errMsg: "Please enter your Password.",
+          label: widget.label,
+          errMsg: "please enter your password",
           obscureText: obscured,
           autofillHints: [AutofillHints.password],
+          validator: widget.validator,
         ),
         Positioned(
           top: 25,
