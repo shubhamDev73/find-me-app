@@ -3,14 +3,14 @@ import 'dart:io';
 import 'package:findme/constant.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:findme/models/onBoardingModel.dart';
+import 'package:findme/models/onboardingModel.dart';
 
-class OnBoardingScreen extends StatefulWidget {
+class OnboardingScreens extends StatefulWidget {
   @override
-  _OnBoardingScreenState createState() => _OnBoardingScreenState();
+  _OnboardingScreensState createState() => _OnboardingScreensState();
 }
 
-class _OnBoardingScreenState extends State<OnBoardingScreen> {
+class _OnboardingScreensState extends State<OnboardingScreens> {
   List<SliderModel> mySLides = new List<SliderModel>();
   int slideIndex = 0;
   PageController controller;

@@ -1,18 +1,24 @@
 import 'package:flutter/material.dart';
 
 import 'package:findme/screens/navigation/animatedRoute.dart';
-import 'package:findme/screens/login/onBoarding.dart';
+import 'package:findme/screens/login/onboarding.dart';
 import 'package:findme/screens/login/login.dart';
 import 'package:findme/screens/login/register.dart';
+import 'package:findme/screens/login/otpSend.dart';
+import 'package:findme/screens/login/otpCheck.dart';
+import 'package:findme/screens/login/passwordReset.dart';
 
 class LoginScreens extends StatelessWidget {
 
   final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
   final Map<String, Widget> routes = {
+    '/': OnboardingScreens(),
     '/login': Login(),
     '/register': Register(),
-    '/': OnBoardingScreen(),
+    '/otp/send': OtpSend(),
+    '/otp/check': OtpCheck(),
+    '/password/reset': PasswordReset(),
   };
 
   @override

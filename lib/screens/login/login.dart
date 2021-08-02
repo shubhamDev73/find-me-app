@@ -24,7 +24,6 @@ class Login extends StatefulWidget {
 class _LoginState extends State<Login> {
 
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   final TextEditingController usernameController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
@@ -54,9 +53,8 @@ class _LoginState extends State<Login> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      key: _scaffoldKey,
-      body: isLoading ? LoadingScreen(fullPage: false) : Container(
+    return isLoading ? LoadingScreen() : Scaffold(
+      body: Container(
         color: ThemeColors.primaryColor,
         child: Column(
           children: [
@@ -66,7 +64,7 @@ class _LoginState extends State<Login> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Hero(
-                    tag: "logo",
+                    tag: 'logo',
                     child: SvgPicture.asset(
                       Assets.onBoardingThree,
                       width: 60,
@@ -74,7 +72,7 @@ class _LoginState extends State<Login> {
                   ),
                   SizedBox(height: 8),
                   Text(
-                    "find.me",
+                    'find.me',
                     style: TextStyle(
                       fontSize: 36,
                       fontWeight: FontWeight.w400,
@@ -82,7 +80,7 @@ class _LoginState extends State<Login> {
                     ),
                   ),
                   Text(
-                    "discover so much",
+                    'discover so much',
                     style: TextStyle(
                       fontSize: 14,
                       fontWeight: FontWeight.w400,
@@ -104,10 +102,10 @@ class _LoginState extends State<Login> {
                         textFieldForRegistration(
                           editingController: usernameController,
                           keyType: TextInputType.name,
-                          label: "Username",
-                          errMsg: "Please enter your Username.",
+                          label: "email/phone/username",
+                          errMsg: "please enter your email or phone or username",
                           autofocus: true,
-                          autofillHints: [AutofillHints.email, AutofillHints.nickname, AutofillHints.name, AutofillHints.username],
+                          autofillHints: [AutofillHints.email, AutofillHints.telephoneNumber, AutofillHints.nickname, AutofillHints.name, AutofillHints.username],
                         ),
                         PasswordField(passwordController: passwordController),
                         Container(
@@ -127,7 +125,31 @@ class _LoginState extends State<Login> {
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: <Widget>[
                                   Text(
-                                    'Login',
+                                    'login',
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(color: ThemeColors.accentColor),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
+                        Container(
+                          margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                          constraints: const BoxConstraints(maxWidth: 500),
+                          child: RaisedButton(
+                            onPressed: () => Navigator.of(context).pushNamed('/otp/send'),
+                            color: Colors.white,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(14),
+                            ),
+                            child: Container(
+                              padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: <Widget>[
+                                  Text(
+                                    'forgot password',
                                     textAlign: TextAlign.center,
                                     style: TextStyle(color: ThemeColors.accentColor),
                                   ),
@@ -156,7 +178,7 @@ class _LoginState extends State<Login> {
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: <Widget>[
                                   Text(
-                                    'Login with Google',
+                                    'login with Google',
                                     textAlign: TextAlign.center,
                                     style: TextStyle(color: ThemeColors.accentColor),
                                   ),
@@ -177,7 +199,7 @@ class _LoginState extends State<Login> {
                 onTap: () => Navigator.of(context).pushNamed('/register'),
                 child: Container(
                   child: Text(
-                    "Register here!",
+                    'register here!',
                     style: TextStyle(color: Colors.white),
                   ),
                 ),

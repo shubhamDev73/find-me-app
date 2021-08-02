@@ -283,3 +283,5 @@ void _makePostCalls(List<dynamic> postsList) {
     }
   }
 }
+
+String otpUsername;
