@@ -35,17 +35,11 @@ class TopBox extends StatelessWidget {
                   onTap: () {
                     List<AppSettings> settings = List.of({
                       AppSettings(text: "Change nick", onTap: () => globals.scaffoldKey.currentState.showSnackBar(SnackBar(content: Text("Not implemented")))),
-                      AppSettings(text: "Privacy", onTap: () => globals.scaffoldKey.currentState.showSnackBar(SnackBar(content: Text("Not implemented")))),
-                      AppSettings(text: "About", onTap: () => globals.scaffoldKey.currentState.showSnackBar(SnackBar(content: Text("Not implemented")))),
-                      AppSettings(text: "Logout", onTap: () {
-                        POST('logout/', null);
-                        globals.token.clear();
-                      }),
-                      AppSettings(text: "Mute notifications", onTap: () => globals.addPostCall('notification/token/', {"fcm_token": ""}, overwrite: (body) => true)),
-                      AppSettings(text: "Change password", onTap: ()  {
-                        POST('logout/', null);
-                        globals.token.clear();
-                      }),
+                      aboutSettings(context),
+                      privacySettings(context),
+                      muteNotificationsSettings,
+                      changePasswordSettings,
+                      logoutSettings,
                     });
 
                     Navigator.of(context).pushNamed('/settings', arguments: settings);

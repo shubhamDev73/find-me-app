@@ -94,7 +94,6 @@ class ChatMessage extends StatelessWidget {
                                 AppSettings(text: "Search", onTap: () => globals.scaffoldKey.currentState.showSnackBar(SnackBar(content: Text("Not implemented")))),
                                 AppSettings(text: "Retain", onTap: () => globals.addPostCall('found/retain/', {"id": found.id})),
                                 AppSettings(text: "Block", onTap: () => globals.scaffoldKey.currentState.showSnackBar(SnackBar(content: Text("Not implemented")))),
-                                AppSettings(text: "Never see again", onTap: () => globals.scaffoldKey.currentState.showSnackBar(SnackBar(content: Text("Not implemented")))),
                               });
 
                               Navigator.of(context).pushNamed('/settings', arguments: settings);
