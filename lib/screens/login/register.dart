@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 
 import 'package:findme/widgets/textFields.dart';
+import 'package:findme/widgets/misc.dart';
 import 'package:findme/assets.dart';
 import 'package:findme/constant.dart';
 import 'package:findme/screens/loading.dart';
@@ -107,40 +108,17 @@ class _RegisterState extends State<Register> {
                           return null;
                         },
                       ),
-                      Container(
-                        margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-                        constraints: const BoxConstraints(maxWidth: 500),
-                        child: RaisedButton(
-                          onPressed: () {
-                             if(_formKey.currentState.validate()) submitForm();
-                          },
-                          color: Colors.white,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(14),
-                          ),
-                          child: Container(
-                            padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: <Widget>[
-                                Text(
-                                  'register',
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(color: ThemeColors.accentColor),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
+                      Button(
+                        type: 'raised',
+                        text: 'register',
+                        onTap: () {
+                          if(_formKey.currentState.validate()) submitForm();
+                        },
                       ),
-                      GestureDetector(
+                      Button(
+                        type: 'raised',
+                        text: 'login here!',
                         onTap: () => Navigator.of(context).pushNamed('/login'),
-                        child: Container(
-                          child: Text(
-                            'login here!',
-                            style: TextStyle(color: Colors.white),
-                          ),
-                        ),
                       ),
                     ],
                   ),

@@ -4,6 +4,7 @@ import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
+import 'package:findme/constant.dart';
 import 'package:findme/screens/loading.dart';
 import 'package:findme/models/fakeDocument.dart';
 
@@ -113,33 +114,59 @@ class _DateWidgetState extends State<DateWidget> {
 
 class Button extends StatelessWidget {
 
+  final String type;
   final double height;
   final double width;
   final String text;
   final Function onTap;
 
-  Button({this.height = 42, this.width = 125, this.text, this.onTap});
+  Button({this.type = 'default', this.height = 42, this.width = 125, this.text, this.onTap});
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        height: height,
-        width: width,
-        decoration: BoxDecoration(
-          color: Colors.black,
-          borderRadius: BorderRadius.circular(12),
-        ),
-        padding: EdgeInsets.symmetric(horizontal: 25, vertical: 10),
-        child: Center(
-          child: Text(
-            text,
-            style: TextStyle(color: Colors.white),
-            textAlign: TextAlign.center,
+    switch(type){
+      case 'default':
+        return GestureDetector(
+          onTap: onTap,
+          child: Container(
+            height: height,
+            width: width,
+            decoration: BoxDecoration(
+              color: Colors.black,
+              borderRadius: BorderRadius.circular(12),
+            ),
+            padding: EdgeInsets.symmetric(horizontal: 25, vertical: 10),
+            child: Center(
+              child: Text(
+                text,
+                style: TextStyle(color: Colors.white),
+                textAlign: TextAlign.center,
+              ),
+            ),
           ),
-        ),
-      ),
-    );
+        );
+        break;
+      case 'raised':
+        return Container(
+          height: height,
+          width: width,
+          padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+          child: RaisedButton(
+            onPressed: onTap,
+            color: Colors.white,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(14),
+            ),
+            child: Text(
+              text,
+              textAlign: TextAlign.center,
+              style: TextStyle(color: ThemeColors.accentColor),
+            ),
+          ),
+        );
+        break;
+      default:
+        return Container();
+    }
   }
 }
