@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 
-import 'package:findme/widgets/textFields.dart';
 import 'package:findme/widgets/misc.dart';
 import 'package:findme/assets.dart';
 import 'package:findme/constant.dart';
@@ -16,13 +15,6 @@ class Register extends StatefulWidget {
 }
 
 class _RegisterState extends State<Register> {
-
-  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-
-  final TextEditingController emailController = TextEditingController();
-  final TextEditingController phoneController = TextEditingController();
-  final TextEditingController usernameController = TextEditingController();
-  final TextEditingController passwordController = TextEditingController();
 
   bool isLoading = false;
 
@@ -69,60 +61,36 @@ class _RegisterState extends State<Register> {
             ),
             Expanded(
               flex: 5,
-              child: Container(
-                margin: EdgeInsets.symmetric(horizontal: 60),
-                child: Form(
-                  key: _formKey,
-                  child: Column(
-                    children: [
-                      textFieldForRegistration(
-                        editingController: emailController,
-                        keyType: TextInputType.emailAddress,
-                        label: "email",
-                        errMsg: "please enter your email",
-                        autofocus: true,
-                        autofillHints: [AutofillHints.email],
-                      ),
-                      textFieldForRegistration(
-                        editingController: phoneController,
-                        keyType: TextInputType.phone,
-                        label: "phone no",
-                        errMsg: "please enter your phone number",
-                        autofocus: true,
-                        autofillHints: [AutofillHints.telephoneNumber],
-                      ),
-                      textFieldForRegistration(
-                        editingController: usernameController,
-                        keyType: TextInputType.name,
-                        label: "username",
-                        errMsg: "please enter your username",
-                        autofillHints: [AutofillHints.email, AutofillHints.nickname, AutofillHints.name, AutofillHints.username, AutofillHints.newUsername],
-                      ),
-                      PasswordField(passwordController: passwordController),
-                      PasswordField(
-                        label: "confirm password",
-                        validator: (value) {
-                          if(value == null || value.isEmpty || value != passwordController.text){
-                            return "please confirm your password";
-                          }
-                          return null;
-                        },
-                      ),
-                      Button(
-                        type: 'raised',
-                        text: 'register',
-                        onTap: () {
-                          if(_formKey.currentState.validate()) submitForm();
-                        },
-                      ),
-                      Button(
-                        type: 'raised',
-                        text: 'login here!',
-                        onTap: () => Navigator.of(context).pushNamed('/login'),
-                      ),
-                    ],
+              child: InputForm(
+                fieldTypes: ['email', 'phone', 'username', 'password', 'confirmPassword', 'submit', 'button'],
+                submitText: 'register',
+                buttons: [
+                  Button(
+                    type: 'raised',
+                    text: 'login here!',
+                    onTap: () => Navigator.of(context).pushNamed('/login'),
                   ),
-                ),
+                ],
+                onSubmit: (inputs) {
+                  setState(() {
+                    isLoading = true;
+                  });
+
+                  POST('register/', inputs, useToken: false, callback: (json) {
+                    setState(() {
+                      isLoading = false;
+                    });
+                    if(json.containsKey('token'))
+                      globals.token.set(json['token']);
+                    else
+                      globals.scaffoldKey.currentState.showSnackBar(SnackBar(content: Text("${json['error']}")));
+                  }, onError: (String errorText) {
+                    setState(() {
+                      isLoading = false;
+                    });
+                    globals.scaffoldKey.currentState.showSnackBar(SnackBar(content: Text(errorText)));
+                  });
+                },
               ),
             ),
           ],
@@ -130,33 +98,4 @@ class _RegisterState extends State<Register> {
       ),
     );
   }
-
-  void submitForm() {
-
-    setState(() {
-      isLoading = true;
-    });
-
-    String email = emailController.text;
-    String phone = phoneController.text;
-    String username = usernameController.text;
-    String password = passwordController.text;
-
-    POST('register/', {"username": username, "email": email, "phone": phone, "password": password}, useToken: false, callback: (json) {
-      setState(() {
-        isLoading = false;
-      });
-      if(json.containsKey('token'))
-        globals.token.set(json['token']);
-      else
-        globals.scaffoldKey.currentState.showSnackBar(SnackBar(content: Text("${json['error']}")));
-    }, onError: (String errorText) {
-      setState(() {
-        isLoading = false;
-      });
-      globals.scaffoldKey.currentState.showSnackBar(SnackBar(content: Text(errorText)));
-    });
-
-  }
-
 }

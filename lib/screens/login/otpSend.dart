@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 
-import 'package:findme/widgets/textFields.dart';
+import 'package:findme/widgets/misc.dart';
 import 'package:findme/assets.dart';
 import 'package:findme/constant.dart';
 import 'package:findme/screens/loading.dart';
@@ -15,10 +15,6 @@ class OtpSend extends StatefulWidget {
 }
 
 class _OtpSendState extends State<OtpSend> {
-
-  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-
-  final TextEditingController usernameController = TextEditingController();
 
   bool isLoading = false;
 
@@ -63,51 +59,31 @@ class _OtpSendState extends State<OtpSend> {
             ),
             Expanded(
               flex: 5,
-              child: Container(
-                margin: EdgeInsets.symmetric(horizontal: 60),
-                child: Form(
-                  key: _formKey,
-                  child: SingleChildScrollView(
-                    child: Column(
-                      children: [
-                        textFieldForRegistration(
-                          editingController: usernameController,
-                          keyType: TextInputType.name,
-                          label: "email/phone/username",
-                          errMsg: "please enter your email or phone or username",
-                          autofocus: true,
-                          autofillHints: [AutofillHints.email, AutofillHints.telephoneNumber, AutofillHints.nickname, AutofillHints.name, AutofillHints.username],
-                        ),
-                        Container(
-                          margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-                          constraints: const BoxConstraints(maxWidth: 500),
-                          child: RaisedButton(
-                            onPressed: () {
-                              if(_formKey.currentState.validate()) submitForm();
-                            },
-                            color: Colors.white,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(14),
-                            ),
-                            child: Container(
-                              padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: <Widget>[
-                                  Text(
-                                    'send OTP',
-                                    textAlign: TextAlign.center,
-                                    style: TextStyle(color: ThemeColors.accentColor),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
+              child: InputForm(
+                fieldTypes: ['username', 'submit'],
+                submitText: 'send OTP',
+                onSubmit: (inputs) {
+                  setState(() {
+                    isLoading = true;
+                  });
+
+                  POST('otp/send/', inputs, useToken: false, callback: (json) {
+                    setState(() {
+                      isLoading = false;
+                    });
+                    globals.otpUsername = inputs['username'];
+                    if(json.containsKey('message')){
+                      Navigator.of(context).pushNamed('/otp/check');
+                      globals.scaffoldKey.currentState.showSnackBar(SnackBar(content: Text("${json['message']}")));
+                    }else
+                      globals.scaffoldKey.currentState.showSnackBar(SnackBar(content: Text("${json['error']}")));
+                  }, onError: (String errorText) {
+                    setState(() {
+                      isLoading = false;
+                    });
+                    globals.scaffoldKey.currentState.showSnackBar(SnackBar(content: Text(errorText)));
+                  });
+                },
               ),
             ),
           ],
@@ -115,32 +91,4 @@ class _OtpSendState extends State<OtpSend> {
       ),
     );
   }
-
-  void submitForm() {
-
-    setState(() {
-      isLoading = true;
-    });
-
-    String username = usernameController.text;
-
-    POST('otp/send/', {"username": username}, useToken: false, callback: (json) {
-      setState(() {
-        isLoading = false;
-      });
-      globals.otpUsername = username;
-      if(json.containsKey('message')){
-        Navigator.of(context).pushNamed('/otp/check');
-        globals.scaffoldKey.currentState.showSnackBar(SnackBar(content: Text("${json['message']}")));
-      }else
-        globals.scaffoldKey.currentState.showSnackBar(SnackBar(content: Text("${json['error']}")));
-    }, onError: (String errorText) {
-      setState(() {
-        isLoading = false;
-      });
-      globals.scaffoldKey.currentState.showSnackBar(SnackBar(content: Text(errorText)));
-    });
-
-  }
-
 }

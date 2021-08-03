@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
-import 'package:findme/widgets/textFields.dart';
 import 'package:findme/widgets/misc.dart';
 import 'package:findme/assets.dart';
 import 'package:findme/constant.dart';
@@ -23,11 +22,6 @@ class Login extends StatefulWidget {
 }
 
 class _LoginState extends State<Login> {
-
-  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-
-  final TextEditingController usernameController = TextEditingController();
-  final TextEditingController passwordController = TextEditingController();
 
   bool isLoading = false;
 
@@ -93,60 +87,51 @@ class _LoginState extends State<Login> {
             ),
             Expanded(
               flex: 5,
-              child: Container(
-                margin: EdgeInsets.symmetric(horizontal: 60),
-                child: Form(
-                  key: _formKey,
-                  child: SingleChildScrollView(
-                    child: Column(
-                      children: [
-                        textFieldForRegistration(
-                          editingController: usernameController,
-                          keyType: TextInputType.name,
-                          label: "email/phone/username",
-                          errMsg: "please enter your email or phone or username",
-                          autofocus: true,
-                          autofillHints: [AutofillHints.email, AutofillHints.telephoneNumber, AutofillHints.nickname, AutofillHints.name, AutofillHints.username],
-                        ),
-                        PasswordField(passwordController: passwordController),
-                        Button(
-                          type: 'raised',
-                          text: 'login',
-                          onTap: () {
-                            if(_formKey.currentState.validate()) submitForm();
-                          },
-                        ),
-                        Button(
-                          type: 'raised',
-                          text: 'forgot password',
-                          onTap: () => Navigator.of(context).pushNamed('/otp/send'),
-                        ),
-                        Button(
-                          type: 'raised',
-                          text: 'login with Google',
-                          onTap: () {
-                            setState(() {
-                              isLoading = true;
-                            });
-                            _googleSignIn.signIn();
-                          },
-                        ),
-                      ],
-                    ),
+              child: InputForm(
+                fieldTypes: ['username', 'password', 'submit', 'button', 'button'],
+                submitText: 'login',
+                buttons: [
+                  Button(
+                    type: 'raised',
+                    text: 'forgot password',
+                    onTap: () => Navigator.of(context).pushNamed('/otp/send'),
                   ),
-                ),
-              ),
-            ),
-            Expanded(
-              flex: 1,
-              child: GestureDetector(
-                onTap: () => Navigator.of(context).pushNamed('/register'),
-                child: Container(
-                  child: Text(
-                    'register here!',
-                    style: TextStyle(color: Colors.white),
+                  Button(
+                    type: 'raised',
+                    text: 'login with Google',
+                    onTap: () {
+                      setState(() {
+                        isLoading = true;
+                      });
+                      _googleSignIn.signIn();
+                    },
                   ),
-                ),
+                  Button(
+                    type: 'raised',
+                    text: 'register here!',
+                    onTap: () => Navigator.of(context).pushNamed('/register'),
+                  ),
+                ],
+                onSubmit: (inputs) {
+                  setState(() {
+                    isLoading = true;
+                  });
+
+                  POST('login/', inputs, useToken: false, callback: (json) {
+                    setState(() {
+                      isLoading = false;
+                    });
+                    if(json.containsKey('token'))
+                      globals.token.set(json['token']);
+                    else
+                      globals.scaffoldKey.currentState.showSnackBar(SnackBar(content: Text("${json['error']}")));
+                  }, onError: (String errorText) {
+                    setState(() {
+                      isLoading = false;
+                    });
+                    globals.scaffoldKey.currentState.showSnackBar(SnackBar(content: Text(errorText)));
+                  });
+                }
               ),
             ),
           ],
@@ -154,31 +139,4 @@ class _LoginState extends State<Login> {
       ),
     );
   }
-
-  void submitForm() {
-
-    setState(() {
-      isLoading = true;
-    });
-
-    String username = usernameController.text;
-    String password = passwordController.text;
-
-    POST('login/', {"username": username, "password": password}, useToken: false, callback: (json) {
-      setState(() {
-        isLoading = false;
-      });
-      if(json.containsKey('token'))
-        globals.token.set(json['token']);
-      else
-        globals.scaffoldKey.currentState.showSnackBar(SnackBar(content: Text("${json['error']}")));
-    }, onError: (String errorText) {
-      setState(() {
-        isLoading = false;
-      });
-      globals.scaffoldKey.currentState.showSnackBar(SnackBar(content: Text(errorText)));
-    });
-
-  }
-
 }

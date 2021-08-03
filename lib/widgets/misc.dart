@@ -6,6 +6,7 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:intl/intl.dart';
 
 import 'package:findme/constant.dart';
+import 'package:findme/widgets/textFields.dart';
 import 'package:findme/screens/loading.dart';
 import 'package:findme/models/fakeDocument.dart';
 
@@ -299,4 +300,98 @@ class ThemeScrollbar extends StatelessWidget {
     );
   }
 
+}
+
+class InputForm extends StatelessWidget {
+
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+
+  final List<String> fieldTypes;
+  final List<Button> buttons;
+  final String submitText;
+  final Function(Map<String, String>) onSubmit;
+  InputForm({this.fieldTypes, this.buttons, this.submitText = 'submit', this.onSubmit});
+
+  @override
+  Widget build(BuildContext context) {
+    List<TextEditingController> controllers = List.filled(fieldTypes.length, TextEditingController());
+    int submitIndex = fieldTypes.indexOf('submit');
+    int passwordIndex = fieldTypes.indexOf('password');
+    return Container(
+      margin: EdgeInsets.symmetric(horizontal: 60),
+      child: Form(
+        key: _formKey,
+        child: Column(
+          children: fieldTypes.map<Widget>((fieldType) {
+            int index = fieldTypes.indexOf(fieldType);
+            switch(fieldType){
+              case 'password':
+                return PasswordField(passwordController: controllers[index]);
+                break;
+              case 'confirmPassword':
+                return PasswordField(
+                  label: "confirm password",
+                  validator: (value) {
+                    if(value == null || value.isEmpty || value != controllers[passwordIndex].text){
+                      return "please confirm your password";
+                    }
+                    return null;
+                  },
+                );
+                break;
+              case 'submit':
+                return Button(
+                  type: 'raised',
+                  text: submitText,
+                  onTap: () {
+                    int confirmPasswordIndex = fieldTypes.indexOf('confirmPassword');
+                    List<String> inputFields = fieldTypes.sublist(0, confirmPasswordIndex >= 0 ? confirmPasswordIndex : submitIndex);
+                    Map<String, String> inputs = Map.fromIterable(inputFields,
+                      key: (fieldType) => fieldType,
+                      value: (fieldType) => controllers[fieldTypes.indexOf(fieldType)].text,
+                    );
+                    if(_formKey.currentState.validate()) onSubmit(inputs);
+                  },
+                );
+                break;
+              case 'button':
+                return buttons[index - submitIndex - 1];
+              case 'username':
+                return textFieldForRegistration(
+                  editingController: controllers[index],
+                  keyType: TextInputType.name,
+                  label: "email/phone/username",
+                  errMsg: "please enter your email or phone or username",
+                  autofocus: true,
+                  autofillHints: [AutofillHints.email, AutofillHints.telephoneNumber, AutofillHints.nickname, AutofillHints.name, AutofillHints.username],
+                );
+                break;
+              case 'email':
+                return textFieldForRegistration(
+                  editingController: controllers[index],
+                  keyType: TextInputType.emailAddress,
+                  label: "email",
+                  errMsg: "please enter your email",
+                  autofocus: true,
+                  autofillHints: [AutofillHints.email],
+                );
+                break;
+              case 'phone':
+                return textFieldForRegistration(
+                  editingController: controllers[index],
+                  keyType: TextInputType.phone,
+                  label: "phone no",
+                  errMsg: "please enter your phone number",
+                  autofocus: true,
+                  autofillHints: [AutofillHints.telephoneNumber],
+                );
+                break;
+              default:
+                return Container();
+            }
+          }),
+        ),
+      ),
+    );
+  }
 }

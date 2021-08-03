@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 
-import 'package:findme/widgets/textFields.dart';
+import 'package:findme/widgets/misc.dart';
 import 'package:findme/assets.dart';
 import 'package:findme/constant.dart';
 import 'package:findme/screens/loading.dart';
@@ -15,10 +15,6 @@ class OtpCheck extends StatefulWidget {
 }
 
 class _OtpCheckState extends State<OtpCheck> {
-
-  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-
-  final TextEditingController otpController = TextEditingController();
 
   bool isLoading = false;
 
@@ -63,50 +59,30 @@ class _OtpCheckState extends State<OtpCheck> {
             ),
             Expanded(
               flex: 5,
-              child: Container(
-                margin: EdgeInsets.symmetric(horizontal: 60),
-                child: Form(
-                  key: _formKey,
-                  child: SingleChildScrollView(
-                    child: Column(
-                      children: [
-                        textFieldForRegistration(
-                          editingController: otpController,
-                          keyType: TextInputType.number,
-                          label: "OTP",
-                          errMsg: "please enter the OTP received",
-                          autofocus: true,
-                        ),
-                        Container(
-                          margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-                          constraints: const BoxConstraints(maxWidth: 500),
-                          child: RaisedButton(
-                            onPressed: () {
-                              if(_formKey.currentState.validate()) submitForm();
-                            },
-                            color: Colors.white,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(14),
-                            ),
-                            child: Container(
-                              padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: <Widget>[
-                                  Text(
-                                    'verify OTP',
-                                    textAlign: TextAlign.center,
-                                    style: TextStyle(color: ThemeColors.accentColor),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
+              child: InputForm(
+                fieldTypes: ['otp', 'submit'],
+                submitText: 'verify OTP',
+                onSubmit: (inputs) {
+                  setState(() {
+                    isLoading = true;
+                  });
+
+                  POST('otp/check/', {"username": globals.otpUsername, "otp": inputs['otp']}, useToken: false, callback: (json) {
+                    setState(() {
+                      isLoading = false;
+                    });
+                    if(json.containsKey('message')){
+                      Navigator.of(context).pushNamed('/password/reset');
+                      globals.scaffoldKey.currentState.showSnackBar(SnackBar(content: Text("${json['message']}")));
+                    }else
+                      globals.scaffoldKey.currentState.showSnackBar(SnackBar(content: Text("${json['error']}")));
+                  }, onError: (String errorText) {
+                    setState(() {
+                      isLoading = false;
+                    });
+                    globals.scaffoldKey.currentState.showSnackBar(SnackBar(content: Text(errorText)));
+                  });
+                },
               ),
             ),
           ],
@@ -114,31 +90,4 @@ class _OtpCheckState extends State<OtpCheck> {
       ),
     );
   }
-
-  void submitForm() {
-
-    setState(() {
-      isLoading = true;
-    });
-
-    String otp = otpController.text;
-
-    POST('otp/check/', {"username": globals.otpUsername, "otp": otp}, useToken: false, callback: (json) {
-      setState(() {
-        isLoading = false;
-      });
-      if(json.containsKey('message')){
-        Navigator.of(context).pushNamed('/password/reset');
-        globals.scaffoldKey.currentState.showSnackBar(SnackBar(content: Text("${json['message']}")));
-      }else
-        globals.scaffoldKey.currentState.showSnackBar(SnackBar(content: Text("${json['error']}")));
-    }, onError: (String errorText) {
-      setState(() {
-        isLoading = false;
-      });
-      globals.scaffoldKey.currentState.showSnackBar(SnackBar(content: Text(errorText)));
-    });
-
-  }
-
 }
