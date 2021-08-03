@@ -34,7 +34,7 @@ class TopBox extends StatelessWidget {
                 settings ? InkWell(
                   onTap: () {
                     List<AppSettings> settings = List.of({
-                      AppSettings(text: "Change nick", onTap: () => globals.scaffoldKey.currentState.showSnackBar(SnackBar(content: Text("Not implemented")))),
+                      AppSettings(text: "Change nick", onTap: () => Navigator.of(context).pushNamed('/settings/nick')),
                       aboutSettings(context),
                       privacySettings(context),
                       muteNotificationsSettings,
