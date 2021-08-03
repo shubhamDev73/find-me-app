@@ -121,7 +121,8 @@ class _ProfileState extends State<Profile> {
               flex: 2,
               child: Column(
                 children: [
-                  GestureDetector(
+                  Button(
+                    text: widget.me ? "Feedback" : "Talk",
                     onTap: () async {
                       if(widget.me){
                         String url = '';
@@ -130,22 +131,6 @@ class _ProfileState extends State<Profile> {
                         Navigator.of(context).pushNamed('/message', arguments: ModalRoute.of(context).settings.arguments);
                       }
                     },
-                    child: Container(
-                      height: 42,
-                      width: 125,
-                      decoration: BoxDecoration(
-                        color: Colors.black,
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      padding: EdgeInsets.symmetric(horizontal: 25, vertical: 10),
-                      child: Center(
-                        child: Text(
-                          widget.me ? "Feedback" : "Talk",
-                          style: TextStyle(color: Colors.white),
-                          textAlign: TextAlign.center,
-                        ),
-                      ),
-                    ),
                   ),
                 ],
               ),

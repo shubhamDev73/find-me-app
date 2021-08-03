@@ -110,3 +110,36 @@ class _DateWidgetState extends State<DateWidget> {
   }
 
 }
+
+class Button extends StatelessWidget {
+
+  final double height;
+  final double width;
+  final String text;
+  final Function onTap;
+
+  Button({this.height = 42, this.width = 125, this.text, this.onTap});
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        height: height,
+        width: width,
+        decoration: BoxDecoration(
+          color: Colors.black,
+          borderRadius: BorderRadius.circular(12),
+        ),
+        padding: EdgeInsets.symmetric(horizontal: 25, vertical: 10),
+        child: Center(
+          child: Text(
+            text,
+            style: TextStyle(color: Colors.white),
+            textAlign: TextAlign.center,
+          ),
+        ),
+      ),
+    );
+  }
+}

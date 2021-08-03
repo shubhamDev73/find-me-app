@@ -216,28 +216,13 @@ class _PersonalityState extends State<Personality> {
                 ),
               ),
             ),
-            GestureDetector(
+            Button(
+              text: "Explore",
               onTap: () async {
                 List<dynamic> urls = user.personality[trait]['url'];
                 String url = urls[random.nextInt(urls.length)];
                 if(await canLaunch(url)) await launch(url);
               },
-              child: Container(
-                height: 37,
-                width: 110,
-                decoration: BoxDecoration(
-                  color: Colors.black,
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                padding: EdgeInsets.symmetric(horizontal: 25, vertical: 10),
-                child: Center(
-                  child: Text(
-                    "Explore",
-                    style: TextStyle(color: Colors.white, fontSize: 14),
-                    textAlign: TextAlign.center,
-                  ),
-                ),
-              ),
             ),
             Expanded(
               flex: 1,
@@ -255,31 +240,14 @@ class _PersonalityState extends State<Personality> {
               flex: 1,
               child: Container(),
             ),
-            widget.me ?
-            GestureDetector(
+            widget.me ? Button(
+              text: "Take a Test",
               onTap: () async {
                 List<dynamic> allUrls = personality['questionnaire']['all'];
                 String url = '${allUrls[random.nextInt(allUrls.length)]}?nick=${user.nick}';
                 if(await canLaunch(url)) await launch(url);
               },
-              child: Container(
-                height: 42,
-                width: 125,
-                decoration: BoxDecoration(
-                  color: Colors.black,
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                padding: EdgeInsets.symmetric(horizontal: 25, vertical: 10),
-                child: Center(
-                  child: Text(
-                    "Take a Test",
-                    style: TextStyle(color: Colors.white),
-                    textAlign: TextAlign.center,
-                  ),
-                ),
-              ),
-            ) :
-            Container(),
+            ) : Container(),
             Expanded(
               flex: 2,
               child: Container(

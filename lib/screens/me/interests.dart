@@ -286,24 +286,12 @@ class _InterestsState extends State<Interests> {
               SizedBox(
                 height: 10,
               ),
-              widget.me ? GestureDetector(
+              widget.me ? Button(
+                text: "+ Interests",
                 onTap: () {
                   Navigator.of(context).pushNamed('/interests/add');
                 },
-                child: Container(
-                  decoration: BoxDecoration(
-                    color: Colors.black,
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  margin: EdgeInsets.symmetric(vertical: 10),
-                  padding: EdgeInsets.symmetric(horizontal: 25, vertical: 7),
-                  child: Text(
-                    "+ Interests",
-                    style: TextStyle(color: Colors.white),
-                  ),
-                ),
-              ) :
-              Container(),
+              ) : Container(),
               SizedBox(
                 height: 15,
               ),
