@@ -1,8 +1,9 @@
 import 'dart:async';
-import 'package:intl/intl.dart';
 
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:carousel_slider/carousel_slider.dart';
+import 'package:intl/intl.dart';
 
 import 'package:findme/constant.dart';
 import 'package:findme/screens/loading.dart';
@@ -168,5 +169,117 @@ class Button extends StatelessWidget {
       default:
         return Container();
     }
+  }
+}
+
+class Carousel extends StatefulWidget {
+
+  CarouselController controller;
+  final List<dynamic> items;
+  final Widget Function(dynamic) widget;
+  final Function onPageChanged;
+  final int elementsToDisplay;
+  final int initialPage;
+  Carousel({this.controller, this.items, this.widget, this.onPageChanged, this.elementsToDisplay = 1, this.initialPage = 0});
+
+  @override
+  _CarouselState createState() => _CarouselState();
+}
+
+class _CarouselState extends State<Carousel> {
+
+  int currentIndex = 0;
+
+  @override
+  void initState(){
+    if(widget.controller == null) widget.controller = new CarouselController();
+    super.initState();
+  }
+
+  @override
+  void didUpdateWidget(Carousel oldWidget){
+    widget.controller.jumpToPage(0);
+    super.didUpdateWidget(oldWidget);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        Stack(
+          alignment: Alignment.center,
+          children: [
+            CarouselSlider(
+              carouselController: widget.controller,
+              items: widget.items.map((item) => widget.widget(item)),
+              options: CarouselOptions(
+                initialPage: widget.initialPage,
+                scrollDirection: Axis.horizontal,
+                enableInfiniteScroll: true,
+//                height: 200,
+                viewportFraction: 1.0 / widget.elementsToDisplay,
+                onPageChanged: (index, reason) {
+                  setState(() {
+                    currentIndex = index;
+                  });
+                  widget.onPageChanged(index, reason);
+                },
+              ),
+            ),
+            Positioned(
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Padding(
+                    padding: EdgeInsets.only(left: 12.0),
+                    child: GestureDetector(
+                      onTap: () => widget.controller.previousPage(
+                        duration: Duration(milliseconds: 300),
+                        curve: Curves.decelerate,
+                      ),
+                      child: Container(
+                        child: Center(
+                          child: Icon(Icons.arrow_back_ios),
+                        ),
+                      ),
+                    ),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.only(right: 12.0),
+                    child: GestureDetector(
+                      onTap: () => widget.controller.nextPage(
+                        duration: Duration(milliseconds: 300),
+                        curve: Curves.decelerate,
+                      ),
+                      child: Container(
+                        child: Center(
+                          child: Icon(Icons.arrow_forward_ios),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: widget.items.map((item) {
+            int index = widget.items.indexOf(item);
+            return Container(
+              width: 8.0,
+              height: 8.0,
+              margin: EdgeInsets.symmetric(vertical: 10.0, horizontal: 2.0),
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                border: currentIndex == index ? null : Border.all(color: Colors.black),
+                color: currentIndex == index ? Colors.black : Colors.white,
+              ),
+            );
+          }).toList(),
+        ),
+      ],
+    );
   }
 }

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:carousel_slider/carousel_slider.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import 'package:findme/constant.dart';
@@ -22,7 +21,6 @@ class QuestionsWidget extends StatefulWidget {
 
 class _QuestionsWidgetState extends State<QuestionsWidget> {
 
-  final CarouselController questionsController = CarouselController();
   Map<String, dynamic> currentQuestion;
   String errorText;
 
@@ -30,12 +28,6 @@ class _QuestionsWidgetState extends State<QuestionsWidget> {
   void initState() {
     super.initState();
     currentQuestion = widget.questions[0];
-  }
-
-  @override
-  void didUpdateWidget(QuestionsWidget oldWidget){
-    questionsController.jumpToPage(0);
-    super.didUpdateWidget(oldWidget);
   }
 
   @override
@@ -48,71 +40,24 @@ class _QuestionsWidgetState extends State<QuestionsWidget> {
       children: [
         Expanded(
           flex: 4,
-          child: Stack(
-            alignment: Alignment.center,
-            children: [
-              CarouselSlider(
-                carouselController: questionsController,
-                items: widget.questions.map((question) => Container(
-                  padding: EdgeInsets.symmetric(horizontal: 50),
-                  child: Center(
-                    child: Text(
-                      question['question'],
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        fontSize: 28,
-                        fontWeight: FontWeight.w700,
-                      ),
-                    ),
+          child: Carousel(
+            items: widget.questions,
+            widget: (question) => Container(
+              padding: EdgeInsets.symmetric(horizontal: 50),
+              child: Center(
+                child: Text(
+                  question['question'],
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: 28,
+                    fontWeight: FontWeight.w700,
                   ),
-                )).toList(),
-                options: CarouselOptions(
-                  initialPage: 0,
-                  scrollDirection: Axis.horizontal,
-                  enableInfiniteScroll: true,
-                  height: 200,
-                  viewportFraction: 1.0,
-                  onPageChanged: (index, reason) => setState(() {
-                    currentQuestion = widget.questions[index];
-                  }),
                 ),
               ),
-              Positioned(
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.only(left: 12.0),
-                      child: GestureDetector(
-                        onTap: () => questionsController.previousPage(
-                          duration: Duration(milliseconds: 300),
-                          curve: Curves.decelerate,
-                        ),
-                        child: Container(
-                          child: Center(
-                            child: Icon(Icons.arrow_back_ios),
-                          ),
-                        ),
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(right: 12.0),
-                      child: GestureDetector(
-                        onTap: () => questionsController.nextPage(
-                          duration: Duration(milliseconds: 300),
-                          curve: Curves.decelerate,
-                        ),
-                        child: Container(
-                          child: Center(
-                            child: Icon(Icons.arrow_forward_ios),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ],
+            ),
+            onPageChanged: (index, reason) => setState(() {
+              currentQuestion = widget.questions[index];
+            }),
           ),
         ),
         Container(
@@ -136,24 +81,6 @@ class _QuestionsWidgetState extends State<QuestionsWidget> {
               fontSize: 25,
               fontWeight: FontWeight.w700,
             ),
-          ),
-        ),
-        Expanded(
-          flex: 1,
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: widget.questions.map((question) {
-              return Container(
-                width: 8.0,
-                height: 8.0,
-                margin: EdgeInsets.symmetric(vertical: 10.0, horizontal: 2.0),
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  border: question['id'] == currentQuestion['id'] ? null : Border.all(color: Colors.black),
-                  color: question['id'] == currentQuestion['id'] ? Colors.black : Colors.white,
-                ),
-              );
-            }).toList(),
           ),
         ),
       ],

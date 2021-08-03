@@ -2,7 +2,6 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:carousel_slider/carousel_slider.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import 'package:findme/widgets/adjectiveListItems.dart';
@@ -16,79 +15,6 @@ import 'package:findme/globals.dart' as globals;
 
 final random = new Random();
 final int numberOfAdjectives = 5;
-
-class AdjectiveCarousel extends StatefulWidget {
-
-  final List<dynamic> adjectives;
-  const AdjectiveCarousel({this.adjectives});
-
-  @override
-  _AdjectiveCarouselState createState() => _AdjectiveCarouselState();
-}
-
-class _AdjectiveCarouselState extends State<AdjectiveCarousel> {
-
-  int currentAdjIndex = 0;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      height: 180,
-      width: 340,
-      decoration: BoxDecoration(
-        color: ThemeColors.boxColor,
-        borderRadius: BorderRadius.circular(15),
-      ),
-      margin: EdgeInsets.symmetric(horizontal: 10),
-      child: Column(
-        children: [
-          Expanded(
-            flex: 3,
-            child: CarouselSlider(
-              options: CarouselOptions(
-                viewportFraction: 1.0,
-                enlargeCenterPage: false,
-                initialPage: 0,
-                aspectRatio: 2.0,
-                onPageChanged: (index, reason) {
-                  setState(() {
-                    currentAdjIndex = index;
-                  });
-                }),
-              items: widget.adjectives.map<Widget>((adjective) => Builder(
-                builder: (BuildContext context) {
-                  return AdjListItem(
-                    name: adjective['name'],
-                    description: adjective['description'],
-                  );
-                },
-              )).toList(),
-            ),
-          ),
-          Expanded(
-            flex: 1,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: widget.adjectives.map((adjective) {
-                int index = widget.adjectives.indexOf(adjective);
-                return Container(
-                  width: 8.0,
-                  height: 8.0,
-                  margin: EdgeInsets.symmetric(vertical: 10.0, horizontal: 2.0),
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    border: currentAdjIndex == index ? null : Border.all(color: Colors.black),
-                    color: currentAdjIndex == index ? Colors.black : Colors.white,
-                  ),
-                );
-              }).toList(),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
 
 class Personality extends StatefulWidget {
 
@@ -235,7 +161,22 @@ class _PersonalityState extends State<Personality> {
                 style: TextStyle(fontSize: 18),
               ),
             ),
-            AdjectiveCarousel(adjectives: adjectives[trait]),
+            Container(
+              height: 180,
+              width: 340,
+              decoration: BoxDecoration(
+                color: ThemeColors.boxColor,
+                borderRadius: BorderRadius.circular(15),
+              ),
+              margin: EdgeInsets.symmetric(horizontal: 10),
+              child: Carousel(
+                items: adjectives[trait],
+                widget: (adjective) => AdjListItem(
+                  name: adjective['name'],
+                  description: adjective['description'],
+                ),
+              ),
+            ),
             Expanded(
               flex: 1,
               child: Container(),
