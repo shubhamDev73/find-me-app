@@ -283,3 +283,20 @@ class _CarouselState extends State<Carousel> {
     );
   }
 }
+
+class ThemeScrollbar extends StatelessWidget {
+
+  final Widget child;
+  ThemeScrollbar({this.child});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scrollbar(
+      controller: ScrollController(),
+      thickness: 5,
+      radius: Radius.elliptical(5, 10),
+      child: child,
+    );
+  }
+
+}

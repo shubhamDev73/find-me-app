@@ -198,10 +198,7 @@ class _InterestsState extends State<Interests> {
                 child: Container(
                   padding: EdgeInsets.symmetric(horizontal: 10),
                   color: ThemeColors.lightColor,
-                  child: Scrollbar(
-                    controller: ScrollController(),
-                    thickness: 5,
-                    radius: Radius.elliptical(5, 10),
+                  child: ThemeScrollbar(
                     child: ListView(
                       children: getInterestList(user.interests.values.toList(), (int newInterestId) => setState(() {
                         interestId = newInterestId;

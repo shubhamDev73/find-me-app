@@ -52,10 +52,7 @@ class _AddInterestsState extends State<AddInterests> {
                 flex: 8,
                 child: Container(
                   margin: EdgeInsets.symmetric(horizontal: 20),
-                  child: Scrollbar(
-                    controller: ScrollController(),
-                    thickness: 5,
-                    radius: Radius.elliptical(5, 10),
+                  child: ThemeScrollbar(
                     child: GridView(
                       shrinkWrap: true,
                       scrollDirection: Axis.vertical,
