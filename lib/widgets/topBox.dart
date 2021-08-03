@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 
 import 'package:findme/constant.dart';
 import 'package:findme/models/appSettings.dart';
-import 'package:findme/API.dart';
-import 'package:findme/globals.dart' as globals;
 
 class TopBox extends StatelessWidget {
 
@@ -38,7 +36,7 @@ class TopBox extends StatelessWidget {
                       aboutSettings(context),
                       privacySettings(context),
                       muteNotificationsSettings,
-                      changePasswordSettings,
+                      AppSettings(text: "Change password", onTap: () => Navigator.of(context).pushNamed('/settings/password')),
                       logoutSettings,
                     });
 

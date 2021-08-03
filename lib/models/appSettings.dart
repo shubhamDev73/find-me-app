@@ -57,8 +57,3 @@ AppSettings logoutSettings = AppSettings(text: "Logout", onTap: () {
 AppSettings muteNotificationsSettings = AppSettings(text: "Mute notifications", onTap: () =>
     globals.addPostCall('notification/token/', {"fcm_token": ""}, overwrite: (body) => true)
 );
-
-AppSettings changePasswordSettings = AppSettings(text: "Change password", onTap: ()  {
-  POST('logout/', null);
-  globals.token.clear();
-});

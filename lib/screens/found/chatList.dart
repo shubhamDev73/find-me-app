@@ -63,7 +63,6 @@ class FoundPage extends StatelessWidget {
                               aboutSettings(context),
                               privacySettings(context),
                               muteNotificationsSettings,
-                              changePasswordSettings,
                               logoutSettings,
                             });
 
