@@ -85,15 +85,32 @@ class _TabbedScreenState extends State<TabbedScreen> {
             navigatorKeys[_currentTab].currentState.pushNamed('/message', arguments: founds[id]);
           });
           break;
+        case 'AvatarUpdate':
+          int id = int.parse(message['data']['id']);
+          Map<String, Map<String, dynamic>> avatars = await globals.avatars.get();
+          globals.founds.mappedUpdate(id, (Found found) {
+            found.avatar = avatars[message['data']['base']][message['data']['mood']];
+            return found;
+          });
+          break;
+        case 'NickUpdate':
+          int id = int.parse(message['data']['id']);
+          globals.founds.mappedUpdate(id, (Found found) {
+            found.nick = message['data']['nick'];
+            return found;
+          });
+          break;
       }
     };
 
     _fcm.configure(
       onMessage: (Map<String, dynamic> message) async {
+        onNotification(message);
+
         bool display = true;
         if(message['data'].contains('display')) display = message['data']['display'] == 'true';
 
-        if(display){
+        if(display && message.containsKey('notification')){
           showDialog(
             context: context,
             builder: (context) => AlertDialog(

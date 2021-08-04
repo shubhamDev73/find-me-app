@@ -5,10 +5,12 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:intl/intl.dart';
 
+import 'package:findme/models/found.dart';
 import 'package:findme/constant.dart';
 import 'package:findme/widgets/textFields.dart';
 import 'package:findme/screens/loading.dart';
 import 'package:findme/models/fakeDocument.dart';
+import 'package:findme/globals.dart' as globals;
 
 class WidgetBuilder<T> {
 
@@ -393,5 +395,35 @@ class InputForm extends StatelessWidget {
         ),
       ),
     );
+  }
+}
+
+class FoundWidget extends StatefulWidget {
+
+  final int id;
+  final Widget Function(Found) widget;
+  final String string = globals.uuid.v1();
+  FoundWidget({this.id, this.widget});
+
+  @override
+  _FoundWidgetState createState() => _FoundWidgetState();
+}
+
+class _FoundWidgetState extends State<FoundWidget> {
+
+  @override
+  void initState() {
+    globals.onFoundChanged[widget.id][widget.string] = (Found found) => setState((){});
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    globals.onFoundChanged[widget.id].remove(widget.string);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return createFutureWidget<Map<int, Found>>(globals.founds.get(), (founds) => widget.widget(founds[widget.id]));
   }
 }

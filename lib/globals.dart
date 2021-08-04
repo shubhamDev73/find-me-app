@@ -207,11 +207,11 @@ MappedCachedData<int, Found> founds = MappedCachedData(
     ),
   setCallback: (data, [int key]) {
     onChatListUpdate?.call(data);
-    if(key != null && onFoundChanged.containsKey(key)) onFoundChanged[key](data[key]);
+    if(key != null && onFoundChanged.containsKey(key)) onFoundChanged[key].values.forEach((f) => f(data[key]));
   },
 );
 Function(Map<int, Found>) onChatListUpdate;
-Map<int, void Function(Found)> onFoundChanged = {};
+Map<int, Map<String, void Function(Found)>> onFoundChanged = {};
 
 Map<String, dynamic> getMessageJSON (DocumentSnapshot message) {
   Map<String, dynamic> json = message.data();

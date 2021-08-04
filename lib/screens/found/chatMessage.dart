@@ -50,16 +50,16 @@ class ChatMessage extends StatelessWidget {
                             child: Icon(Icons.arrow_back_ios),
                           ),
                         ),
-                        Container(
+                        FoundWidget(id: found.id, widget: (found) => Container(
                           width: 50,
                           margin: EdgeInsets.fromLTRB(0, 0, 12, 0),
                           child: CachedNetworkImage(imageUrl: found.avatar['v1']),
-                        ),
+                        )),
                         Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: <Widget>[
-                            Container(
+                            FoundWidget(id: found.id, widget: (found) => Container(
                               child: Text(
                                 found.nick,
                                 textAlign: TextAlign.left,
@@ -68,7 +68,7 @@ class ChatMessage extends StatelessWidget {
                                   fontSize: 20,
                                 ),
                               ),
-                            ),
+                            )),
                             Container(
                               child: Text(
                                 "tap to view profile",
@@ -108,7 +108,7 @@ class ChatMessage extends StatelessWidget {
               ),
               Expanded(
                 flex: 5,
-                child: Container(
+                child: FoundWidget(id: found.id, widget: (found) => Container(
                   decoration: BoxDecoration(
                     image: DecorationImage(
                       image: CachedNetworkImageProvider(moods[found.mood]['url']['weather']),
@@ -116,7 +116,7 @@ class ChatMessage extends StatelessWidget {
                     ),
                   ),
                   child: ChatMessageList(found: found),
-                ),
+                )),
               ),
               Container(
                 margin: EdgeInsets.symmetric(vertical: 3.0, horizontal: 4.0),

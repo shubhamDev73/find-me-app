@@ -37,7 +37,7 @@ class ChatListItem extends StatelessWidget {
         .limit(1)
         .snapshots();
     syncWithFound(found);
-    globals.onFoundChanged[found.id] = syncWithFound;
+    globals.onFoundChanged[found.id]['chatList'] = syncWithFound;
 
     DatabaseReference realtimeFound = FirebaseDatabase.instance.reference().child("${found.id}-${found.me}");
     realtimeFound.update({
@@ -82,20 +82,20 @@ class ChatListItem extends StatelessWidget {
             children: <Widget>[
               Row(
                 children: <Widget>[
-                  Container(
+                  FoundWidget(id: found.id, widget: (found) => Container(
                     padding: EdgeInsets.all(17),
                     child: CachedNetworkImage(imageUrl: found.avatar['v1'], height: 40),
-                  ),
+                  )),
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
-                      Text(
+                      FoundWidget(id: found.id, widget: (found) => Text(
                         found.nick,
                         style: TextStyle(
                           fontWeight: FontWeight.bold,
                           fontSize: 20.0,
                         ),
-                      ),
+                      )),
                       Container(
                         constraints: BoxConstraints(maxWidth: 200, maxHeight: 20),
                         child: Text(
