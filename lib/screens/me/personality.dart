@@ -12,6 +12,7 @@ import 'package:findme/assets.dart';
 import 'package:findme/models/user.dart';
 import 'package:findme/constant.dart';
 import 'package:findme/globals.dart' as globals;
+import 'package:findme/events.dart' as events;
 
 final random = new Random();
 final int numberOfAdjectives = 5;
@@ -123,6 +124,7 @@ class _PersonalityState extends State<Personality> {
                   setState(() {
                     trait = traitString;
                   });
+                  events.sendEvent('traitSelect', {"trait": traitString});
                 },
                 personality: user.personality,
                 selectedElement: trait,
@@ -148,6 +150,7 @@ class _PersonalityState extends State<Personality> {
                 List<dynamic> urls = user.personality[trait]['url'];
                 String url = urls[random.nextInt(urls.length)];
                 if(await canLaunch(url)) await launch(url);
+                events.sendEvent('exploreClick', {"trait": trait});
               },
             ),
             Expanded(
@@ -175,6 +178,9 @@ class _PersonalityState extends State<Personality> {
                   name: adjective['name'],
                   description: adjective['description'],
                 ),
+                onPageChanged: (index, reason) {
+                  events.sendEvent('adjectiveChange', {"adjective": adjectives[trait][index]['name']});
+                },
               ),
             ),
             Expanded(
@@ -187,6 +193,7 @@ class _PersonalityState extends State<Personality> {
                 List<dynamic> allUrls = personality['questionnaire']['all'];
                 String url = '${allUrls[random.nextInt(allUrls.length)]}?nick=${user.nick}';
                 if(await canLaunch(url)) await launch(url);
+                events.sendEvent('testClick');
               },
             ) : Container(),
             Expanded(

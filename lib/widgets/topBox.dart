@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:findme/constant.dart';
 import 'package:findme/models/appSettings.dart';
+import 'package:findme/events.dart' as events;
 
 class TopBox extends StatelessWidget {
 
@@ -32,15 +33,22 @@ class TopBox extends StatelessWidget {
                 settings ? InkWell(
                   onTap: () {
                     List<AppSettings> settings = List.of({
-                      AppSettings(text: "Change nick", onTap: () => Navigator.of(context).pushNamed('/settings/nick')),
-                      aboutSettings(context),
-                      privacySettings(context),
-                      muteNotificationsSettings,
-                      AppSettings(text: "Change password", onTap: () => Navigator.of(context).pushNamed('/settings/password')),
-                      logoutSettings,
+                      AppSettings(text: "Change nick", onTap: () {
+                        Navigator.of(context).pushNamed('/settings/nick');
+                        events.sendEvent('settingsChangeNick');
+                      }),
+                      aboutSettings(context, 'me'),
+                      privacySettings(context, 'me'),
+                      muteNotificationsSettings('me'),
+                      AppSettings(text: "Change password", onTap: () {
+                        Navigator.of(context).pushNamed('/settings/password');
+                        events.sendEvent('settingsChangePassword');
+                      }),
+                      logoutSettings('me'),
                     });
 
                     Navigator.of(context).pushNamed('/settings', arguments: settings);
+                    events.sendEvent('settingsClick', {"page": "me"});
                   },
                   child: Icon(Icons.more_vert),
                 ) : InkWell(

@@ -11,6 +11,7 @@ import 'package:findme/models/appSettings.dart';
 import 'package:findme/constant.dart';
 import 'package:findme/assets.dart';
 import 'package:findme/globals.dart' as globals;
+import 'package:findme/events.dart' as events;
 
 class ChatMessage extends StatelessWidget {
 
@@ -38,6 +39,7 @@ class ChatMessage extends StatelessWidget {
                   onTap: () {
                     globals.setAnotherUser('/found/${found.id}');
                     Navigator.of(context).pushNamed('/user', arguments: found);
+                    events.sendEvent('viewProfile', {"user": found.id});
                   },
                   child: Container(
                     color: ThemeColors.primaryColor,
@@ -92,11 +94,15 @@ class ChatMessage extends StatelessWidget {
                             onTap: () {
                               List<AppSettings> settings = List.of({
                                 AppSettings(text: "Search", onTap: () => globals.scaffoldKey.currentState.showSnackBar(SnackBar(content: Text("Not implemented")))),
-                                AppSettings(text: "Retain", onTap: () => globals.addPostCall('found/retain/', {"id": found.id})),
+                                AppSettings(text: "Retain", onTap: () {
+                                  globals.addPostCall('found/retain/', {"id": found.id});
+                                  events.sendEvent('settingsRetain', {"user": found.id});
+                                }),
                                 AppSettings(text: "Block", onTap: () => globals.scaffoldKey.currentState.showSnackBar(SnackBar(content: Text("Not implemented")))),
                               });
 
                               Navigator.of(context).pushNamed('/settings', arguments: settings);
+                              events.sendEvent('settingsClick', {"page": "message", "user": found.id});
                             },
                             child: Icon(Icons.more_vert),
                           ),

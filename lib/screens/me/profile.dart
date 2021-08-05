@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-import 'package:findme/globals.dart' as globals;
+import 'package:findme/assets.dart';
 import 'package:findme/widgets/topBox.dart';
 import 'package:findme/widgets/traitBar.dart';
 import 'package:findme/widgets/userInfo.dart';
@@ -9,7 +9,8 @@ import 'package:findme/widgets/misc.dart';
 import 'package:findme/widgets/interestButton.dart';
 import 'package:findme/models/user.dart';
 import 'package:findme/models/interests.dart';
-import 'package:findme/assets.dart';
+import 'package:findme/globals.dart' as globals;
+import 'package:findme/events.dart' as events;
 
 class Profile extends StatefulWidget {
 
@@ -43,6 +44,7 @@ class _ProfileState extends State<Profile> {
         selected: true,
         onClick: () {
           Navigator.of(context).pushNamed('/interests', arguments: interests[0].id);
+          events.sendEvent('interestSelect', {"interest": 0, "home": true});
         },
       );
     }else{
@@ -52,6 +54,7 @@ class _ProfileState extends State<Profile> {
         amount: interest.amount,
         onClick: () {
           Navigator.of(context).pushNamed('/interests', arguments: interest.id);
+          events.sendEvent('interestSelect', {"interest": interest.id, "home": true});
         },
       );
     }
@@ -74,6 +77,7 @@ class _ProfileState extends State<Profile> {
                 widget: TraitsElements(
                   onClick: (String trait) {
                     Navigator.of(context).pushNamed('/personality', arguments: trait);
+                    events.sendEvent('traitSelect', {"trait": trait, "home": true});
                   },
                   personality: user.personality,
                 ),
@@ -84,6 +88,7 @@ class _ProfileState extends State<Profile> {
               child: GestureDetector(
                 onTap: () {
                   Navigator.of(context).pushNamed('/mood');
+                  events.sendEvent('avatarClick');
                 },
                 child: UserInfo(user),
               ),
@@ -127,6 +132,7 @@ class _ProfileState extends State<Profile> {
                       if(widget.me){
                         String url = '';
                         if(await canLaunch(url)) await launch(url);
+                        events.sendEvent('feedbackClick');
                       }else{
                         Navigator.of(context).pushNamed('/message', arguments: ModalRoute.of(context).settings.arguments);
                       }

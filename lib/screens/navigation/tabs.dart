@@ -11,6 +11,7 @@ import 'package:findme/models/found.dart';
 import 'package:findme/constant.dart';
 import 'package:findme/widgets/misc.dart';
 import 'package:findme/globals.dart' as globals;
+import 'package:findme/events.dart' as events;
 
 class TabbedScreen extends StatefulWidget {
 
@@ -179,6 +180,7 @@ class _TabbedScreenState extends State<TabbedScreen> {
                     _currentTab = newTab;
                   });
                 }
+                events.sendEvent('tabSelect', {"tab": newTab.toString()});
               },
               showSelectedLabels: false,
               showUnselectedLabels: false,

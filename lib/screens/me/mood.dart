@@ -5,6 +5,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:findme/widgets/misc.dart';
 import 'package:findme/models/user.dart';
 import 'package:findme/globals.dart' as globals;
+import 'package:findme/events.dart' as events;
 
 class MoodItem extends StatelessWidget {
 
@@ -99,6 +100,7 @@ class _MoodState extends State<Mood> {
                             globals.addPostCall('me/avatar/update/', {"id": moodAvatar['id']});
                             return user;
                           });
+                          events.sendEvent('avatarSelect', {"avatar": avatar['name']});
                         }),
                         child: CachedNetworkImage(
                           imageUrl: avatar['url'],
@@ -169,6 +171,7 @@ class _MoodState extends State<Mood> {
                         user.avatar = avatar['url'];
                         return user;
                       });
+                      events.sendEvent('moodSelect', {"mood": avatar['mood']});
                     },
                     elementsToDisplay: 3,
                     initialPage: avatarList.indexWhere((avatar) => avatar['mood'] == user.mood),

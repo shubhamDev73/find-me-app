@@ -7,6 +7,7 @@ import 'package:findme/widgets/misc.dart';
 import 'package:findme/models/interests.dart';
 import 'package:findme/models/user.dart';
 import 'package:findme/globals.dart' as globals;
+import 'package:findme/events.dart' as events;
 
 class QuestionsWidget extends StatefulWidget {
 
@@ -57,6 +58,7 @@ class _QuestionsWidgetState extends State<QuestionsWidget> {
             ),
             onPageChanged: (index, reason) => setState(() {
               currentQuestion = widget.questions[index];
+              events.sendEvent('questionSelect', {"question": currentQuestion['id']});
             }),
           ),
         ),
@@ -105,6 +107,7 @@ class _QuestionsWidgetState extends State<QuestionsWidget> {
       user.interests[interestId] = interest;
       return user;
     });
+    events.sendEvent('questionAnswer', {"question": questionId});
   }
 
 }
@@ -202,6 +205,7 @@ class _InterestsState extends State<Interests> {
                     child: ListView(
                       children: getInterestList(user.interests.values.toList(), (int newInterestId) => setState(() {
                         interestId = newInterestId;
+                        events.sendEvent('interestSelect', {"interest": interestId});
                       }), interestId),
                     ),
                   ),
@@ -214,6 +218,7 @@ class _InterestsState extends State<Interests> {
                 text: "+ Interests",
                 onTap: () {
                   Navigator.of(context).pushNamed('/interests/add');
+                  events.sendEvent('addInterestsClick');
                 },
               ) : Container(),
               SizedBox(

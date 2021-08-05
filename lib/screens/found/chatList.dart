@@ -9,6 +9,7 @@ import 'package:findme/models/found.dart';
 import 'package:findme/models/appSettings.dart';
 import 'package:findme/constant.dart';
 import 'package:findme/globals.dart' as globals;
+import 'package:findme/events.dart' as events;
 
 class FoundPage extends StatelessWidget {
 
@@ -60,13 +61,14 @@ class FoundPage extends StatelessWidget {
                           onTap: () {
                             List<AppSettings> settings = List.of({
                               AppSettings(text: "Search", onTap: () => globals.scaffoldKey.currentState.showSnackBar(SnackBar(content: Text("Not implemented")))),
-                              aboutSettings(context),
-                              privacySettings(context),
-                              muteNotificationsSettings,
-                              logoutSettings,
+                              aboutSettings(context, 'found'),
+                              privacySettings(context, 'found'),
+                              muteNotificationsSettings('found'),
+                              logoutSettings('found'),
                             });
 
                             Navigator.of(context).pushNamed('/settings', arguments: settings);
+                            events.sendEvent('settingsClick', {"page": "found"});
                           },
                           child: Icon(Icons.more_vert),
                         ),

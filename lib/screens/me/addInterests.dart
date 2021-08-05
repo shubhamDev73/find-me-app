@@ -9,6 +9,7 @@ import 'package:findme/models/user.dart';
 import 'package:findme/models/interests.dart';
 import 'package:findme/constant.dart';
 import 'package:findme/globals.dart' as globals;
+import 'package:findme/events.dart' as events;
 
 class AddInterests extends StatefulWidget {
 
@@ -89,6 +90,7 @@ class _AddInterestsState extends State<AddInterests> {
                             user.interests = LinkedHashMap.fromIterable(newInterests, key: (interest) => interest.id, value: (interest) => interest);
                             return user;
                           });
+                          events.sendEvent('addInterest', {"interest": interest.id, "amount": amount});
                         },
                         amount: user.interests.containsKey(interest.id) ? user.interests[interest.id].amount : 0,
                         canChangeAmount: interest.id != 0,
