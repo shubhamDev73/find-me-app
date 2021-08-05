@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:findme/screens/navigation/animatedRoute.dart';
 import 'package:findme/screens/login/onboarding.dart';
 import 'package:findme/screens/login/login.dart';
+import 'package:findme/screens/login/extra.dart';
 import 'package:findme/screens/login/register.dart';
 import 'package:findme/screens/login/otpSend.dart';
 import 'package:findme/screens/login/otpCheck.dart';
@@ -15,6 +16,7 @@ class LoginScreens extends StatelessWidget {
   final Map<String, Widget> routes = {
     '/': OnboardingScreens(),
     '/login': Login(),
+    '/extra': Extra(),
     '/register': Register(),
     '/otp/send': OtpSend(),
     '/otp/check': OtpCheck(),

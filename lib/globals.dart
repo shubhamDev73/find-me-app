@@ -285,3 +285,4 @@ void _makePostCalls(List<dynamic> postsList) {
 }
 
 String otpUsername;
+Map<String, dynamic> tempExternalRegister;

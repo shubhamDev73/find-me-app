@@ -33,9 +33,13 @@ class _LoginState extends State<Login> {
         setState(() {
           isLoading = false;
         });
-        if(json.containsKey('token'))
-          globals.token.set(json['token']);
-        else
+        if(json.containsKey('token')){
+          if(json.remove('created')){
+            globals.tempExternalRegister = json;
+            Navigator.of(context).pushNamed('/extra');
+          }else
+            globals.token.set(json['token']);
+        }else
           globals.scaffoldKey.currentState.showSnackBar(SnackBar(content: Text("${json['error']}")));
       }, onError: (String errorText) {
         setState(() {
