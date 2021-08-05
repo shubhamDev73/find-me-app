@@ -46,6 +46,11 @@ CachedData<String> token = CachedData(
 );
 Function onLogin, onLogout;
 
+CachedData<String> email = CachedData(
+  emptyValue: '',
+  cacheFile: 'email.txt',
+);
+
 
 // data
 

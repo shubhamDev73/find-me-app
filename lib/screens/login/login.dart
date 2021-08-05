@@ -36,9 +36,12 @@ class _LoginState extends State<Login> {
         if(json.containsKey('token')){
           if(json.remove('created')){
             globals.tempExternalRegister = json;
+            globals.tempExternalRegister['email'] = account.email;
             Navigator.of(context).pushNamed('/extra');
-          }else
+          }else{
             globals.token.set(json['token']);
+            globals.email.set(account.email);
+          }
         }else
           globals.scaffoldKey.currentState.showSnackBar(SnackBar(content: Text("${json['error']}")));
       }, onError: (String errorText) {
@@ -125,9 +128,10 @@ class _LoginState extends State<Login> {
                     setState(() {
                       isLoading = false;
                     });
-                    if(json.containsKey('token'))
+                    if(json.containsKey('token')){
                       globals.token.set(json['token']);
-                    else
+                      globals.email.set(json['email']);
+                    }else
                       globals.scaffoldKey.currentState.showSnackBar(SnackBar(content: Text("${json['error']}")));
                   }, onError: (String errorText) {
                     setState(() {

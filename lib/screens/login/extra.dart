@@ -74,8 +74,10 @@ class _ExtraState extends State<Extra> {
                     });
                     if(json.containsKey('error'))
                       globals.scaffoldKey.currentState.showSnackBar(SnackBar(content: Text("${json['error']}")));
-                    else
+                    else{
                       globals.token.set(globals.tempExternalRegister['token']);
+                      globals.email.set(globals.tempExternalRegister['email']);
+                    }
                   }, onError: (String errorText) {
                     setState(() {
                       isLoading = false;

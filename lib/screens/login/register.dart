@@ -80,9 +80,10 @@ class _RegisterState extends State<Register> {
                     setState(() {
                       isLoading = false;
                     });
-                    if(json.containsKey('token'))
+                    if(json.containsKey('token')){
                       globals.token.set(json['token']);
-                    else
+                      globals.email.set(inputs['email']);
+                    }else
                       globals.scaffoldKey.currentState.showSnackBar(SnackBar(content: Text("${json['error']}")));
                   }, onError: (String errorText) {
                     setState(() {
