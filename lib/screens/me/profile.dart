@@ -63,86 +63,82 @@ class _ProfileState extends State<Profile> {
   @override
   Widget build(BuildContext context) {
     return createFutureWidget<User>(globals.getUser(me: widget.me), (User user) => Scaffold(
-      body: SafeArea(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Expanded(
-              flex: 7,
-              child: TopBox(
-                title: "Konichiwa",
-                desc: "Did you know the US armys traning bumbelbees to sniff out explosive?",
-                settings: widget.me,
-                widget: TraitsElements(
-                  onClick: (String trait) {
-                    Navigator.of(context).pushNamed('/personality', arguments: trait);
-                    events.sendEvent('traitSelect', {"trait": trait, "home": true});
-                  },
-                  personality: user.personality,
-                ),
-              ),
-            ),
-            Expanded(
-              flex: 8,
-              child: GestureDetector(
-                onTap: () {
-                  Navigator.of(context).pushNamed('/mood');
-                  events.sendEvent('avatarClick');
+      body: Column(
+        children: [
+          Expanded(
+            flex: 7,
+            child: TopBox(
+              title: "Konichiwa",
+              description: "Did you know the US armys traning bumbelbees to sniff out explosive?",
+              settings: widget.me,
+              widget: TraitsElements(
+                onClick: (String trait) {
+                  Navigator.of(context).pushNamed('/personality', arguments: trait);
+                  events.sendEvent('traitSelect', {"trait": trait, "home": true});
                 },
-                child: UserInfo(user),
+                personality: user.personality,
               ),
             ),
-            Expanded(
-              flex: 4,
-              child: Column(
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      createInterest(user, context, 0),
-                      SizedBox(width: 12),
-                      createInterest(user, context, 1),
-                    ],
-                  ),
-                  SizedBox(
-                    height: 20,
-                  ),
-                  Row(
-                    mainAxisSize: MainAxisSize.max,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      createInterest(user, context, 2),
-                      SizedBox(width: 12),
-                      createInterest(user, context, 3),
-                      SizedBox(width: 12),
-                      createInterest(user, context, 4),
-                    ],
-                  ),
-                ],
-              ),
+          ),
+          Expanded(
+            flex: 8,
+            child: GestureDetector(
+              onTap: () {
+                Navigator.of(context).pushNamed('/mood');
+                events.sendEvent('avatarClick');
+              },
+              child: UserInfo(user),
             ),
-            Expanded(
-              flex: 2,
-              child: Column(
-                children: [
-                  Button(
-                    text: widget.me ? "Feedback" : "Talk",
-                    onTap: () async {
-                      if(widget.me){
-                        String url = '';
-                        if(await canLaunch(url)) await launch(url);
-                        events.sendEvent('feedbackClick');
-                      }else{
-                        Navigator.of(context).pushNamed('/message', arguments: ModalRoute.of(context)!.settings.arguments);
-                      }
-                    },
-                  ),
-                ],
-              ),
+          ),
+          Expanded(
+            flex: 4,
+            child: Column(
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    createInterest(user, context, 0),
+                    SizedBox(width: 12),
+                    createInterest(user, context, 1),
+                  ],
+                ),
+                SizedBox(
+                  height: 20,
+                ),
+                Row(
+                  mainAxisSize: MainAxisSize.max,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    createInterest(user, context, 2),
+                    SizedBox(width: 12),
+                    createInterest(user, context, 3),
+                    SizedBox(width: 12),
+                    createInterest(user, context, 4),
+                  ],
+                ),
+              ],
             ),
-          ],
-        ),
+          ),
+          Expanded(
+            flex: 2,
+            child: Column(
+              children: [
+                Button(
+                  text: widget.me ? "Feedback" : "Talk",
+                  onTap: () async {
+                    if(widget.me){
+                      String url = '';
+                      if(await canLaunch(url)) await launch(url);
+                      events.sendEvent('feedbackClick');
+                    }else{
+                      Navigator.of(context).pushNamed('/message', arguments: ModalRoute.of(context)!.settings.arguments);
+                    }
+                  },
+                ),
+              ],
+            ),
+          ),
+        ],
       ),
     ));
   }

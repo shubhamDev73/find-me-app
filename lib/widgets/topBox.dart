@@ -8,12 +8,12 @@ class TopBox extends StatelessWidget {
 
   final double height;
   final String? title;
-  final String desc;
+  final String description;
   final Widget? secondaryWidget;
   final Widget? widget;
   final bool settings;
 
-  const TopBox({this.height = 210, this.title, this.secondaryWidget, this.desc = '', this.widget, this.settings = false});
+  const TopBox({this.height = 210, this.title, this.secondaryWidget, this.description = '', this.widget, this.settings = false});
 
   @override
   Widget build(BuildContext context) {
@@ -25,11 +25,11 @@ class TopBox extends StatelessWidget {
         ),
         Column(
           children: [
-            SizedBox(height: 20),
+            SizedBox(height: 40),
             Row(
               mainAxisAlignment: settings ? MainAxisAlignment.end : MainAxisAlignment.start,
               children: [
-                SizedBox(width: 10),
+                SizedBox(width: 12),
                 settings ? InkWell(
                   onTap: () {
                     List<AppSettings> settings = List.of({
@@ -58,7 +58,7 @@ class TopBox extends StatelessWidget {
                 SizedBox(width: 10),
               ],
             ),
-            SizedBox(height: 20),
+            SizedBox(height: 10),
             title != null ? Text(
               title!,
               textAlign: TextAlign.center,
@@ -67,11 +67,12 @@ class TopBox extends StatelessWidget {
                 fontWeight: FontWeight.w600,
               ),
             ) : Container(),
-            SizedBox(height: 25),
-            secondaryWidget ?? Container(
+            SizedBox(height: 20),
+            Container(
               padding: EdgeInsets.symmetric(horizontal: 20),
-              child: Text(
-                desc,
+              height: 40,
+              child: secondaryWidget ?? Text(
+                description,
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   fontSize: 14,
@@ -79,7 +80,7 @@ class TopBox extends StatelessWidget {
                 ),
               ),
             ),
-            SizedBox(height: 22),
+            SizedBox(height: 10),
             widget ?? Container(),
           ],
         ),

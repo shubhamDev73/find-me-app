@@ -96,9 +96,11 @@ MappedCachedData<String, Map<String, dynamic>> personality = MappedCachedData(
   url: 'personality/',
   cacheFile: 'personality.json',
   networkDecoder: (data) {
-    Map<String, Map<String, dynamic>> decoded = jsonDecode(data);
-    LinkedHashMap<String, Map<String, dynamic>> personality = LinkedHashMap<String, Map<String, dynamic>>();
+    Map<String, dynamic> decoded = jsonDecode(data);
+    LinkedHashMap<String, Map<String, dynamic>> personality = LinkedHashMap.identity();
+    personality['trait'] = Map.identity();
     for(String key in decoded['trait']!.keys){
+      personality['trait']![key] = Map.identity();
       personality['trait']![key]['description'] = decoded['trait']![key]['description'];
       personality['trait']![key]['url'] = decoded['trait']![key]['url'];
       personality['trait']![key]['adjectives'] = LinkedHashMap<int, Map<String, dynamic>>.fromIterable(decoded['trait']![key]['adjectives'],

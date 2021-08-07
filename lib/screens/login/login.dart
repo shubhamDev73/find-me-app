@@ -99,7 +99,7 @@ class _LoginState extends State<Login> {
             Expanded(
               flex: 5,
               child: InputForm(
-                fieldTypes: ['username', 'password', 'submit', 'button', 'button'],
+                fieldTypes: ['username', 'password', 'submit', 'button', 'button', 'button'],
                 submitText: 'login',
                 buttons: [
                   Button(

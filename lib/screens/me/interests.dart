@@ -36,30 +36,27 @@ class _QuestionsWidgetState extends State<QuestionsWidget> {
     TextEditingController answerController = TextEditingController(text: currentQuestion!['answer']);
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
-      crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        Expanded(
-          flex: 4,
-          child: Carousel(
-            items: widget.questions,
-            widget: (question) => Container(
-              padding: EdgeInsets.symmetric(horizontal: 50),
-              child: Center(
-                child: Text(
-                  question['question'],
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontSize: 28,
-                    fontWeight: FontWeight.w700,
-                  ),
+        Carousel(
+          items: widget.questions,
+          widget: (question) => Container(
+            padding: EdgeInsets.symmetric(horizontal: 50),
+            child: Center(
+              child: Text(
+                question['question'],
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: 28,
+                  fontWeight: FontWeight.w700,
                 ),
               ),
             ),
-            onPageChanged: (index, reason) => setState(() {
-              currentQuestion = widget.questions[index];
-              events.sendEvent('questionSelect', {"question": currentQuestion!['id']});
-            }),
           ),
+          onPageChanged: (index, reason) => setState(() {
+            currentQuestion = widget.questions[index];
+            events.sendEvent('questionSelect', {"question": currentQuestion!['id']});
+          }),
+          gap: 250,
         ),
         Container(
           margin: EdgeInsets.symmetric(horizontal: 60),
@@ -116,9 +113,10 @@ List<Widget> getInterestList(List<Interest> obj, Function onClick, int id) {
   List<Widget> widgetList = [SizedBox(height: 17)];
   int itemCounter = 0;
 
-  for(int i = 0; i <= (obj.length ~/ 5) * 2; i++){
-    List<Widget> tempRow = [];
-    for(int j = 0; j < i % 2 + 2; j++){
+  int elementsInRow = 2;
+  while(itemCounter < obj.length){
+    List<Widget> tempRow = List.empty(growable: true);
+    for(int j = 0; j < elementsInRow; j++){
       if(itemCounter >= obj.length) break;
       Interest interest = obj[itemCounter++];
       tempRow.add(InterestButton(
@@ -127,7 +125,7 @@ List<Widget> getInterestList(List<Interest> obj, Function onClick, int id) {
         amount: interest.amount,
         selected: interest.id == id,
       ));
-      if(j != i % 2 + 1)
+      if(j != elementsInRow - 1 && itemCounter != obj.length)
         tempRow.add(SizedBox(width: 12));
     }
 
@@ -136,6 +134,7 @@ List<Widget> getInterestList(List<Interest> obj, Function onClick, int id) {
       mainAxisAlignment: MainAxisAlignment.center,
     ));
     widgetList.add(SizedBox(height: 20));
+    elementsInRow = elementsInRow == 2 ? 3 : 2;
   }
 
   return widgetList;
@@ -172,59 +171,53 @@ class _InterestsState extends State<Interests> {
 
     return createFutureWidget<User>(globals.getUser(me: widget.me), (User user) {
       return Scaffold(
-        body: SafeArea(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Expanded(
-                flex: 1,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    Container(
-                      padding: EdgeInsets.symmetric(horizontal: 12),
-                      child: InkWell(
-                        onTap: () => Navigator.of(context).pop(),
-                        child: Icon(Icons.arrow_back_ios),
-                      ),
+        body: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Expanded(
+              flex: 1,
+              child: Stack(
+                children: [
+                  Positioned(
+                    top: 40,
+                    left: 12,
+                    child: InkWell(
+                      onTap: () => Navigator.of(context).pop(),
+                      child: Icon(Icons.arrow_back_ios),
                     ),
-                  ],
-                ),
+                  ),
+                ],
               ),
-              Expanded(
-                flex: 5,
-                child: QuestionsWidget(me: widget.me, interestId: interestId!, questions: user.interests[interestId]!.questions),
-              ),
-              Expanded(
-                flex: 6,
-                child: Container(
-                  padding: EdgeInsets.symmetric(horizontal: 10),
-                  color: ThemeColors.lightColor,
-                  child: ThemeScrollbar(
-                    child: ListView(
-                      children: getInterestList(user.interests.values.toList(), (int newInterestId) => setState(() {
-                        interestId = newInterestId;
-                        events.sendEvent('interestSelect', {"interest": interestId});
-                      }), interestId!),
-                    ),
+            ),
+            Expanded(
+              flex: 5,
+              child: QuestionsWidget(me: widget.me, interestId: interestId!, questions: user.interests[interestId]!.questions),
+            ),
+            Expanded(
+              flex: 6,
+              child: Container(
+                padding: EdgeInsets.symmetric(horizontal: 10),
+                color: ThemeColors.lightColor,
+                child: ThemeScrollbar(
+                  child: ListView(
+                    children: getInterestList(user.interests.values.toList(), (int newInterestId) => setState(() {
+                      interestId = newInterestId;
+                      events.sendEvent('interestSelect', {"interest": interestId});
+                    }), interestId!),
                   ),
                 ),
               ),
-              SizedBox(
-                height: 10,
-              ),
-              widget.me ? Button(
-                text: "+ Interests",
-                onTap: () {
-                  Navigator.of(context).pushNamed('/interests/add');
-                  events.sendEvent('addInterestsClick');
-                },
-              ) : Container(),
-              SizedBox(
-                height: 15,
-              ),
-            ],
-          ),
+            ),
+            SizedBox(height: 10),
+            widget.me ? Button(
+              text: "+ Interests",
+              onTap: () {
+                Navigator.of(context).pushNamed('/interests/add');
+                events.sendEvent('addInterestsClick');
+              },
+            ) : Container(),
+            SizedBox(height: 15),
+          ],
         ),
       );
     });

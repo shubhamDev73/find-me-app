@@ -13,5 +13,6 @@ void sendEvent(String event, [Map<String, dynamic>? properties]) async {
     "event": event,
   };
   if(properties != null) body['properties'] = properties;
-  await http.post(Uri(path: eventsUrl), body: jsonEncode(body), headers: {"Authorization": "Basic $apiKey"}).timeout(Duration(minutes: 2));
+  String key = base64.encode(utf8.encode(apiKey + ":"));
+  await http.post(Uri.parse(eventsUrl), body: jsonEncode(body), headers: {"Authorization": "Basic $key"}).timeout(Duration(minutes: 2));
 }

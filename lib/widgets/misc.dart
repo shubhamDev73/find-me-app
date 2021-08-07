@@ -149,7 +149,6 @@ class Button extends StatelessWidget {
             ),
           ),
         );
-        break;
       case 'raised':
         return Container(
           height: height,
@@ -168,7 +167,6 @@ class Button extends StatelessWidget {
             ),
           ),
         );
-        break;
       default:
         return Container();
     }
@@ -183,7 +181,8 @@ class Carousel extends StatefulWidget {
   final Function? onPageChanged;
   final int elementsToDisplay;
   final int initialPage;
-  Carousel({this.controller, required this.items, required this.widget, this.onPageChanged, this.elementsToDisplay = 1, this.initialPage = 0});
+  final double gap;
+  Carousel({this.controller, required this.items, required this.widget, this.onPageChanged, this.elementsToDisplay = 1, this.initialPage = 0, this.gap = 100});
 
   @override
   _CarouselState createState() => _CarouselState();
@@ -200,77 +199,66 @@ class _CarouselState extends State<Carousel> {
   }
 
   @override
-  void didUpdateWidget(Carousel oldWidget){
-    widget.controller?.jumpToPage(0);
-    super.didUpdateWidget(oldWidget);
-  }
-
-  @override
   Widget build(BuildContext context) {
-    return Column(
+    return Stack(
+      alignment: Alignment.center,
       children: [
-        Stack(
-          alignment: Alignment.center,
-          children: [
-            CarouselSlider(
-              carouselController: widget.controller,
-              items: widget.items.map((item) => widget.widget(item)).toList(),
-              options: CarouselOptions(
-                initialPage: widget.initialPage,
-                scrollDirection: Axis.horizontal,
-                enableInfiniteScroll: true,
-//                height: 200,
-                viewportFraction: 1.0 / widget.elementsToDisplay,
-                onPageChanged: (index, reason) {
-                  setState(() {
-                    currentIndex = index;
-                  });
-                  widget.onPageChanged?.call(index, reason);
-                },
-              ),
-            ),
-            Positioned(
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Padding(
-                    padding: EdgeInsets.only(left: 12.0),
-                    child: GestureDetector(
-                      onTap: () => widget.controller?.previousPage(
-                        duration: Duration(milliseconds: 300),
-                        curve: Curves.decelerate,
-                      ),
-                      child: Container(
-                        child: Center(
-                          child: Icon(Icons.arrow_back_ios),
-                        ),
-                      ),
-                    ),
-                  ),
-                  Padding(
-                    padding: EdgeInsets.only(right: 12.0),
-                    child: GestureDetector(
-                      onTap: () => widget.controller?.nextPage(
-                        duration: Duration(milliseconds: 300),
-                        curve: Curves.decelerate,
-                      ),
-                      child: Container(
-                        child: Center(
-                          child: Icon(Icons.arrow_forward_ios),
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ],
+        CarouselSlider(
+          carouselController: widget.controller,
+          items: widget.items.map((item) => widget.widget(item)).toList(),
+          options: CarouselOptions(
+            initialPage: widget.initialPage,
+            scrollDirection: Axis.horizontal,
+            enableInfiniteScroll: true,
+            viewportFraction: 1.0 / widget.elementsToDisplay,
+            onPageChanged: (index, reason) {
+              setState(() {
+                currentIndex = index;
+              });
+              widget.onPageChanged?.call(index, reason);
+            },
+          ),
         ),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: widget.items.map((item) {
-            int index = widget.items.indexOf(item);
-            return Container(
+        Positioned(
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Padding(
+                padding: EdgeInsets.only(left: 12.0),
+                child: GestureDetector(
+                  onTap: () => widget.controller?.previousPage(
+                    duration: Duration(milliseconds: 300),
+                    curve: Curves.decelerate,
+                  ),
+                  child: Container(
+                    child: Center(
+                      child: Icon(Icons.arrow_back_ios),
+                    ),
+                  ),
+                ),
+              ),
+              Padding(
+                padding: EdgeInsets.only(right: 12.0),
+                child: GestureDetector(
+                  onTap: () => widget.controller?.nextPage(
+                    duration: Duration(milliseconds: 300),
+                    curve: Curves.decelerate,
+                  ),
+                  child: Container(
+                    child: Center(
+                      child: Icon(Icons.arrow_forward_ios),
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+        Positioned(
+          top: widget.gap,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: widget.items.asMap().map((index, item) => MapEntry(index, Container(
               width: 8.0,
               height: 8.0,
               margin: EdgeInsets.symmetric(vertical: 10.0, horizontal: 2.0),
@@ -279,8 +267,8 @@ class _CarouselState extends State<Carousel> {
                 border: currentIndex == index ? null : Border.all(color: Colors.black),
                 color: currentIndex == index ? Colors.black : Colors.white,
               ),
-            );
-          }).toList(),
+            ))).values.toList(),
+          ),
         ),
       ],
     );
@@ -316,7 +304,7 @@ class InputForm extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    List<TextEditingController> controllers = List.filled(fieldTypes.length, TextEditingController());
+    List<TextEditingController> controllers = List.generate(fieldTypes.length, (index) => TextEditingController());
     int submitIndex = fieldTypes.indexOf('submit');
     int passwordIndex = fieldTypes.indexOf('password');
     return Container(
@@ -324,13 +312,14 @@ class InputForm extends StatelessWidget {
       child: Form(
         key: _formKey,
         child: Column(
-          children: fieldTypes.map((fieldType) {
-            int index = fieldTypes.indexOf(fieldType);
+          children: fieldTypes.asMap().map((index, fieldType) {
+            Widget widget = Container();
             switch(fieldType){
               case 'password':
-                return PasswordField(passwordController: controllers[index]);
+                widget = PasswordField(passwordController: controllers[index]);
+                break;
               case 'confirmPassword':
-                return PasswordField(
+                widget = PasswordField(
                   passwordController: controllers[index],
                   label: "confirm password",
                   validator: (value) {
@@ -340,8 +329,9 @@ class InputForm extends StatelessWidget {
                     return null;
                   },
                 );
+                break;
               case 'submit':
-                return Button(
+                widget = Button(
                   type: 'raised',
                   text: submitText,
                   onTap: () {
@@ -354,10 +344,12 @@ class InputForm extends StatelessWidget {
                     if(_formKey.currentState!.validate()) onSubmit(inputs);
                   },
                 );
+                break;
               case 'button':
-                return buttons![index - submitIndex - 1];
+                widget = buttons![index - submitIndex - 1];
+                break;
               case 'username':
-                return textFieldForRegistration(
+                widget = textFieldForRegistration(
                   editingController: controllers[index],
                   keyType: TextInputType.name,
                   label: "email/phone/username",
@@ -365,8 +357,9 @@ class InputForm extends StatelessWidget {
                   autofocus: true,
                   autofillHints: [AutofillHints.email, AutofillHints.telephoneNumber, AutofillHints.nickname, AutofillHints.name, AutofillHints.username],
                 );
+                break;
               case 'email':
-                return textFieldForRegistration(
+                widget = textFieldForRegistration(
                   editingController: controllers[index],
                   keyType: TextInputType.emailAddress,
                   label: "email",
@@ -374,8 +367,9 @@ class InputForm extends StatelessWidget {
                   autofocus: true,
                   autofillHints: [AutofillHints.email],
                 );
+                break;
               case 'phone':
-                return textFieldForRegistration(
+                widget = textFieldForRegistration(
                   editingController: controllers[index],
                   keyType: TextInputType.phone,
                   label: "phone no",
@@ -383,10 +377,10 @@ class InputForm extends StatelessWidget {
                   autofocus: true,
                   autofillHints: [AutofillHints.telephoneNumber],
                 );
-              default:
-                return Container();
+                break;
             }
-          }).toList(),
+            return MapEntry(index, widget);
+          }).values.toList(),
         ),
       ),
     );
@@ -415,6 +409,7 @@ class _FoundWidgetState extends State<FoundWidget> {
   @override
   void dispose() {
     globals.onFoundChanged[widget.id]?.remove(widget.string);
+    super.dispose();
   }
 
   @override

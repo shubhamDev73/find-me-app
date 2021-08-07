@@ -50,4 +50,4 @@ flutter:
   fonts:
     - family: QuickSand
       fonts:
-        - asset: assets\fonts\Quicksand.ttf
+        - asset: assets/fonts/Quicksand.ttf

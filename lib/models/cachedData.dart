@@ -53,7 +53,7 @@ class CachedData<T> {
 
   void set (T value) {
     _cachedValue = value;
-    setCallback?.call(_cachedValue);
+    setCallback?.call(_cachedValue!);
     saveToFile();
   }
 
@@ -73,7 +73,7 @@ class CachedData<T> {
   Future<void> saveToFile () async {
     if(cacheFile == null) return;
     File file = await getFile(cacheFile!);
-    String writeString = isEmpty() ? '' : (encoder?.call(_cachedValue!) ?? jsonEncode(_cachedValue));
+    String writeString = isEmpty() ? '' : (encoder?.call(_cachedValue!) ?? jsonEncode(_cachedValue! as Map<String, dynamic>));
     await file.writeAsString(writeString);
   }
 
@@ -89,7 +89,7 @@ class MappedCachedData<K, V> extends CachedData<LinkedHashMap<K, V>> {
     LinkedHashMap<K, V> Function(String)? networkDecoder,
     Function(LinkedHashMap<K, V>, K key)? setCallback,
   }) : super(
-    emptyValue: new LinkedHashMap<K, V>(),
+    emptyValue: LinkedHashMap.identity(),
     url: url,
     cacheFile: cacheFile,
     encoder: encoder,
@@ -105,13 +105,13 @@ class MappedCachedData<K, V> extends CachedData<LinkedHashMap<K, V>> {
 
   @override
   void clear () {
-    emptyValue = new LinkedHashMap<K, V>();
+    emptyValue = LinkedHashMap.identity();
     super.clear();
   }
 
   void mappedSet (K key, V value) {
     _cachedValue![key] = value;
-    setCallback?.call(_cachedValue, key);
+    setCallback?.call(_cachedValue!, key);
     saveToFile();
   }
 

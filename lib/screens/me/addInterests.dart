@@ -46,7 +46,7 @@ class _AddInterestsState extends State<AddInterests> {
                 child: TopBox(
                   height: 100,
                   title: "Interests",
-                  desc: "tap and tap",
+                  description: "tap and tap",
                 ),
               ),
               Expanded(
