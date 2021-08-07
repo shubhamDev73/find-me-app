@@ -49,9 +49,9 @@ CachedData<String> token = CachedData(
 );
 Function? onLogin, onLogout;
 
-CachedData<String> email = CachedData(
+CachedData<String> userId = CachedData(
   emptyValue: '',
-  cacheFile: 'email.txt',
+  cacheFile: 'userId.txt',
 );
 
 

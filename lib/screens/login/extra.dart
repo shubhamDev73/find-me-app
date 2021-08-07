@@ -76,7 +76,7 @@ class _ExtraState extends State<Extra> {
                       globals.scaffoldKey.currentState!.showSnackBar(SnackBar(content: Text("${json['error']}")));
                     else{
                       globals.token.set(globals.tempExternalRegister['token']);
-                      globals.email.set(globals.tempExternalRegister['email']);
+                      globals.userId.set(globals.tempExternalRegister['user_id']);
                       globals.tempExternalRegister.clear();
                     }
                   }, onError: (String errorText) {

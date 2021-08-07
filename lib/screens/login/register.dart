@@ -82,7 +82,7 @@ class _RegisterState extends State<Register> {
                     });
                     if(json.containsKey('token')){
                       globals.token.set(json['token']);
-                      globals.email.set(inputs['email']!);
+                      globals.userId.set(json['user_id']);
                     }else
                       globals.scaffoldKey.currentState!.showSnackBar(SnackBar(content: Text("${json['error']}")));
                   }, onError: (String errorText) {

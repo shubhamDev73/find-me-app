@@ -7,9 +7,9 @@ const String apiKey = 'e7TYHNHGsdoP8YR0Nt5CHrwg6TCkmMti';
 const String eventsUrl = 'https://api.segment.io/v1/track';
 
 void sendEvent(String event, [Map<String, dynamic>? properties]) async {
-  String userID = await globals.email.get();
+  String userId = await globals.userId.get();
   Map<String, dynamic> body = {
-    "userId": userID,
+    "userId": userId,
     "event": event,
   };
   if(properties != null) body['properties'] = properties;
