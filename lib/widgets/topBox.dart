@@ -7,10 +7,10 @@ import 'package:findme/events.dart' as events;
 class TopBox extends StatelessWidget {
 
   final double height;
-  final String title;
+  final String? title;
   final String desc;
-  final Widget secondaryWidget;
-  final Widget widget;
+  final Widget? secondaryWidget;
+  final Widget? widget;
   final bool settings;
 
   const TopBox({this.height = 210, this.title, this.secondaryWidget, this.desc = '', this.widget, this.settings = false});
@@ -60,7 +60,7 @@ class TopBox extends StatelessWidget {
             ),
             SizedBox(height: 20),
             title != null ? Text(
-              title,
+              title!,
               textAlign: TextAlign.center,
               style: TextStyle(
                 fontSize: 30,

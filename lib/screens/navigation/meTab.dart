@@ -12,7 +12,7 @@ import 'package:findme/screens/me/changePassword.dart';
 
 class MeTab extends StatelessWidget {
 
-  final GlobalKey<NavigatorState> navigatorKey;
+  final GlobalKey<NavigatorState>? navigatorKey;
   MeTab({this.navigatorKey});
 
   Map<String, Widget> createRoutes() {

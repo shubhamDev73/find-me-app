@@ -10,8 +10,8 @@ import 'package:findme/events.dart' as events;
 class MoodItem extends StatelessWidget {
 
   final Map<String, dynamic> avatar;
-  final Function onTap;
-  MoodItem({this.avatar, this.onTap});
+  final void Function() onTap;
+  MoodItem({required this.avatar, required this.onTap});
 
   @override
   Widget build(BuildContext context) {
@@ -38,7 +38,7 @@ class Mood extends StatefulWidget {
 
 class _MoodState extends State<Mood> {
 
-  String mood;
+  String? mood;
   final CarouselController moodController = new CarouselController();
 
   @override
@@ -63,7 +63,7 @@ class _MoodState extends State<Mood> {
       createFutureWidget(globals.getUser(me: widget.me), (User user) {
         if(mood == null) mood = user.mood;
         Map<String, dynamic> userAvatars = avatars[user.baseAvatar]['avatars'];
-        List<Map<String, dynamic>> avatarList = userAvatars.values.toList();
+        List avatarList = userAvatars.values.toList();
         return Scaffold(
           body: SafeArea(
             child: Column(

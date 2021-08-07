@@ -4,13 +4,13 @@ import 'package:flutter/material.dart';
 
 class SettingsScreen extends StatelessWidget {
 
-  final List<AppSettings> appSettings;
+  final List<AppSettings>? appSettings;
 
   const SettingsScreen({this.appSettings});
 
   @override
   Widget build(BuildContext context) {
-    List<AppSettings> settings = appSettings ?? ModalRoute.of(context).settings.arguments;
+    List<AppSettings> settings = appSettings ?? ModalRoute.of(context)!.settings.arguments as List<AppSettings>;
     return Scaffold(
       body: SafeArea(
         child: Column(

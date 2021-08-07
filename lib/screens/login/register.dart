@@ -82,14 +82,14 @@ class _RegisterState extends State<Register> {
                     });
                     if(json.containsKey('token')){
                       globals.token.set(json['token']);
-                      globals.email.set(inputs['email']);
+                      globals.email.set(inputs['email']!);
                     }else
-                      globals.scaffoldKey.currentState.showSnackBar(SnackBar(content: Text("${json['error']}")));
+                      globals.scaffoldKey.currentState!.showSnackBar(SnackBar(content: Text("${json['error']}")));
                   }, onError: (String errorText) {
                     setState(() {
                       isLoading = false;
                     });
-                    globals.scaffoldKey.currentState.showSnackBar(SnackBar(content: Text(errorText)));
+                    globals.scaffoldKey.currentState!.showSnackBar(SnackBar(content: Text(errorText)));
                   });
                 },
               ),

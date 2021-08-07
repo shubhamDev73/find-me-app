@@ -9,7 +9,7 @@ import 'package:findme/screens/settings.dart';
 class FoundTab extends StatelessWidget {
 
   final GlobalKey<NavigatorState> navigatorKey;
-  FoundTab({this.navigatorKey});
+  FoundTab({required this.navigatorKey});
 
   final Map<String, Widget> meRoutes = MeTab().createRoutes();
   final Map<String, Widget> routes = {
@@ -21,7 +21,7 @@ class FoundTab extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if(!routes.containsKey('/user')){
-      routes['/user'] = meRoutes.remove('/');
+      routes['/user'] = meRoutes.remove('/')!;
       routes.addAll(meRoutes);
     }
     return Navigator(

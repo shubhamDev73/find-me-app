@@ -16,10 +16,10 @@ class TraitButton extends StatelessWidget {
 
   final String trait;
   final double value;
-  final Function onTap;
+  final void Function() onTap;
   final bool selected;
 
-  TraitButton({this.trait, this.value, this.onTap, this.selected = false});
+  TraitButton({required this.trait, required this.value, required this.onTap, this.selected = false});
 
   @override
   Widget build (BuildContext context) {
@@ -34,7 +34,7 @@ class TraitButton extends StatelessWidget {
           padding: EdgeInsets.all(selected ? 0.0 : 5.0),
           child: TraitIcon(
             icon: SvgPicture.asset(
-              Assets.traits[trait]['icon'],
+              Assets.traits[trait]!['icon'] as String,
               color: value >= 0 ? ThemeColors.positiveTraitColor : ThemeColors.negativeTraitColor,
               width: selected ? selectedSvgSize : normalSvgSize,
               height: selected ? selectedSvgSize : normalSvgSize,
@@ -51,21 +51,21 @@ class TraitButton extends StatelessWidget {
 
 class TraitsElements extends StatelessWidget {
 
-  final String selectedElement;
+  final String? selectedElement;
   final Map<String, dynamic> personality;
   final Function onClick;
 
   const TraitsElements({
     this.selectedElement,
-    this.personality,
-    this.onClick,
+    required this.personality,
+    required this.onClick,
   });
 
   Widget createButton (String trait) {
     return TraitButton(
       trait: trait,
       value: personality[trait] is double ? personality[trait] : personality[trait]['value'],
-      onTap: () => onClick?.call(trait),
+      onTap: () => onClick(trait),
       selected: selectedElement == trait,
     );
   }
@@ -95,7 +95,7 @@ class TraitIcon extends StatelessWidget {
   final double progress;
   final double iconSize;
 
-  const TraitIcon({Key key, this.icon, this.progress, this.iconSize}) : super(key: key);
+  const TraitIcon({required this.icon, required this.progress, required this.iconSize});
 
   @override
   Widget build(BuildContext context) {

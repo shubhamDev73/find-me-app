@@ -134,7 +134,7 @@ class _ProfileState extends State<Profile> {
                         if(await canLaunch(url)) await launch(url);
                         events.sendEvent('feedbackClick');
                       }else{
-                        Navigator.of(context).pushNamed('/message', arguments: ModalRoute.of(context).settings.arguments);
+                        Navigator.of(context).pushNamed('/message', arguments: ModalRoute.of(context)!.settings.arguments);
                       }
                     },
                   ),

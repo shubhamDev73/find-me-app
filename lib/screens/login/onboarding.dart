@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:findme/constant.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -11,15 +9,9 @@ class OnboardingScreens extends StatefulWidget {
 }
 
 class _OnboardingScreensState extends State<OnboardingScreens> {
-  List<SliderModel> mySLides = new List<SliderModel>();
+  List<SliderModel> slides = getSlides();
   int slideIndex = 0;
-  PageController controller;
-  @override
-  void initState() {
-    super.initState();
-    mySLides = getSlides();
-    controller = new PageController();
-  }
+  PageController controller = new PageController();
 
   @override
   Widget build(BuildContext context) {
@@ -62,19 +54,19 @@ class _OnboardingScreensState extends State<OnboardingScreens> {
                 },
                 children: <Widget>[
                   SlideTile(
-                    imagePath: mySLides[0].getImageAssetPath(),
-                    title: mySLides[0].getTitle(),
-                    desc: mySLides[0].getDesc(),
+                    imagePath: slides[0].getImageAssetPath(),
+                    title: slides[0].getTitle(),
+                    desc: slides[0].getDesc(),
                   ),
                   SlideTile(
-                    imagePath: mySLides[1].getImageAssetPath(),
-                    title: mySLides[1].getTitle(),
-                    desc: mySLides[1].getDesc(),
+                    imagePath: slides[1].getImageAssetPath(),
+                    title: slides[1].getTitle(),
+                    desc: slides[1].getDesc(),
                   ),
                   SlideTile(
-                    imagePath: mySLides[2].getImageAssetPath(),
-                    title: mySLides[2].getTitle(),
-                    desc: mySLides[2].getDesc(),
+                    imagePath: slides[2].getImageAssetPath(),
+                    title: slides[2].getTitle(),
+                    desc: slides[2].getDesc(),
                     isLast: true,
                   )
                 ],
@@ -185,7 +177,7 @@ class SlideTile extends StatelessWidget {
   final String imagePath, title, desc;
   final bool isLast;
 
-  SlideTile({this.imagePath, this.title, this.desc, this.isLast = false});
+  SlideTile({required this.imagePath, required this.title, required this.desc, this.isLast = false});
 
   @override
   Widget build(BuildContext context) {
@@ -210,9 +202,10 @@ class SlideTile extends StatelessWidget {
             child: Text(
               title,
               style: TextStyle(
-                  fontSize: 46,
-                  fontWeight: FontWeight.w400,
-                  color: Colors.white),
+                fontSize: 46,
+                fontWeight: FontWeight.w400,
+                color: Colors.white,
+              ),
             ),
           ),
           Hero(
@@ -220,9 +213,10 @@ class SlideTile extends StatelessWidget {
             child: Text(
               desc,
               style: TextStyle(
-                  fontSize: 12,
-                  fontWeight: FontWeight.w400,
-                  color: Colors.white),
+                fontSize: 12,
+                fontWeight: FontWeight.w400,
+                color: Colors.white,
+              ),
             ),
           ),
         ],

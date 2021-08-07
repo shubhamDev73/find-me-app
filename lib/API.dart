@@ -7,10 +7,10 @@ const String baseURL = 'https://shubham0209.pythonanywhere.com/api/';
 
 Future<http.Response> GET(String url) async {
   String token = await globals.token.get();
-  return http.get(baseURL + url, headers: {"Authorization": "Bearer $token"});
+  return http.get(Uri(path: baseURL + url), headers: {"Authorization": "Bearer $token"});
 }
 
-Future<T> GETResponse<T>(String url, {T Function(String) decoder, Function callback}) async {
+Future<T> GETResponse<T>(String url, {T Function(String)? decoder, Function? callback}) async {
   try{
     final response = await GET(url)
         .timeout(Duration(minutes: 2));
@@ -25,14 +25,15 @@ Future<T> GETResponse<T>(String url, {T Function(String) decoder, Function callb
   }catch(e){
     throw Exception('No network connection.');
   }
+  throw Exception('No network connection.');
 
 }
 
-Future<void> POST(String url, Map<String, dynamic> body, {bool useToken = true, Function callback, Function(String) onError}) async {
+Future<void> POST(String url, Map<String, dynamic>? body, {bool useToken = true, Function? callback, Function(String)? onError}) async {
   String token = await globals.token.get();
 
   try{
-    final response = await http.post(baseURL + url, body: jsonEncode(body), headers: useToken ? {"Authorization": "Bearer $token"} : null)
+    final response = await http.post(Uri(path: baseURL + url), body: jsonEncode(body), headers: useToken ? {"Authorization": "Bearer $token"} : null)
         .timeout(Duration(minutes: 2));
     if(response.statusCode == 200)
       callback?.call(jsonDecode(response.body));

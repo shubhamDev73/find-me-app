@@ -12,7 +12,7 @@ class ChatMessageItem extends StatelessWidget {
   final bool me;
   final int borderState; // 0: normal, 1: first message, 2: last message
 
-  ChatMessageItem({this.message, this.time, this.me, this.borderState = 0});
+  ChatMessageItem({required this.message, required this.time, required this.me, this.borderState = 0});
 
   final circleRadius = Radius.circular(16.0);
   final flatRadius = Radius.zero;
@@ -80,7 +80,7 @@ class ChatMessageItem extends StatelessWidget {
 class LastSeenWidget extends StatelessWidget {
 
   final Found found;
-  LastSeenWidget({this.found});
+  LastSeenWidget({required this.found});
 
   final DatabaseReference realtimeDB = FirebaseDatabase.instance.reference();
 

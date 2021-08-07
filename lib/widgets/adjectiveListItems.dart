@@ -2,10 +2,9 @@ import 'package:flutter/material.dart';
 
 class AdjListItem extends StatelessWidget {
   const AdjListItem({
-    Key key,
-    @required this.name,
-    @required this.description,
-  }) : super(key: key);
+    required this.name,
+    required this.description,
+  });
 
   final String name;
   final String description;

@@ -72,16 +72,16 @@ class _PasswordResetState extends State<PasswordReset> {
                       isLoading = false;
                     });
                     if(json.containsKey('message')){
-                      globals.otpUsername = null;
+                      globals.otpUsername = '';
                       Navigator.of(context).popUntil(ModalRoute.withName('/login'));
-                      globals.scaffoldKey.currentState.showSnackBar(SnackBar(content: Text("${json['message']}")));
+                      globals.scaffoldKey.currentState!.showSnackBar(SnackBar(content: Text("${json['message']}")));
                     }else
-                      globals.scaffoldKey.currentState.showSnackBar(SnackBar(content: Text("${json['error']}")));
+                      globals.scaffoldKey.currentState!.showSnackBar(SnackBar(content: Text("${json['error']}")));
                   }, onError: (String errorText) {
                     setState(() {
                       isLoading = false;
                     });
-                    globals.scaffoldKey.currentState.showSnackBar(SnackBar(content: Text(errorText)));
+                    globals.scaffoldKey.currentState!.showSnackBar(SnackBar(content: Text(errorText)));
                   });
                 },
               ),

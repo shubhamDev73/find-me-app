@@ -5,7 +5,7 @@ class SliderModel {
   String title;
   String desc;
 
-  SliderModel({this.imageAssetPath, this.title, this.desc});
+  SliderModel({required this.imageAssetPath, required this.title, required this.desc});
 
   void setImageAssetPath(String getImageAssetPath) {
     imageAssetPath = getImageAssetPath;
@@ -33,32 +33,9 @@ class SliderModel {
 }
 
 List<SliderModel> getSlides() {
-  List<SliderModel> slides = new List<SliderModel>();
-  SliderModel sliderModel = new SliderModel();
-
-  //1
-  sliderModel.setDesc("discover people");
-  sliderModel.setTitle("find");
-  sliderModel.setImageAssetPath(Assets.onBoardingOne);
-  slides.add(sliderModel);
-
-  sliderModel = new SliderModel();
-
-  //2
-  sliderModel.setDesc("discover thyself");
-  sliderModel.setTitle("me");
-  sliderModel.setImageAssetPath(Assets.onBoardingTwo);
-  slides.add(sliderModel);
-
-  sliderModel = new SliderModel();
-
-  //3
-  sliderModel.setDesc("discover so much");
-  sliderModel.setTitle("find.me");
-  sliderModel.setImageAssetPath(Assets.onBoardingThree);
-  slides.add(sliderModel);
-
-  sliderModel = new SliderModel();
-
-  return slides;
+  return List.of({
+    new SliderModel(imageAssetPath: Assets.onBoardingOne, title: "find", desc: "discover people"),
+    new SliderModel(imageAssetPath: Assets.onBoardingTwo, title: "me", desc: "discover thyself"),
+    new SliderModel(imageAssetPath: Assets.onBoardingThree, title: "find.me", desc: "discover so much"),
+  });
 }

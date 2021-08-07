@@ -6,18 +6,18 @@ import 'package:findme/events.dart' as events;
 
 class AppSettings {
   AppSettings({
-    this.text,
-    this.onTap,
+    required this.text,
+    required this.onTap,
   });
 
   String text;
-  Function onTap;
+  void Function() onTap;
 }
 
 AppSettings privacySettings(BuildContext context, String page){
   return AppSettings(text: "Privacy", onTap: () {
     events.sendEvent('settingsPrivacy', {"page": page});
-    return showDialog(
+    showDialog(
       context: context,
       builder: (context) => AlertDialog(
         content: ListTile(
@@ -25,7 +25,7 @@ AppSettings privacySettings(BuildContext context, String page){
           subtitle: Text('We say everything is private on this app, but actually, nothing is private.. Mwah ha ha ha ha...'),
         ),
         actions: <Widget>[
-          FlatButton(
+          TextButton(
             child: Text('Ok'),
             onPressed: () => Navigator.of(context).pop(),
           ),
@@ -38,7 +38,7 @@ AppSettings privacySettings(BuildContext context, String page){
 AppSettings aboutSettings(BuildContext context, String page){
   return AppSettings(text: "About", onTap: () {
     events.sendEvent('settingsAbout', {"page": page});
-    return showDialog(
+    showDialog(
       context: context,
       builder: (context) => AlertDialog(
         content: ListTile(
@@ -46,7 +46,7 @@ AppSettings aboutSettings(BuildContext context, String page){
           subtitle: Text('This app is about finding amazing conversations!!'),
         ),
         actions: <Widget>[
-          FlatButton(
+          TextButton(
             child: Text('Ok'),
             onPressed: () => Navigator.of(context).pop(),
           ),

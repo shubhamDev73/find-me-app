@@ -12,8 +12,8 @@ final Map<PageTab, GlobalKey<NavigatorState>> navigatorKeys = {
 };
 
 final Map<PageTab, Widget> tabScreens = {
-  PageTab.me: MeTab(navigatorKey: navigatorKeys[PageTab.me]),
-  PageTab.found: FoundTab(navigatorKey: navigatorKeys[PageTab.found]),
+  PageTab.me: MeTab(navigatorKey: navigatorKeys[PageTab.me]!),
+  PageTab.found: FoundTab(navigatorKey: navigatorKeys[PageTab.found]!),
 };
 
 const Map<PageTab, String> tabIcon = {

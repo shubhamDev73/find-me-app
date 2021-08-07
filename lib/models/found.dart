@@ -2,7 +2,7 @@ class Found {
   int id;
   int me;
   String chatId;
-  Map<String, dynamic> lastMessage;
+  Map<String, dynamic>? lastMessage;
   int unreadNum;
   String nick;
   Map<String, dynamic> avatar;
@@ -11,16 +11,16 @@ class Found {
   bool retained;
 
   Found({
-    this.id,
-    this.me,
-    this.chatId,
-    this.lastMessage,
-    this.unreadNum,
-    this.nick,
-    this.avatar,
-    this.mood,
-    this.retainRequestSent,
-    this.retained,
+    required this.id,
+    required this.me,
+    required this.chatId,
+    required this.lastMessage,
+    required this.unreadNum,
+    required this.nick,
+    required this.avatar,
+    required this.mood,
+    required this.retainRequestSent,
+    required this.retained,
   });
 
   factory Found.fromJson(Map<String, dynamic> json) => Found(

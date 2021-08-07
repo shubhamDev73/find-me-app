@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 PageRouteBuilder animatedRoute (Map<String, Widget> routes, RouteSettings settings) {
   return PageRouteBuilder(
-    pageBuilder: (context, animation, anotherAnimation) => routes[settings.name],
+    pageBuilder: (context, animation, anotherAnimation) => routes[settings.name]!,
     settings: settings,
     transitionDuration: Duration(milliseconds: 100),
     transitionsBuilder: (context, animation, anotherAnimation, child) {

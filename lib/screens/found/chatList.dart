@@ -60,7 +60,7 @@ class FoundPage extends StatelessWidget {
                         InkWell(
                           onTap: () {
                             List<AppSettings> settings = List.of({
-                              AppSettings(text: "Search", onTap: () => globals.scaffoldKey.currentState.showSnackBar(SnackBar(content: Text("Not implemented")))),
+                              AppSettings(text: "Search", onTap: () => globals.scaffoldKey.currentState!.showSnackBar(SnackBar(content: Text("Not implemented")))),
                               aboutSettings(context, 'found'),
                               privacySettings(context, 'found'),
                               muteNotificationsSettings('found'),
@@ -125,7 +125,7 @@ class _ProfilePicState extends State<ProfilePic> {
 class ChatList extends StatefulWidget {
 
   final Map<int, Found> founds;
-  ChatList({this.founds});
+  ChatList({required this.founds});
 
   @override
   _ChatListState createState() => _ChatListState();
@@ -133,14 +133,14 @@ class ChatList extends StatefulWidget {
 
 class _ChatListState extends State<ChatList> {
 
-  List<Found> foundList;
+  late List<Found> foundList;
 
   @override
   void initState () {
     super.initState();
     assignFoundList(widget.founds);
     globals.onChatListUpdate = (Map<int, Found> founds) =>
-      WidgetsBinding.instance.addPostFrameCallback((timeStamp) =>
+      WidgetsBinding.instance!.addPostFrameCallback((timeStamp) =>
         setState(() {
           assignFoundList(founds);
         })
@@ -166,8 +166,8 @@ class _ChatListState extends State<ChatList> {
     foundList.sort((Found a, Found b) {
       if(a.lastMessage == null) return -1;
       if(b.lastMessage == null) return 1;
-      DateTime aDate = DateTime.parse(a.lastMessage['timestamp']);
-      DateTime bDate = DateTime.parse(b.lastMessage['timestamp']);
+      DateTime aDate = DateTime.parse(a.lastMessage!['timestamp']);
+      DateTime bDate = DateTime.parse(b.lastMessage!['timestamp']);
       return bDate.compareTo(aDate);
     });
   }

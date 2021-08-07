@@ -26,7 +26,7 @@ class LoginScreens extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
-      onWillPop: () async => !await navigatorKey.currentState.maybePop(),
+      onWillPop: () async => !await navigatorKey.currentState!.maybePop(),
       child: Navigator(
         key: navigatorKey,
         initialRoute: '/',

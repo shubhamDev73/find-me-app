@@ -12,13 +12,13 @@ class User {
   List<dynamic> timeline;
 
   User({
-    this.nick,
-    this.baseAvatar,
-    this.avatar,
-    this.personality,
-    this.interests,
-    this.mood,
-    this.timeline,
+    required this.nick,
+    required this.baseAvatar,
+    required this.avatar,
+    required this.personality,
+    required this.interests,
+    required this.mood,
+    required this.timeline,
   });
 
   factory User.fromJson(Map<String, dynamic> json, bool me) {

@@ -40,10 +40,10 @@ class _ChangeNickState extends State<ChangeNick> {
                       isLoading = false;
                     });
                     if(json.containsKey('error'))
-                      globals.scaffoldKey.currentState.showSnackBar(SnackBar(content: Text("${json['error']}")));
+                      globals.scaffoldKey.currentState!.showSnackBar(SnackBar(content: Text("${json['error']}")));
                     else{
                       globals.meUser.update((User user) {
-                        user.nick = inputs['username'];
+                        user.nick = inputs['username']!;
                         return user;
                       });
                       Navigator.of(context).popUntil(ModalRoute.withName('/'));
@@ -52,7 +52,7 @@ class _ChangeNickState extends State<ChangeNick> {
                     setState(() {
                       isLoading = false;
                     });
-                    globals.scaffoldKey.currentState.showSnackBar(SnackBar(content: Text(errorText)));
+                    globals.scaffoldKey.currentState!.showSnackBar(SnackBar(content: Text(errorText)));
                   });
                 },
               ),

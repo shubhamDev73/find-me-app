@@ -20,7 +20,7 @@ class ChatMessage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Found found = ModalRoute.of(context).settings.arguments as Found;
+    Found found = ModalRoute.of(context)!.settings.arguments as Found;
 
     messageController.addListener(() {
       realtimeDB.child("${found.id}-${found.me}").update({
@@ -93,12 +93,12 @@ class ChatMessage extends StatelessWidget {
                           child: InkWell(
                             onTap: () {
                               List<AppSettings> settings = List.of({
-                                AppSettings(text: "Search", onTap: () => globals.scaffoldKey.currentState.showSnackBar(SnackBar(content: Text("Not implemented")))),
+                                AppSettings(text: "Search", onTap: () => globals.scaffoldKey.currentState!.showSnackBar(SnackBar(content: Text("Not implemented")))),
                                 AppSettings(text: "Retain", onTap: () {
                                   globals.addPostCall('found/retain/', {"id": found.id});
                                   events.sendEvent('settingsRetain', {"user": found.id});
                                 }),
-                                AppSettings(text: "Block", onTap: () => globals.scaffoldKey.currentState.showSnackBar(SnackBar(content: Text("Not implemented")))),
+                                AppSettings(text: "Block", onTap: () => globals.scaffoldKey.currentState!.showSnackBar(SnackBar(content: Text("Not implemented")))),
                               });
 
                               Navigator.of(context).pushNamed('/settings', arguments: settings);
@@ -135,7 +135,7 @@ class ChatMessage extends StatelessWidget {
                         decoration: BoxDecoration(
                           color: ThemeColors.chatMessageColors[true],
                           borderRadius: BorderRadius.circular(10.0),
-                          border: Border.all(color: ThemeColors.chatMessageColors[false])
+                          border: Border.all(color: ThemeColors.chatMessageColors[false]!)
                         ),
                         child: TextField(
                           maxLines: null,
@@ -192,7 +192,7 @@ class ChatMessage extends StatelessWidget {
 class ChatMessageList extends StatefulWidget {
 
   final Found found;
-  ChatMessageList({this.found});
+  ChatMessageList({required this.found});
 
   final int messageLimit = 50;
   final ScrollController scrollController = ScrollController();
@@ -203,8 +203,8 @@ class ChatMessageList extends StatefulWidget {
 
 class _ChatMessageListState extends State<ChatMessageList> {
 
-  int currentMessageLimit;
-  Stream<QuerySnapshot> stream;
+  late int currentMessageLimit;
+  late Stream<QuerySnapshot> stream;
   int downloadedMessages = 0;
   bool streamDownloaded = false;
 
@@ -246,7 +246,7 @@ class _ChatMessageListState extends State<ChatMessageList> {
 
   @override
   Widget build(BuildContext context) {
-    return createFirebaseStreamWidget(stream, (List<DocumentSnapshot> messages) {
+    return createFirebaseStreamWidget(stream!, (List<DocumentSnapshot> messages) {
       if(messages.length > downloadedMessages){
         streamDownloaded = true;
         downloadedMessages = messages.length;

@@ -71,17 +71,17 @@ class _OtpSendState extends State<OtpSend> {
                     setState(() {
                       isLoading = false;
                     });
-                    globals.otpUsername = inputs['username'];
+                    globals.otpUsername = inputs['username']!;
                     if(json.containsKey('message')){
                       Navigator.of(context).pushNamed('/otp/check');
-                      globals.scaffoldKey.currentState.showSnackBar(SnackBar(content: Text("${json['message']}")));
+                      globals.scaffoldKey.currentState!.showSnackBar(SnackBar(content: Text("${json['message']}")));
                     }else
-                      globals.scaffoldKey.currentState.showSnackBar(SnackBar(content: Text("${json['error']}")));
+                      globals.scaffoldKey.currentState!.showSnackBar(SnackBar(content: Text("${json['error']}")));
                   }, onError: (String errorText) {
                     setState(() {
                       isLoading = false;
                     });
-                    globals.scaffoldKey.currentState.showSnackBar(SnackBar(content: Text(errorText)));
+                    globals.scaffoldKey.currentState!.showSnackBar(SnackBar(content: Text(errorText)));
                   });
                 },
               ),

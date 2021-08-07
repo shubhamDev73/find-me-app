@@ -65,8 +65,7 @@ class _AddInterestsState extends State<AddInterests> {
                       ),
                       children: <Widget>[Container(), Container(), Container()] + interests.values.toList().reversed.map<Widget>((Interest interest) => InterestButton(
                         name: interest.name,
-                        isSvg: interest.id == 0,
-                        onClick: interest.id == 0 ? null : (amount) {
+                        onClick: (amount) {
                           interest.amount = amount;
 
                           globals.addPostCall(
@@ -78,7 +77,7 @@ class _AddInterestsState extends State<AddInterests> {
                           globals.meUser.update((User user) {
                             if(user.interests.containsKey(interest.id)){
                               if(amount == 0) user.interests.remove(interest.id);
-                              else user.interests[interest.id].amount = amount;
+                              else user.interests[interest.id]!.amount = amount;
                             }else{
                               if(amount != 0) user.interests[interest.id] = interest;
                             }
@@ -92,7 +91,7 @@ class _AddInterestsState extends State<AddInterests> {
                           });
                           events.sendEvent('addInterest', {"interest": interest.id, "amount": amount});
                         },
-                        amount: user.interests.containsKey(interest.id) ? user.interests[interest.id].amount : 0,
+                        amount: user.interests.containsKey(interest.id) ? user.interests[interest.id]!.amount : 0,
                         canChangeAmount: interest.id != 0,
                       )).toList(),
                     ),

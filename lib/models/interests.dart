@@ -1,9 +1,9 @@
 class Interest {
   Interest({
-    this.id, // backend id
-    this.name,
-    this.amount, // intensity of interest
-    this.questions,
+    required this.id, // backend id
+    required this.name,
+    required this.amount, // intensity of interest
+    required this.questions,
   });
 
   int id;

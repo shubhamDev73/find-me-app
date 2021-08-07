@@ -32,7 +32,7 @@ class Main extends StatelessWidget {
           textTheme: TextTheme().copyWith(
             headline6: Theme.of(context)
                 .primaryTextTheme
-                .headline6
+                .headline6!
                 .copyWith(color: ThemeColors.primaryColor),
           ),
         ),

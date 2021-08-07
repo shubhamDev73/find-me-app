@@ -16,15 +16,16 @@ class ChatListItem extends StatelessWidget {
   final Found found;
   final int index;
 
-  ChatListItem({this.found, this.index = 0});
+  ChatListItem({required this.found, this.index = 0});
 
   final StreamController<int> unreadNumController = StreamController<int>();
 
-  DateTime lastMessageTime;
+  DateTime? lastMessageTime;
 
-  void syncWithFound (Found found) {
+  void syncWithFound (Found? found) {
+    if(found == null) return;
     unreadNumController.add(found.unreadNum);
-    lastMessageTime = found.lastMessage == null ? DateTime.fromMillisecondsSinceEpoch(0) : DateTime.parse(found.lastMessage['timestamp']);
+    lastMessageTime = found.lastMessage == null ? DateTime.fromMillisecondsSinceEpoch(0) : DateTime.parse(found.lastMessage!['timestamp']);
   }
 
   @override
@@ -37,7 +38,7 @@ class ChatListItem extends StatelessWidget {
         .limit(1)
         .snapshots();
     syncWithFound(found);
-    globals.onFoundChanged[found.id]['chatList'] = syncWithFound;
+    globals.onFoundChanged[found.id]!['chatList'] = syncWithFound;
 
     DatabaseReference realtimeFound = FirebaseDatabase.instance.reference().child("${found.id}-${found.me}");
     realtimeFound.update({
@@ -65,10 +66,10 @@ class ChatListItem extends StatelessWidget {
         padding: EdgeInsets.symmetric(vertical: 10),
         child: createFirebaseStreamWidget(lastMessage, (messages) {
           dynamic message = messages.length > 0 ? messages[0] : null;
-          DateTime dateTime;
+          DateTime? dateTime;
           if(message != null && message['timestamp'] != null){
             dateTime = message['timestamp'] is String ? DateTime.parse(message['timestamp']) : message['timestamp'].toDate();
-            if(dateTime.compareTo(lastMessageTime) > 0)
+            if(dateTime!.compareTo(lastMessageTime!) > 0)
               globals.founds.mappedUpdate(found.id, (Found found) {
                 found.lastMessage = globals.getMessageJSON(message);
                 if(message['user'] != found.me)
@@ -117,7 +118,7 @@ class ChatListItem extends StatelessWidget {
                 child: num > 0 ? Column(
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: <Widget>[
-                    DateWidget(endDate: dateTime, textStyle: TextStyle(
+                    DateWidget(endDate: dateTime!, textStyle: TextStyle(
                       color: Colors.black,
                       fontSize: 12,
                     )),
@@ -140,7 +141,7 @@ class ChatListItem extends StatelessWidget {
               ), fullPage: false),
             ],
           );
-        }, fullPage: false, cacheObj: [found.lastMessage == null ? null : FakeDocument(id: found.lastMessage['id'], data: found.lastMessage)]),
+        }, fullPage: false, cacheObj: found.lastMessage == null ? null : [FakeDocument(id: found.lastMessage!['id'], data: found.lastMessage!)]),
       ),
     );
   }

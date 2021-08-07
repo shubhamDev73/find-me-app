@@ -28,15 +28,15 @@ class Personality extends StatefulWidget {
 
 class _PersonalityState extends State<Personality> {
 
-  String trait;
+  String? trait;
   Map<String, List<dynamic>> adjectives = {};
 
   void createRandomAdjectives(User user) {
     adjectives.clear();
 
     for(String trait in user.personality.keys) {
-      List<dynamic> randomAdjectives = new List();
-      List<dynamic> allAdjectives = new List();
+      List<dynamic> randomAdjectives = List.empty();
+      List<dynamic> allAdjectives = List.empty();
 
       for (List<dynamic> facetAdjectives in user.personality[trait]['adjectives']) {
         allAdjectives.add(facetAdjectives[random.nextInt(facetAdjectives.length)]);
@@ -73,7 +73,7 @@ class _PersonalityState extends State<Personality> {
 
   @override
   Widget build(BuildContext context) {
-    if (trait == null) trait = ModalRoute.of(context).settings.arguments;
+    if (trait == null) trait = ModalRoute.of(context)!.settings.arguments as String;
 
     return createFutureWidget<User>(globals.getUser(me: widget.me), (User user) =>
       createFutureWidget<Map<String, Map<String, dynamic>>>(globals.personality.get(), (Map<String, Map<String, dynamic>> personality) {
@@ -94,7 +94,7 @@ class _PersonalityState extends State<Personality> {
                     padding: EdgeInsets.symmetric(horizontal: 10.0),
                     height: 30,
                     width: 50,
-                    child: SvgPicture.asset(Assets.traits[trait]['negative']),
+                    child: SvgPicture.asset(Assets.traits[trait]!['negative']!),
                   ),
                   Container(
                     width: 220,
@@ -115,7 +115,7 @@ class _PersonalityState extends State<Personality> {
                     padding: EdgeInsets.symmetric(horizontal: 10.0),
                     height: 30,
                     width: 50,
-                    child: SvgPicture.asset(Assets.traits[trait]['positive']),
+                    child: SvgPicture.asset(Assets.traits[trait]!['positive']!),
                   ),
                 ],
               ),
@@ -173,13 +173,13 @@ class _PersonalityState extends State<Personality> {
               ),
               margin: EdgeInsets.symmetric(horizontal: 10),
               child: Carousel(
-                items: adjectives[trait],
+                items: adjectives[trait]!,
                 widget: (adjective) => AdjListItem(
                   name: adjective['name'],
                   description: adjective['description'],
                 ),
                 onPageChanged: (index, reason) {
-                  events.sendEvent('adjectiveChange', {"adjective": adjectives[trait][index]['name']});
+                  events.sendEvent('adjectiveChange', {"adjective": adjectives[trait]![index]['name']});
                 },
               ),
             ),
@@ -190,7 +190,7 @@ class _PersonalityState extends State<Personality> {
             widget.me ? Button(
               text: "Take a Test",
               onTap: () async {
-                List<dynamic> allUrls = personality['questionnaire']['all'];
+                List<dynamic> allUrls = personality['questionnaire']!['all'];
                 String url = '${allUrls[random.nextInt(allUrls.length)]}?nick=${user.nick}';
                 if(await canLaunch(url)) await launch(url);
                 events.sendEvent('testClick');

@@ -13,7 +13,7 @@ class App extends StatefulWidget {
 
 class _AppState extends State<App> {
 
-  bool isLoggedIn;
+  bool? isLoggedIn;
 
   @override
   void initState () {
@@ -40,7 +40,7 @@ class _AppState extends State<App> {
   Widget screen() {
     return Scaffold(
         key: globals.scaffoldKey,
-        body: isLoggedIn ? TabbedScreen() : LoginScreens(),
+        body: isLoggedIn! ? TabbedScreen() : LoginScreens(),
     );
   }
 }

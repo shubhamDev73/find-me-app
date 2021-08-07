@@ -3,17 +3,17 @@ import 'package:flutter/material.dart';
 import 'package:findme/constant.dart';
 
 Widget textFieldForRegistration({
-  TextEditingController editingController,
-  TextInputType keyType,
+  required TextEditingController editingController,
+  TextInputType? keyType,
   bool isPhone = false,
   bool showCursor = true,
   bool readOnly = false,
   bool obscureText = false,
   bool autofocus = false,
-  String errMsg,
-  String label,
-  List<String> autofillHints,
-  Function(String) validator,
+  required String errMsg,
+  required String label,
+  List<String>? autofillHints,
+  String? Function(String?)? validator,
 }) {
   return TextFormField(
     autofocus: autofocus,
@@ -44,8 +44,8 @@ class PasswordField extends StatefulWidget {
 
   final TextEditingController passwordController;
   final String label;
-  final Function(String) validator;
-  PasswordField({this.passwordController, this.label = "password", this.validator});
+  final String? Function(String?)? validator;
+  PasswordField({required this.passwordController, this.label = "password", this.validator});
 
   @override
   _PasswordFieldState createState() => _PasswordFieldState();

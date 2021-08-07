@@ -40,11 +40,11 @@ CachedData<String> token = CachedData(
       currentTab.clear();
       posts.clear();
 
-      onLogout();
-    } else onLogin();
+      onLogout?.call();
+    } else onLogin?.call();
   },
 );
-Function onLogin, onLogout;
+Function? onLogin, onLogout;
 
 CachedData<String> email = CachedData(
   emptyValue: '',
@@ -73,9 +73,9 @@ MappedCachedData<int, Interest> interests = MappedCachedData(
       key: (interest) => interest['id'],
       value: (interest) => Interest.fromJson(interest),
     ),
-  setCallback: (data, [key]) => onInterestsChanged?.call(),
+  setCallback: (data, [int? key]) => onInterestsChanged?.call(),
 );
-Function onInterestsChanged;
+Function? onInterestsChanged;
 
 MappedCachedData<String, Map<String, dynamic>> moods = MappedCachedData(
   url: 'moods/',
@@ -85,9 +85,9 @@ MappedCachedData<String, Map<String, dynamic>> moods = MappedCachedData(
     key: (mood) => mood['name'],
     value: (mood) => mood,
   ),
-  setCallback: (data, [key]) => onMoodsChanged?.call(),
+  setCallback: (data, [String? key]) => onMoodsChanged?.call(),
 );
-Function onMoodsChanged;
+Function? onMoodsChanged;
 
 MappedCachedData<String, Map<String, dynamic>> personality = MappedCachedData(
   url: 'personality/',
@@ -95,20 +95,20 @@ MappedCachedData<String, Map<String, dynamic>> personality = MappedCachedData(
   networkDecoder: (data) {
     Map<String, Map<String, dynamic>> decoded = jsonDecode(data);
     LinkedHashMap<String, Map<String, dynamic>> personality = LinkedHashMap<String, Map<String, dynamic>>();
-    for(String key in decoded['trait'].keys){
-      personality['trait'][key]['description'] = decoded['trait'][key]['description'];
-      personality['trait'][key]['url'] = decoded['trait'][key]['url'];
-      personality['trait'][key]['adjectives'] = LinkedHashMap<int, Map<String, dynamic>>.fromIterable(decoded['trait'][key]['adjectives'],
+    for(String key in decoded['trait']!.keys){
+      personality['trait']![key]['description'] = decoded['trait']![key]['description'];
+      personality['trait']![key]['url'] = decoded['trait']![key]['url'];
+      personality['trait']![key]['adjectives'] = LinkedHashMap<int, Map<String, dynamic>>.fromIterable(decoded['trait']![key]['adjectives'],
         key: (adjective) => adjective['id'],
         value: (adjective) => adjective,
       );
     }
-    personality['questionnaire'] = decoded['questionnaire'];
+    personality['questionnaire'] = decoded['questionnaire']!;
     return personality;
   },
-  setCallback: (data, [key]) => onPersonalityChanged?.call(),
+  setCallback: (data, [String? key]) => onPersonalityChanged?.call(),
 );
-Function onPersonalityChanged;
+Function? onPersonalityChanged;
 
 MappedCachedData<String, Map<String, dynamic>> avatars = MappedCachedData(
   url: 'avatars/',
@@ -128,15 +128,15 @@ MappedCachedData<String, Map<String, dynamic>> avatars = MappedCachedData(
     }
     return avatars;
   },
-  setCallback: (data, [key]) => onAvatarsChanged?.call(),
+  setCallback: (data, [String? key]) => onAvatarsChanged?.call(),
 );
-Function onAvatarsChanged;
+Function? onAvatarsChanged;
 
 
 // users
 
 CachedData<User> meUser = CachedData(
-  emptyValue: User(),
+  emptyValue: User(nick: '', baseAvatar: '', interests: LinkedHashMap.identity(), personality: {}, timeline: [], mood: '', avatar: {}),
   url: 'me/',
   cacheFile: 'user.json',
   encoder: (User user) => jsonEncode(user.toJson()),
@@ -146,7 +146,7 @@ CachedData<User> meUser = CachedData(
 Map<String, Function> onUserChanged = {};
 
 CachedData<User> _anotherUser = CachedData(
-  emptyValue: User(),
+  emptyValue: User(nick: '', baseAvatar: '', interests: LinkedHashMap.identity(), personality: {}, timeline: [], mood: '', avatar: {}),
   url: '',
   encoder: (User user) => jsonEncode(user.toJson()),
   decoder: (String userString) => User.fromJson(jsonDecode(userString), false),
@@ -189,7 +189,7 @@ CachedData<List<dynamic>> finds = CachedData(
   },
   setCallback: (data) => onFindsUpdate?.call(),
 );
-Function onFindsUpdate;
+Function? onFindsUpdate;
 
 MappedCachedData<int, Found> founds = MappedCachedData(
   url: 'found/',
@@ -210,16 +210,16 @@ MappedCachedData<int, Found> founds = MappedCachedData(
       key: (found) => found['id'],
       value: (found) => Found.fromJson(found),
     ),
-  setCallback: (data, [int key]) {
+  setCallback: (data, [int? key]) {
     onChatListUpdate?.call(data);
-    if(key != null && onFoundChanged.containsKey(key)) onFoundChanged[key].values.forEach((f) => f(data[key]));
+    if(key != null && onFoundChanged.containsKey(key)) onFoundChanged[key]!.values.forEach((f) => f(data[key]));
   },
 );
-Function(Map<int, Found>) onChatListUpdate;
-Map<int, Map<String, void Function(Found)>> onFoundChanged = {};
+Function(Map<int, Found>)? onChatListUpdate;
+Map<int, Map<String, void Function(Found?)>> onFoundChanged = {};
 
 Map<String, dynamic> getMessageJSON (DocumentSnapshot message) {
-  Map<String, dynamic> json = message.data();
+  Map<String, dynamic> json = message.data() as Map<String, dynamic>;
   json['id'] = message.id;
   json['timestamp'] = (json['timestamp']?.toDate() ?? DateTime.now()).toString();
   return json;
@@ -240,7 +240,7 @@ CachedData<List<dynamic>> posts = CachedData(
   setCallback: _makePostCalls,
 );
 
-void addPostCall(String url, Map<String, dynamic> body, {bool Function(Map<String, dynamic>) overwrite}) {
+void addPostCall(String url, Map<String, dynamic> body, {bool Function(Map<String, dynamic>)? overwrite}) {
   posts.update((postsList) {
     bool present = false;
     if(overwrite != null){
@@ -258,7 +258,7 @@ void addPostCall(String url, Map<String, dynamic> body, {bool Function(Map<Strin
   });
 }
 
-GlobalKey<ScaffoldState> scaffoldKey = new GlobalKey<ScaffoldState>();
+GlobalKey<ScaffoldMessengerState> scaffoldKey = new GlobalKey<ScaffoldMessengerState>();
 bool isOnline = true;
 Set<String> _runningTasks = Set();
 void _makePostCalls(List<dynamic> postsList) {
@@ -270,13 +270,13 @@ void _makePostCalls(List<dynamic> postsList) {
           _runningTasks.remove(post['id']);
           if(!isOnline){
             isOnline = true;
-            scaffoldKey.currentState.showSnackBar(SnackBar(content: Text("Now online!")));
+            scaffoldKey.currentState!.showSnackBar(SnackBar(content: Text("Now online!")));
           }
           return postsList;
         }),
         onError: (errorText) {
           if(post['first']){
-            scaffoldKey.currentState.showSnackBar(SnackBar(content: Text(errorText)));
+            scaffoldKey.currentState!.showSnackBar(SnackBar(content: Text(errorText)));
             post['first'] = false;
           }
           isOnline = false;
@@ -289,5 +289,5 @@ void _makePostCalls(List<dynamic> postsList) {
   }
 }
 
-String otpUsername;
-Map<String, dynamic> tempExternalRegister;
+String otpUsername = '';
+Map<String, dynamic> tempExternalRegister = {};

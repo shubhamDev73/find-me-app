@@ -14,7 +14,7 @@ class QuestionsWidget extends StatefulWidget {
   final List<dynamic> questions;
   final bool me;
   final int interestId;
-  QuestionsWidget({this.me, this.interestId, this.questions});
+  QuestionsWidget({required this.me, required this.interestId, required this.questions});
 
   @override
   _QuestionsWidgetState createState() => _QuestionsWidgetState();
@@ -22,8 +22,7 @@ class QuestionsWidget extends StatefulWidget {
 
 class _QuestionsWidgetState extends State<QuestionsWidget> {
 
-  Map<String, dynamic> currentQuestion;
-  String errorText;
+  Map<String, dynamic>? currentQuestion;
 
   @override
   void initState() {
@@ -34,7 +33,7 @@ class _QuestionsWidgetState extends State<QuestionsWidget> {
   @override
   Widget build(BuildContext context) {
     if(!widget.questions.contains(currentQuestion)) currentQuestion = widget.questions[0];
-    TextEditingController answerController = TextEditingController(text: currentQuestion['answer']);
+    TextEditingController answerController = TextEditingController(text: currentQuestion!['answer']);
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.center,
@@ -58,7 +57,7 @@ class _QuestionsWidgetState extends State<QuestionsWidget> {
             ),
             onPageChanged: (index, reason) => setState(() {
               currentQuestion = widget.questions[index];
-              events.sendEvent('questionSelect', {"question": currentQuestion['id']});
+              events.sendEvent('questionSelect', {"question": currentQuestion!['id']});
             }),
           ),
         ),
@@ -66,7 +65,7 @@ class _QuestionsWidgetState extends State<QuestionsWidget> {
           margin: EdgeInsets.symmetric(horizontal: 60),
           child: widget.me ? TextField(
             controller: answerController,
-            onSubmitted: (text) => updateAnswer(widget.interestId, currentQuestion['id'], text),
+            onSubmitted: (text) => updateAnswer(widget.interestId, currentQuestion!['id'], text),
             textAlign: TextAlign.center,
             maxLines: null,
             style: GoogleFonts.quicksand(
@@ -77,7 +76,7 @@ class _QuestionsWidgetState extends State<QuestionsWidget> {
             ),
           ) :
           Text(
-            currentQuestion['answer'],
+            currentQuestion!['answer'],
             textAlign: TextAlign.center,
             style: TextStyle(
               fontSize: 25,
@@ -97,7 +96,7 @@ class _QuestionsWidgetState extends State<QuestionsWidget> {
     );
 
     globals.meUser.update((User user) {
-      Interest interest = user.interests[interestId];
+      Interest interest = user.interests[interestId]!;
       for (int i = 0; i < interest.questions.length; i++) {
         if (interest.questions[i]['id'] == questionId) {
           interest.questions[i]['answer'] = answer;
@@ -153,7 +152,7 @@ class Interests extends StatefulWidget {
 
 class _InterestsState extends State<Interests> {
 
-  int interestId;
+  int? interestId;
 
   @override
   void initState() {
@@ -169,7 +168,7 @@ class _InterestsState extends State<Interests> {
 
   @override
   Widget build(BuildContext context) {
-    if (interestId == null) interestId = ModalRoute.of(context).settings.arguments;
+    if (interestId == null) interestId = ModalRoute.of(context)!.settings.arguments as int;
 
     return createFutureWidget<User>(globals.getUser(me: widget.me), (User user) {
       return Scaffold(
@@ -194,7 +193,7 @@ class _InterestsState extends State<Interests> {
               ),
               Expanded(
                 flex: 5,
-                child: QuestionsWidget(me: widget.me, interestId: interestId, questions: user.interests[interestId].questions),
+                child: QuestionsWidget(me: widget.me, interestId: interestId!, questions: user.interests[interestId]!.questions),
               ),
               Expanded(
                 flex: 6,
@@ -206,7 +205,7 @@ class _InterestsState extends State<Interests> {
                       children: getInterestList(user.interests.values.toList(), (int newInterestId) => setState(() {
                         interestId = newInterestId;
                         events.sendEvent('interestSelect', {"interest": interestId});
-                      }), interestId),
+                      }), interestId!),
                     ),
                   ),
                 ),

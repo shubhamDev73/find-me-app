@@ -28,14 +28,19 @@ class _LoginState extends State<Login> {
   @override
   void initState() {
     super.initState();
-    _googleSignIn.onCurrentUserChanged.listen((GoogleSignInAccount account) {
+    _googleSignIn.onCurrentUserChanged.listen((GoogleSignInAccount? account) {
+      if(account == null){
+        globals.scaffoldKey.currentState!.showSnackBar(SnackBar(content: Text('Something went wrong.')));
+        return;
+      }
+
       POST('login/external/', {"email": account.email, "external_id": {"google": account.id}}, useToken: false, callback: (json) {
         setState(() {
           isLoading = false;
         });
         if(json.containsKey('token')){
           if(json.remove('created')){
-            globals.tempExternalRegister = json;
+            globals.tempExternalRegister.addAll(json);
             globals.tempExternalRegister['email'] = account.email;
             Navigator.of(context).pushNamed('/extra');
           }else{
@@ -43,12 +48,12 @@ class _LoginState extends State<Login> {
             globals.email.set(account.email);
           }
         }else
-          globals.scaffoldKey.currentState.showSnackBar(SnackBar(content: Text("${json['error']}")));
+          globals.scaffoldKey.currentState!.showSnackBar(SnackBar(content: Text("${json['error']}")));
       }, onError: (String errorText) {
         setState(() {
           isLoading = false;
         });
-        globals.scaffoldKey.currentState.showSnackBar(SnackBar(content: Text(errorText)));
+        globals.scaffoldKey.currentState!.showSnackBar(SnackBar(content: Text(errorText)));
       });
     });
   }
@@ -132,12 +137,12 @@ class _LoginState extends State<Login> {
                       globals.token.set(json['token']);
                       globals.email.set(json['email']);
                     }else
-                      globals.scaffoldKey.currentState.showSnackBar(SnackBar(content: Text("${json['error']}")));
+                      globals.scaffoldKey.currentState!.showSnackBar(SnackBar(content: Text("${json['error']}")));
                   }, onError: (String errorText) {
                     setState(() {
                       isLoading = false;
                     });
-                    globals.scaffoldKey.currentState.showSnackBar(SnackBar(content: Text(errorText)));
+                    globals.scaffoldKey.currentState!.showSnackBar(SnackBar(content: Text(errorText)));
                   });
                 }
               ),

@@ -19,7 +19,7 @@ class WidgetBuilder<T> {
 
   Widget Function(BuildContext, AsyncSnapshot<T>) getBuilder ({bool fullPage = true}) {
     return (BuildContext context, AsyncSnapshot<T> snapshot) {
-      if(snapshot.hasData) return widgetCreator(snapshot.data);
+      if(snapshot.hasData) return widgetCreator(snapshot.data!);
       else if(snapshot.hasError) return Text("${snapshot.error}");
       return LoadingScreen(fullPage: fullPage);
     };
@@ -41,11 +41,11 @@ StreamBuilder<T> createStreamWidget<T>(Stream<T> streamObj, Widget Function(T) w
   );
 }
 
-StreamBuilder<QuerySnapshot> createFirebaseStreamWidget(Stream<QuerySnapshot> streamObj, Function widgetCreator, {bool fullPage = true, List<FakeDocument> cacheObj}) {
+StreamBuilder<QuerySnapshot> createFirebaseStreamWidget(Stream<QuerySnapshot> streamObj, Function widgetCreator, {bool fullPage = true, List<FakeDocument>? cacheObj}) {
   return StreamBuilder<QuerySnapshot>(
     stream: streamObj,
     builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
-      if(snapshot.hasData) return widgetCreator(snapshot.data.docs);
+      if(snapshot.hasData) return widgetCreator(snapshot.data?.docs);
       else if(snapshot.hasError) return Text("${snapshot.error}");
 
       if(cacheObj != null) return widgetCreator(cacheObj);
@@ -54,7 +54,7 @@ StreamBuilder<QuerySnapshot> createFirebaseStreamWidget(Stream<QuerySnapshot> st
   );
 }
 
-String formatDate ({DateTime timestamp, DateTime endDate}) {
+String formatDate ({DateTime? timestamp, DateTime? endDate}) {
   if(timestamp != null) {
     Duration diff = DateTime.now().difference(timestamp);
     var format = DateFormat(diff.inDays > 0 ? 'dd/MM - hh:mm a' : 'hh:mm a');
@@ -79,11 +79,11 @@ String formatDate ({DateTime timestamp, DateTime endDate}) {
 class DateWidget extends StatefulWidget {
 
   final DateTime endDate;
-  final TextStyle textStyle;
+  final TextStyle? textStyle;
   final String prefix;
   final TextAlign align;
 
-  DateWidget({this.endDate, this.textStyle, this.prefix = '', this.align = TextAlign.left});
+  DateWidget({required this.endDate, this.textStyle, this.prefix = '', this.align = TextAlign.left});
 
   @override
   _DateWidgetState createState() => _DateWidgetState();
@@ -91,7 +91,7 @@ class DateWidget extends StatefulWidget {
 
 class _DateWidgetState extends State<DateWidget> {
 
-  Timer timer;
+  Timer? timer;
 
   @override
   void initState () {
@@ -110,7 +110,7 @@ class _DateWidgetState extends State<DateWidget> {
 
   @override
   void dispose () {
-    timer.cancel();
+    timer?.cancel();
     super.dispose();
   }
 
@@ -122,9 +122,9 @@ class Button extends StatelessWidget {
   final double height;
   final double width;
   final String text;
-  final Function onTap;
+  final void Function() onTap;
 
-  Button({this.type = 'default', this.height = 42, this.width = 125, this.text, this.onTap});
+  Button({this.type = 'default', this.height = 42, this.width = 125, required this.text, required this.onTap});
 
   @override
   Widget build(BuildContext context) {
@@ -177,13 +177,13 @@ class Button extends StatelessWidget {
 
 class Carousel extends StatefulWidget {
 
-  CarouselController controller;
+  CarouselController? controller;
   final List<dynamic> items;
   final Widget Function(dynamic) widget;
-  final Function onPageChanged;
+  final Function? onPageChanged;
   final int elementsToDisplay;
   final int initialPage;
-  Carousel({this.controller, this.items, this.widget, this.onPageChanged, this.elementsToDisplay = 1, this.initialPage = 0});
+  Carousel({this.controller, required this.items, required this.widget, this.onPageChanged, this.elementsToDisplay = 1, this.initialPage = 0});
 
   @override
   _CarouselState createState() => _CarouselState();
@@ -201,7 +201,7 @@ class _CarouselState extends State<Carousel> {
 
   @override
   void didUpdateWidget(Carousel oldWidget){
-    widget.controller.jumpToPage(0);
+    widget.controller?.jumpToPage(0);
     super.didUpdateWidget(oldWidget);
   }
 
@@ -214,7 +214,7 @@ class _CarouselState extends State<Carousel> {
           children: [
             CarouselSlider(
               carouselController: widget.controller,
-              items: widget.items.map((item) => widget.widget(item)),
+              items: widget.items.map((item) => widget.widget(item)).toList(),
               options: CarouselOptions(
                 initialPage: widget.initialPage,
                 scrollDirection: Axis.horizontal,
@@ -225,7 +225,7 @@ class _CarouselState extends State<Carousel> {
                   setState(() {
                     currentIndex = index;
                   });
-                  widget.onPageChanged(index, reason);
+                  widget.onPageChanged?.call(index, reason);
                 },
               ),
             ),
@@ -236,7 +236,7 @@ class _CarouselState extends State<Carousel> {
                   Padding(
                     padding: EdgeInsets.only(left: 12.0),
                     child: GestureDetector(
-                      onTap: () => widget.controller.previousPage(
+                      onTap: () => widget.controller?.previousPage(
                         duration: Duration(milliseconds: 300),
                         curve: Curves.decelerate,
                       ),
@@ -250,7 +250,7 @@ class _CarouselState extends State<Carousel> {
                   Padding(
                     padding: EdgeInsets.only(right: 12.0),
                     child: GestureDetector(
-                      onTap: () => widget.controller.nextPage(
+                      onTap: () => widget.controller?.nextPage(
                         duration: Duration(milliseconds: 300),
                         curve: Curves.decelerate,
                       ),
@@ -290,7 +290,7 @@ class _CarouselState extends State<Carousel> {
 class ThemeScrollbar extends StatelessWidget {
 
   final Widget child;
-  ThemeScrollbar({this.child});
+  ThemeScrollbar({required this.child});
 
   @override
   Widget build(BuildContext context) {
@@ -309,10 +309,10 @@ class InputForm extends StatelessWidget {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   final List<String> fieldTypes;
-  final List<Button> buttons;
+  final List<Button>? buttons;
   final String submitText;
   final Function(Map<String, String>) onSubmit;
-  InputForm({this.fieldTypes, this.buttons, this.submitText = 'submit', this.onSubmit});
+  InputForm({required this.fieldTypes, this.buttons, this.submitText = 'submit', required this.onSubmit});
 
   @override
   Widget build(BuildContext context) {
@@ -324,14 +324,14 @@ class InputForm extends StatelessWidget {
       child: Form(
         key: _formKey,
         child: Column(
-          children: fieldTypes.map<Widget>((fieldType) {
+          children: fieldTypes.map((fieldType) {
             int index = fieldTypes.indexOf(fieldType);
             switch(fieldType){
               case 'password':
                 return PasswordField(passwordController: controllers[index]);
-                break;
               case 'confirmPassword':
                 return PasswordField(
+                  passwordController: controllers[index],
                   label: "confirm password",
                   validator: (value) {
                     if(value == null || value.isEmpty || value != controllers[passwordIndex].text){
@@ -340,7 +340,6 @@ class InputForm extends StatelessWidget {
                     return null;
                   },
                 );
-                break;
               case 'submit':
                 return Button(
                   type: 'raised',
@@ -352,12 +351,11 @@ class InputForm extends StatelessWidget {
                       key: (fieldType) => fieldType,
                       value: (fieldType) => controllers[fieldTypes.indexOf(fieldType)].text,
                     );
-                    if(_formKey.currentState.validate()) onSubmit(inputs);
+                    if(_formKey.currentState!.validate()) onSubmit(inputs);
                   },
                 );
-                break;
               case 'button':
-                return buttons[index - submitIndex - 1];
+                return buttons![index - submitIndex - 1];
               case 'username':
                 return textFieldForRegistration(
                   editingController: controllers[index],
@@ -367,7 +365,6 @@ class InputForm extends StatelessWidget {
                   autofocus: true,
                   autofillHints: [AutofillHints.email, AutofillHints.telephoneNumber, AutofillHints.nickname, AutofillHints.name, AutofillHints.username],
                 );
-                break;
               case 'email':
                 return textFieldForRegistration(
                   editingController: controllers[index],
@@ -377,7 +374,6 @@ class InputForm extends StatelessWidget {
                   autofocus: true,
                   autofillHints: [AutofillHints.email],
                 );
-                break;
               case 'phone':
                 return textFieldForRegistration(
                   editingController: controllers[index],
@@ -387,11 +383,10 @@ class InputForm extends StatelessWidget {
                   autofocus: true,
                   autofillHints: [AutofillHints.telephoneNumber],
                 );
-                break;
               default:
                 return Container();
             }
-          }),
+          }).toList(),
         ),
       ),
     );
@@ -403,7 +398,7 @@ class FoundWidget extends StatefulWidget {
   final int id;
   final Widget Function(Found) widget;
   final String string = globals.uuid.v1();
-  FoundWidget({this.id, this.widget});
+  FoundWidget({required this.id, required this.widget});
 
   @override
   _FoundWidgetState createState() => _FoundWidgetState();
@@ -413,17 +408,17 @@ class _FoundWidgetState extends State<FoundWidget> {
 
   @override
   void initState() {
-    globals.onFoundChanged[widget.id][widget.string] = (Found found) => setState((){});
+    globals.onFoundChanged[widget.id]![widget.string] = (Found? found) => setState((){});
     super.initState();
   }
 
   @override
   void dispose() {
-    globals.onFoundChanged[widget.id].remove(widget.string);
+    globals.onFoundChanged[widget.id]?.remove(widget.string);
   }
 
   @override
   Widget build(BuildContext context) {
-    return createFutureWidget<Map<int, Found>>(globals.founds.get(), (founds) => widget.widget(founds[widget.id]));
+    return createFutureWidget<Map<int, Found>>(globals.founds.get(), (founds) => widget.widget(founds[widget.id]!));
   }
 }

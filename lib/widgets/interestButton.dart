@@ -12,7 +12,7 @@ class InterestButton extends StatefulWidget {
   final bool isSvg;
   final bool canChangeAmount;
 
-  InterestButton({this.onClick, this.name, this.amount = 0, this.selected = false, this.canChangeAmount = false, this.isSvg = false});
+  InterestButton({required this.onClick, required this.name, this.amount = 0, this.selected = false, this.canChangeAmount = false, this.isSvg = false});
 
   @override
   _InterestButtonState createState() => _InterestButtonState();
@@ -20,7 +20,7 @@ class InterestButton extends StatefulWidget {
 
 class _InterestButtonState extends State<InterestButton> {
 
-  int amount;
+  int? amount;
 
   @override
   void initState() {
@@ -40,10 +40,10 @@ class _InterestButtonState extends State<InterestButton> {
     return GestureDetector(
       onTap: widget.canChangeAmount ? () {
         setState(() {
-          amount = (amount + 1) % 4;
+          amount = (amount! + 1) % 4;
         });
         widget.onClick(amount);
-      } : widget.onClick,
+      } : widget.onClick as Function(),
       child: Container(
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(50),
