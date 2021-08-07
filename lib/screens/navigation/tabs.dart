@@ -1,15 +1,12 @@
-import 'dart:io';
-import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 
 import 'package:findme/models/pageTab.dart';
-import 'package:findme/models/found.dart';
 import 'package:findme/constant.dart';
 import 'package:findme/widgets/misc.dart';
+import 'package:findme/main.dart' as main;
 import 'package:findme/globals.dart' as globals;
 import 'package:findme/events.dart' as events;
 
@@ -24,16 +21,12 @@ class TabbedScreen extends StatefulWidget {
 
 class _TabbedScreenState extends State<TabbedScreen> {
 
-  PageTab _currentTab;
-  List<PageTab> _tabHistory;
-
-  final FirebaseMessaging _fcm = FirebaseMessaging();
-  StreamSubscription iosSubscription;
+  PageTab? _currentTab;
+  List<PageTab> _tabHistory = List.empty();
 
   @override
   void initState() {
     super.initState();
-    _tabHistory = new List<PageTab>();
     Firebase.initializeApp();
     globals.interests.get(forceNetwork: true);
     globals.moods.get(forceNetwork: true);
@@ -41,109 +34,58 @@ class _TabbedScreenState extends State<TabbedScreen> {
     globals.personality.get(forceNetwork: true);
     globals.meUser.get(forceNetwork: true);
     createToken();
+
+    globals.onTabChanged = (PageTab newTab) => setState(() {
+      _tabHistory.add(_currentTab!);
+      _currentTab = newTab;
+      if(globals.pageOnTabChange != null){
+        navigatorKeys[_currentTab]!.currentState!.pushNamed(globals.pageOnTabChange!['route'], arguments: globals.pageOnTabChange!['arguments']);
+        globals.pageOnTabChange = null;
+      }
+    });
   }
 
   void createToken() async {
     await globals.posts.get();
-    if(Platform.isIOS){
-      iosSubscription = _fcm.onIosSettingsRegistered.listen((data) {
-        saveToken();
-      });
-      _fcm.requestNotificationPermissions(IosNotificationSettings());
-    }else{
-      saveToken();
-    }
-  }
-
-  void saveToken () async {
-    String fcmToken = await _fcm.getToken();
+    String fcmToken = (await FirebaseMessaging.instance.getToken())!;
     globals.addPostCall('notification/token/', {"fcm_token": fcmToken}, overwrite: (body) => true);
-    configureFCM();
-  }
 
-  void configureFCM () {
-    void Function(Map<String, dynamic>) onNotification = (Map<String, dynamic> message) async {
-      switch(message['data']['type']){
-        case 'Found':
-          globals.founds.get(forceNetwork: true);
-          break;
-        case 'Find':
-          globals.finds.get(forceNetwork: true);
-          break;
-        case 'Request':
-          globals.requests.get(forceNetwork: true);
-          break;
-        case 'Personality':
-          globals.meUser.get(forceNetwork: true);
-          break;
-        case 'Chat':
-          int id = int.parse(message['data']['id']);
-          Map<int, Found> founds = await globals.founds.get();
-          globals.currentTab.set(PageTab.found);
-          setState(() {
-            _tabHistory.add(_currentTab);
-            _currentTab = PageTab.found;
-            navigatorKeys[_currentTab].currentState.pushNamed('/message', arguments: founds[id]);
-          });
-          break;
-        case 'AvatarUpdate':
-          int id = int.parse(message['data']['id']);
-          Map<String, Map<String, dynamic>> avatars = await globals.avatars.get();
-          globals.founds.mappedUpdate(id, (Found found) {
-            found.avatar = avatars[message['data']['base']][message['data']['mood']];
-            return found;
-          });
-          break;
-        case 'NickUpdate':
-          int id = int.parse(message['data']['id']);
-          globals.founds.mappedUpdate(id, (Found found) {
-            found.nick = message['data']['nick'];
-            return found;
-          });
-          break;
-      }
-    };
+    FirebaseMessaging.onMessage.listen((RemoteMessage message) async {
+      main.onNotification(message.data);
 
-    _fcm.configure(
-      onMessage: (Map<String, dynamic> message) async {
-        onNotification(message);
+      bool display = true;
+      if(message.data.containsKey('display')) display = message.data['display'] == 'true';
 
-        bool display = true;
-        if(message['data'].contains('display')) display = message['data']['display'] == 'true';
-
-        if(display && message.containsKey('notification')){
-          showDialog(
-            context: context,
-            builder: (context) => AlertDialog(
-              content: ListTile(
-                title: Text(message['notification']['title']),
-                subtitle: Text(message['notification']['body']),
-              ),
-              actions: <Widget>[
-                FlatButton(
-                  child: Text('Ok'),
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                    onNotification(message);
-                  },
-                ),
-              ],
+      if(display && message.notification != null){
+        showDialog(
+          context: context,
+          builder: (context) => AlertDialog(
+            content: ListTile(
+              title: Text(message.notification!.title!),
+              subtitle: Text(message.notification!.body!),
             ),
-          );
-        }
-      },
-      onLaunch: onNotification,
-      onResume: onNotification,
-    );
+            actions: <Widget>[
+              TextButton(
+                child: Text('Ok'),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+            ],
+          ),
+        );
+      }
+    });
   }
 
+  @override
   Widget build(BuildContext context) {
     return createFutureWidget(globals.currentTab.get(), (PageTab cachedTab) {
       if(_currentTab == null) _currentTab = cachedTab;
 
       return WillPopScope(
         onWillPop: () async {
-          bool canPop = await navigatorKeys[_currentTab].currentState.maybePop();
+          bool canPop = await navigatorKeys[_currentTab]!.currentState!.maybePop();
           if(!canPop){
             if(_tabHistory.isEmpty)
               return true;
@@ -166,20 +108,15 @@ class _TabbedScreenState extends State<TabbedScreen> {
             child: BottomNavigationBar(
               type: BottomNavigationBarType.fixed,
               items: PageTab.values.map<BottomNavigationBarItem>((PageTab tab) =>
-                tabButton(icon: tabIcon[tab], selected: _currentTab == tab)
+                tabButton(icon: tabIcon[tab]!, selected: _currentTab == tab)
               ).toList(),
-              currentIndex: PageTab.values.indexOf(_currentTab),
+              currentIndex: PageTab.values.indexOf(_currentTab!),
               onTap: (index) {
                 PageTab newTab = PageTab.values[index];
-                if(newTab == _currentTab){
-                  navigatorKeys[_currentTab].currentState.popUntil(ModalRoute.withName('/'));
-                }else{
+                if(newTab == _currentTab)
+                  navigatorKeys[_currentTab]!.currentState!.popUntil(ModalRoute.withName('/'));
+                else
                   globals.currentTab.set(newTab);
-                  setState(() {
-                    _tabHistory.add(_currentTab);
-                    _currentTab = newTab;
-                  });
-                }
                 events.sendEvent('tabSelect', {"tab": newTab.toString()});
               },
               showSelectedLabels: false,
@@ -195,7 +132,7 @@ class _TabbedScreenState extends State<TabbedScreen> {
     });
   }
 
-  BottomNavigationBarItem tabButton({String icon, bool selected = false}) {
+  BottomNavigationBarItem tabButton({required String icon, bool selected = false}) {
     return BottomNavigationBarItem(
       label: '',
       icon: Container(

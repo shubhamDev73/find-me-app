@@ -1,11 +1,58 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 
 import 'package:findme/screens/navigation/app.dart';
 import 'package:findme/constant.dart';
+import 'package:findme/models/found.dart';
+import 'package:findme/models/pageTab.dart';
+import 'package:findme/globals.dart' as globals;
+
+void onNotification(Map<String, dynamic> data) async {
+  switch(data['type']){
+    case 'Found':
+      globals.founds.get(forceNetwork: true);
+      break;
+    case 'Find':
+      globals.finds.get(forceNetwork: true);
+      break;
+    case 'Request':
+      globals.requests.get(forceNetwork: true);
+      break;
+    case 'Personality':
+      globals.meUser.get(forceNetwork: true);
+      break;
+    case 'Chat':
+      int id = int.parse(data['id']);
+      Map<int, Found> founds = await globals.founds.get();
+      globals.currentTab.set(PageTab.found);
+      globals.pageOnTabChange = {"route": "/message", "arguments": founds[id]};
+      break;
+    case 'AvatarUpdate':
+      int id = int.parse(data['id']);
+      Map<String, Map<String, dynamic>> avatars = await globals.avatars.get();
+      globals.founds.mappedUpdate(id, (Found found) {
+        found.avatar = avatars[data['base']]![data['mood']];
+        return found;
+      });
+      break;
+    case 'NickUpdate':
+      int id = int.parse(data['id']);
+      globals.founds.mappedUpdate(id, (Found found) {
+        found.nick = data['nick'];
+        return found;
+      });
+      break;
+  }
+}
+
+Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
+  onNotification(message.data);
+}
 
 void main() {
+  FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
   WidgetsFlutterBinding.ensureInitialized();
   runApp(Main());
 }

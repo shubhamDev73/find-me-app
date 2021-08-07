@@ -19,7 +19,10 @@ CachedData<PageTab> currentTab = CachedData(
   cacheFile: 'tab.txt',
   encoder: (PageTab tab) => tab.index.toString(),
   decoder: (String tabString) => PageTab.values[int.parse(tabString)],
+  setCallback: onTabChanged,
 );
+Function? onTabChanged;
+Map<String, dynamic>? pageOnTabChange;
 
 
 // token
