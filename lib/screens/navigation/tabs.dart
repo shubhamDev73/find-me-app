@@ -22,7 +22,7 @@ class TabbedScreen extends StatefulWidget {
 class _TabbedScreenState extends State<TabbedScreen> {
 
   PageTab? _currentTab;
-  List<PageTab> _tabHistory = List.empty();
+  List<PageTab> _tabHistory = List.empty(growable: true);
 
   @override
   void initState() {
@@ -104,7 +104,7 @@ class _TabbedScreenState extends State<TabbedScreen> {
             )).toList(),
           ),
           bottomNavigationBar: SizedBox(
-            height: 40,
+            height: 50,
             child: BottomNavigationBar(
               type: BottomNavigationBarType.fixed,
               items: PageTab.values.map<BottomNavigationBarItem>((PageTab tab) =>
@@ -143,7 +143,7 @@ class _TabbedScreenState extends State<TabbedScreen> {
           ),
           color: selected ? Colors.white : ThemeColors.primaryColor,
           ),
-        height: 40,
+        height: 50,
         width: MediaQuery.of(context).size.width / PageTab.values.length,
         child: SvgPicture.asset(
           icon,
