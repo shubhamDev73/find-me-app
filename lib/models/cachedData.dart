@@ -73,7 +73,7 @@ class CachedData<T> {
   Future<void> saveToFile () async {
     if(cacheFile == null) return;
     File file = await getFile(cacheFile!);
-    String writeString = isEmpty() ? '' : (encoder?.call(_cachedValue!) ?? jsonEncode(_cachedValue! as Map<String, dynamic>));
+    String writeString = isEmpty() ? '' : (encoder?.call(_cachedValue!) ?? jsonEncode(_cachedValue!));
     await file.writeAsString(writeString);
   }
 

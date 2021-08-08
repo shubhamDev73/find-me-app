@@ -62,7 +62,7 @@ MappedCachedData<int, Interest> interests = MappedCachedData(
     LinkedHashMap<String, Map<String, dynamic>>.fromIterable(data.values,
       key: (interest) => interest.id.toString(),
       value: (interest) => interest.toJson(),
-    )
+    ),
   ),
   decoder: (data) =>
     LinkedHashMap<int, Interest>.fromIterable(jsonDecode(data).values,
@@ -101,8 +101,8 @@ MappedCachedData<String, Map<String, dynamic>> personality = MappedCachedData(
       personality['trait']![key] = Map.identity();
       personality['trait']![key]['description'] = decoded['trait']![key]['description'];
       personality['trait']![key]['url'] = decoded['trait']![key]['url'];
-      personality['trait']![key]['adjectives'] = LinkedHashMap<int, Map<String, dynamic>>.fromIterable(decoded['trait']![key]['adjectives'],
-        key: (adjective) => adjective['id'],
+      personality['trait']![key]['adjectives'] = LinkedHashMap<String, Map<String, dynamic>>.fromIterable(decoded['trait']![key]['adjectives'],
+        key: (adjective) => adjective['id'].toString(),
         value: (adjective) => adjective,
       );
     }
