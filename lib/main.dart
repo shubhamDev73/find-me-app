@@ -14,12 +14,6 @@ void onNotification(Map<String, dynamic> data) async {
     case 'Found':
       globals.founds.get(forceNetwork: true);
       break;
-    case 'Find':
-      globals.finds.get(forceNetwork: true);
-      break;
-    case 'Request':
-      globals.requests.get(forceNetwork: true);
-      break;
     case 'Personality':
       globals.meUser.get(forceNetwork: true);
       break;

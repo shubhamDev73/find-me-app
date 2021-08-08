@@ -35,8 +35,6 @@ CachedData<String> token = CachedData(
       // clearing user data
       meUser.clear();
       _anotherUser.clear();
-      requests.clear();
-      finds.clear();
       founds.clear();
 
       // clearing app data specific to user
@@ -170,32 +168,6 @@ void setAnotherUser (String url) {
 
 
 // found
-
-CachedData<List<dynamic>> requests = CachedData(
-  emptyValue: [],
-  url: 'requests/',
-  cacheFile: 'requests.json',
-  networkDecoder: (data) {
-    List<dynamic> requestList = jsonDecode(data);
-    requestList.sort((dynamic a, dynamic b) => DateTime.parse(b['timestamp']).compareTo(DateTime.parse(a['timestamp'])));
-    return requestList;
-  },
-  setCallback: (data) => onFindsUpdate?.call(),
-);
-
-CachedData<List<dynamic>> finds = CachedData(
-  emptyValue: [],
-  url: 'find/',
-  cacheFile: 'finds.json',
-  networkDecoder: (data) {
-    List<dynamic> findList = jsonDecode(data)['users'];
-    findList.sort((dynamic a, dynamic b) => DateTime.parse(b['timestamp']).compareTo(DateTime.parse(a['timestamp'])));
-    return findList;
-  },
-  setCallback: (data) => onFindsUpdate?.call(),
-);
-Function? onFindsUpdate;
-
 MappedCachedData<int, Found> founds = MappedCachedData(
   url: 'found/',
   cacheFile: 'founds.json',
@@ -216,6 +188,8 @@ MappedCachedData<int, Found> founds = MappedCachedData(
       value: (found) => Found.fromJson(found),
     ),
   setCallback: (data, [int? key]) {
+    if(onFoundChanged.isEmpty) data.forEach((key, value) {onFoundChanged[key] = Map.identity();});
+
     onChatListUpdate?.call(data);
     if(key != null && onFoundChanged.containsKey(key)) onFoundChanged[key]!.values.forEach((f) => f(data[key]));
   },

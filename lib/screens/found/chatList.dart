@@ -15,82 +15,77 @@ class FoundPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return createFutureWidget<Map<int, Found>>(globals.founds.get(), (Map<int, Found> founds) {
-      globals.founds.get(forceNetwork: true);
-      return Scaffold(
-        body: SafeArea(
-          child: Container(
-            child: Column(
-              children: [
-                Container(
-                  height: 150,
-                  color: ThemeColors.primaryColor,
-                  child: Container(
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: <Widget>[
-                        Expanded(
-                          flex: 12,
-                          child: Row(
-                            children: [
-                              SizedBox(
-                                width: 10,
-                              ),
-                              ProfilePic(),
-                              Container(
-                                margin: EdgeInsets.symmetric(horizontal: 10),
-                                width: 5,
-                                decoration: BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  color: Colors.black,
-                                ),
-                              ),
-                            ]
-                          )
-                        ),
-                        Expanded(
-                          flex: 14,
-                          child: Text(
-                            "find people",
-                            style: TextStyle(
-                              fontSize: 28,
+    return createFutureWidget<Map<int, Found>>(globals.founds.get(), (Map<int, Found> founds) => Scaffold(
+      body: Container(
+        child: Column(
+          children: [
+            Container(
+              height: 150,
+              color: ThemeColors.primaryColor,
+              child: Container(
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    Expanded(
+                      flex: 12,
+                      child: Row(
+                        children: [
+                          SizedBox(
+                            width: 10,
+                          ),
+                          ProfilePic(),
+                          Container(
+                            margin: EdgeInsets.symmetric(horizontal: 10),
+                            width: 5,
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              color: Colors.black,
                             ),
                           ),
-                        ),
-                        InkWell(
-                          onTap: () {
-                            List<AppSettings> settings = List.of({
-                              AppSettings(text: "Search", onTap: () => globals.scaffoldKey.currentState!.showSnackBar(SnackBar(content: Text("Not implemented")))),
-                              aboutSettings(context, 'found'),
-                              privacySettings(context, 'found'),
-                              muteNotificationsSettings('found'),
-                              logoutSettings('found'),
-                            });
-
-                            Navigator.of(context).pushNamed('/settings', arguments: settings);
-                            events.sendEvent('settingsClick', {"page": "found"});
-                          },
-                          child: Icon(Icons.more_vert),
-                        ),
-                        Expanded(
-                            flex: 1,
-                            child: Container()
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
-                  ),
+                    Expanded(
+                      flex: 14,
+                      child: Text(
+                        "find people",
+                        style: TextStyle(
+                          fontSize: 28,
+                        ),
+                      ),
+                    ),
+                    InkWell(
+                      onTap: () {
+                        List<AppSettings> settings = List.of({
+                          AppSettings(text: "Search", onTap: () => globals.scaffoldKey.currentState!.showSnackBar(SnackBar(content: Text("Not implemented")))),
+                          aboutSettings(context, 'found'),
+                          privacySettings(context, 'found'),
+                          muteNotificationsSettings('found'),
+                          logoutSettings('found'),
+                        });
+
+                        Navigator.of(context).pushNamed('/settings', arguments: settings);
+                        events.sendEvent('settingsClick', {"page": "found"});
+                      },
+                      child: Icon(Icons.more_vert),
+                    ),
+                    Expanded(
+                        flex: 1,
+                        child: Container()
+                    ),
+                  ],
                 ),
-                Expanded(
-                  child: Container(
-                    child: ChatList(founds: founds),
-                  ),
-                ),
-              ],
+              ),
             ),
-          ),
+            Expanded(
+              child: Container(
+                child: ChatList(founds: founds),
+              ),
+            ),
+          ],
         ),
-      );
-    });
+      ),
+    ));
   }
 }
 
@@ -175,10 +170,10 @@ class _ChatListState extends State<ChatList> {
   @override
   Widget build(BuildContext context) {
     return ListView(
-      children: foundList.map((found) => ChatListItem(
+      children: foundList.asMap().map((index, found) => MapEntry(index, ChatListItem(
         found: found,
-        index: foundList.indexOf(found),
-      )).toList(),
+        index: index,
+      ))).values.toList(),
     );
   }
 }

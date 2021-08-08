@@ -246,7 +246,7 @@ class _ChatMessageListState extends State<ChatMessageList> {
 
   @override
   Widget build(BuildContext context) {
-    return createFirebaseStreamWidget(stream!, (List<DocumentSnapshot> messages) {
+    return createFirebaseStreamWidget(stream, (List<DocumentSnapshot> messages) {
       if(messages.length > downloadedMessages){
         streamDownloaded = true;
         downloadedMessages = messages.length;
