@@ -68,22 +68,11 @@ class _MoodState extends State<Mood> {
           body: Column(
             children: [
               Expanded(
-                flex: 1,
-                child: Stack(
-                  children: [
-                    Positioned(
-                      top: 40,
-                      left: 12,
-                      child: InkWell(
-                        onTap: () => Navigator.of(context).pop(),
-                        child: Icon(Icons.arrow_back_ios),
-                      ),
-                    ),
-                  ],
-                ),
+                flex: 2,
+                child: Button(type: 'back'),
               ),
               Expanded(
-                flex: 3,
+                flex: 2,
                 child: widget.me ? Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: avatars.values.map((avatar) => Container(

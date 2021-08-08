@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 
-import 'package:findme/assets.dart';
 import 'package:findme/models/user.dart';
 
 class UserInfo extends StatelessWidget {
@@ -24,9 +22,7 @@ class UserInfo extends StatelessWidget {
             ),
           ),
         ),
-        SizedBox(
-          height: 12,
-        ),
+        SizedBox(height: 12),
         Text(
           user.nick,
           style: TextStyle(

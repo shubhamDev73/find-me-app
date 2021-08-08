@@ -13,7 +13,7 @@ class TopBox extends StatelessWidget {
   final Widget? widget;
   final bool settings;
 
-  const TopBox({this.height = 210, this.title, this.secondaryWidget, this.description = '', this.widget, this.settings = false});
+  const TopBox({this.height = 215, this.title, this.secondaryWidget, this.description = '', this.widget, this.settings = false});
 
   @override
   Widget build(BuildContext context) {
@@ -25,7 +25,7 @@ class TopBox extends StatelessWidget {
         ),
         Column(
           children: [
-            SizedBox(height: 40),
+            SizedBox(height: 50),
             Row(
               mainAxisAlignment: settings ? MainAxisAlignment.end : MainAxisAlignment.start,
               children: [

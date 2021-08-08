@@ -122,9 +122,9 @@ class Button extends StatelessWidget {
   final double height;
   final double width;
   final String text;
-  final void Function() onTap;
+  final void Function()? onTap;
 
-  Button({this.type = 'default', this.height = 42, this.width = 125, required this.text, required this.onTap});
+  Button({this.type = 'default', this.height = 42, this.width = 125, this.text = '', this.onTap});
 
   @override
   Widget build(BuildContext context) {
@@ -166,6 +166,21 @@ class Button extends StatelessWidget {
               style: TextStyle(color: ThemeColors.accentColor),
             ),
           ),
+        );
+      case 'back':
+        return Column(
+          children: [
+            SizedBox(height: 50),
+            Row(
+              children: [
+                SizedBox(width: 12),
+                InkWell(
+                  onTap: () => Navigator.of(context).pop(),
+                  child: Icon(Icons.arrow_back_ios),
+                ),
+              ],
+            ),
+          ],
         );
       default:
         return Container();

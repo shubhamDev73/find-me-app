@@ -23,9 +23,9 @@ class ChatMessageItem extends StatelessWidget {
       margin: EdgeInsets.symmetric(vertical: 4),
       child: Row(
         mainAxisAlignment: me ? MainAxisAlignment.end : MainAxisAlignment.start,
-        children: <Widget>[
+        children: [
           Stack(
-            overflow: Overflow.visible,
+            clipBehavior: Clip.none,
             children: [
               Container(
                 constraints: BoxConstraints(minWidth: 90, maxWidth: 250),

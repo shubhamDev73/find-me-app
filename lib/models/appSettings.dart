@@ -22,7 +22,7 @@ AppSettings privacySettings(BuildContext context, String page){
       builder: (context) => AlertDialog(
         content: ListTile(
           title: Text('Privacy'),
-          subtitle: Text('We say everything is private on this app, but actually, nothing is private.. Mwah ha ha ha ha...'),
+          subtitle: Text('We say everything is private on this app, but actually, nothing is private..\n\nMwah ha ha ha ha...'),
         ),
         actions: <Widget>[
           TextButton(

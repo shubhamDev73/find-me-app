@@ -29,144 +29,142 @@ class ChatMessage extends StatelessWidget {
     });
 
     return createFutureWidget<Map<String, dynamic>>(globals.moods.get(), (moods) => Scaffold(
-      body: SafeArea(
-        child: Container(
-          child: Column(
-            children: <Widget>[
-              Expanded(
-                flex: 1,
-                child: InkWell(
-                  onTap: () {
-                    globals.setAnotherUser('/found/${found.id}');
-                    Navigator.of(context).pushNamed('/user', arguments: found);
-                    events.sendEvent('viewProfile', {"user": found.id});
-                  },
-                  child: Container(
-                    color: ThemeColors.primaryColor,
-                    child: Row(
-                      children: <Widget>[
-                        Container(
-                          padding: EdgeInsets.fromLTRB(12, 0, 0, 0),
-                          child: InkWell(
-                            onTap: () => Navigator.of(context).pop(),
-                            child: Icon(Icons.arrow_back_ios),
-                          ),
+      body: Container(
+        child: Column(
+          children: <Widget>[
+            Expanded(
+              flex: 1,
+              child: InkWell(
+                onTap: () {
+                  globals.setAnotherUser('/found/${found.id}');
+                  Navigator.of(context).pushNamed('/user', arguments: found);
+                  events.sendEvent('viewProfile', {"user": found.id});
+                },
+                child: Container(
+                  color: ThemeColors.primaryColor,
+                  child: Row(
+                    children: [
+                      Container(
+                        padding: EdgeInsets.fromLTRB(12, 0, 0, 0),
+                        child: InkWell(
+                          onTap: () => Navigator.of(context).pop(),
+                          child: Icon(Icons.arrow_back_ios),
                         ),
-                        FoundWidget(id: found.id, widget: (found) => Container(
-                          width: 50,
-                          margin: EdgeInsets.fromLTRB(0, 0, 12, 0),
-                          child: CachedNetworkImage(imageUrl: found.avatar['v1']),
-                        )),
-                        Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: <Widget>[
-                            FoundWidget(id: found.id, widget: (found) => Container(
-                              child: Text(
-                                found.nick,
-                                textAlign: TextAlign.left,
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 20,
-                                ),
-                              ),
-                            )),
-                            Container(
-                              child: Text(
-                                "tap to view profile",
-                                style: TextStyle(
-                                  color: Colors.white,
-                                ),
+                      ),
+                      FoundWidget(id: found.id, widget: (found) => Container(
+                        width: 50,
+                        margin: EdgeInsets.fromLTRB(0, 0, 12, 0),
+                        child: CachedNetworkImage(imageUrl: found.avatar['v1']),
+                      )),
+                      Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: <Widget>[
+                          FoundWidget(id: found.id, widget: (found) => Container(
+                            child: Text(
+                              found.nick,
+                              textAlign: TextAlign.left,
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 20,
                               ),
                             ),
-                          ],
-                        ),
-                        Expanded(
-                          flex: 4,
-                          child: Container(),
-                        ),
-                        Container(
-                          child: LastSeenWidget(found: found),
-                        ),
-                        Expanded(
-                          flex: 2,
-                          child: InkWell(
-                            onTap: () {
-                              List<AppSettings> settings = List.of({
-                                AppSettings(text: "Search", onTap: () => globals.scaffoldKey.currentState!.showSnackBar(SnackBar(content: Text("Not implemented")))),
-                                AppSettings(text: "Retain", onTap: () {
-                                  globals.addPostCall('found/retain/', {"id": found.id});
-                                  events.sendEvent('settingsRetain', {"user": found.id});
-                                }),
-                                AppSettings(text: "Block", onTap: () => globals.scaffoldKey.currentState!.showSnackBar(SnackBar(content: Text("Not implemented")))),
-                              });
+                          )),
+                          Container(
+                            child: Text(
+                              "tap to view profile",
+                              style: TextStyle(
+                                color: Colors.white,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                      Expanded(
+                        flex: 4,
+                        child: Container(),
+                      ),
+                      Container(
+                        child: LastSeenWidget(found: found),
+                      ),
+                      Expanded(
+                        flex: 2,
+                        child: InkWell(
+                          onTap: () {
+                            List<AppSettings> settings = List.of({
+                              AppSettings(text: "Search", onTap: () => globals.scaffoldKey.currentState!.showSnackBar(SnackBar(content: Text("Not implemented")))),
+                              AppSettings(text: "Retain", onTap: () {
+                                globals.addPostCall('found/retain/', {"id": found.id});
+                                events.sendEvent('settingsRetain', {"user": found.id});
+                              }),
+                              AppSettings(text: "Block", onTap: () => globals.scaffoldKey.currentState!.showSnackBar(SnackBar(content: Text("Not implemented")))),
+                            });
 
-                              Navigator.of(context).pushNamed('/settings', arguments: settings);
-                              events.sendEvent('settingsClick', {"page": "message", "user": found.id});
-                            },
-                            child: Icon(Icons.more_vert),
-                          ),
+                            Navigator.of(context).pushNamed('/settings', arguments: settings);
+                            events.sendEvent('settingsClick', {"page": "message", "user": found.id});
+                          },
+                          child: Icon(Icons.more_vert),
                         ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
                 ),
               ),
-              Expanded(
-                flex: 5,
-                child: FoundWidget(id: found.id, widget: (found) => Container(
-                  decoration: BoxDecoration(
-                    image: DecorationImage(
-                      image: CachedNetworkImageProvider(moods[found.mood]['url']['weather']),
-                      fit: BoxFit.contain,
+            ),
+            Expanded(
+              flex: 5,
+              child: FoundWidget(id: found.id, widget: (found) => Container(
+                decoration: BoxDecoration(
+                  image: DecorationImage(
+                    image: CachedNetworkImageProvider(moods[found.mood]['url']['weather']),
+                    fit: BoxFit.contain,
+                  ),
+                ),
+                child: ChatMessageList(found: found),
+              )),
+            ),
+            Container(
+              margin: EdgeInsets.symmetric(vertical: 3.0, horizontal: 4.0),
+              padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
+              child: Row(
+                children: <Widget>[
+                  Expanded(
+                    child: Container(
+                      padding: EdgeInsets.symmetric(horizontal: 12.0),
+                      decoration: BoxDecoration(
+                        color: ThemeColors.chatMessageColors[true],
+                        borderRadius: BorderRadius.circular(10.0),
+                        border: Border.all(color: ThemeColors.chatMessageColors[false]!)
+                      ),
+                      child: TextField(
+                        maxLines: null,
+                        controller: messageController,
+                        onSubmitted: (text) => submitChat(text, found),
+                        style: TextStyle(
+                          fontSize: 16,
+                        ),
+                        decoration: InputDecoration(
+                          border: InputBorder.none,
+                        ),
+                      ),
                     ),
                   ),
-                  child: ChatMessageList(found: found),
-                )),
-              ),
-              Container(
-                margin: EdgeInsets.symmetric(vertical: 3.0, horizontal: 4.0),
-                padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
-                child: Row(
-                  children: <Widget>[
-                    Expanded(
-                      child: Container(
-                        padding: EdgeInsets.symmetric(horizontal: 12.0),
-                        decoration: BoxDecoration(
-                          color: ThemeColors.chatMessageColors[true],
-                          borderRadius: BorderRadius.circular(10.0),
-                          border: Border.all(color: ThemeColors.chatMessageColors[false]!)
-                        ),
-                        child: TextField(
-                          maxLines: null,
-                          controller: messageController,
-                          onSubmitted: (text) => submitChat(text, found),
-                          style: TextStyle(
-                            fontSize: 16,
-                          ),
-                          decoration: InputDecoration(
-                            border: InputBorder.none,
-                          ),
-                        ),
-                      ),
+                  Container(
+                    margin: EdgeInsets.symmetric(horizontal: 8),
+                    width: 30,
+                    height: 30,
+                    child: InkWell(
+                      onTap: () {
+                        submitChat(messageController.text, found);
+                        FocusScope.of(context).unfocus();
+                      },
+                      child: SvgPicture.asset(Assets.chatArrow),
                     ),
-                    Container(
-                      margin: EdgeInsets.symmetric(horizontal: 8),
-                      width: 30,
-                      height: 30,
-                      child: InkWell(
-                        onTap: () {
-                          submitChat(messageController.text, found);
-                          FocusScope.of(context).unfocus();
-                        },
-                        child: SvgPicture.asset(Assets.chatArrow),
-                      ),
-                    ),
-                  ],
-                ),
+                  ),
+                ],
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     ));
