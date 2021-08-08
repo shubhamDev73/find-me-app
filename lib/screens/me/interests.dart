@@ -35,7 +35,7 @@ class _QuestionsWidgetState extends State<QuestionsWidget> {
     if(!widget.questions.contains(currentQuestion)) currentQuestion = widget.questions[0];
     TextEditingController answerController = TextEditingController(text: currentQuestion!['answer']);
     return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
+      mainAxisAlignment: MainAxisAlignment.start,
       children: [
         Carousel(
           items: widget.questions,
@@ -56,7 +56,7 @@ class _QuestionsWidgetState extends State<QuestionsWidget> {
             currentQuestion = widget.questions[index];
             events.sendEvent('questionSelect', {"question": currentQuestion!['id']});
           }),
-          gap: 250,
+          gap: 300,
         ),
         Container(
           margin: EdgeInsets.symmetric(horizontal: 60),
@@ -179,11 +179,11 @@ class _InterestsState extends State<Interests> {
               child: Button(type: 'back'),
             ),
             Expanded(
-              flex: 4,
+              flex: 6,
               child: QuestionsWidget(me: widget.me, interestId: interestId!, questions: user.interests[interestId]!.questions),
             ),
             Expanded(
-              flex: 6,
+              flex: 4,
               child: Container(
                 padding: EdgeInsets.symmetric(horizontal: 10),
                 color: ThemeColors.lightColor,

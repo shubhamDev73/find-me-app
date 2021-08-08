@@ -217,6 +217,7 @@ class _CarouselState extends State<Carousel> {
   Widget build(BuildContext context) {
     return Stack(
       alignment: Alignment.center,
+      clipBehavior: Clip.none,
       children: [
         CarouselSlider(
           carouselController: widget.controller,
