@@ -2,13 +2,13 @@ class Interest {
   Interest({
     required this.id, // backend id
     required this.name,
-    required this.amount, // intensity of interest
+    this.amount, // intensity of interest
     required this.questions,
   });
 
   int id;
   String name;
-  int amount;
+  int? amount;
   List<dynamic> questions;
 
   factory Interest.fromJson(Map<String, dynamic> json) => Interest(

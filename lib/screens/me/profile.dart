@@ -51,7 +51,7 @@ class _ProfileState extends State<Profile> {
       Interest interest = interests[index];
       return InterestButton(
         name: interest.name,
-        amount: interest.amount,
+        amount: interest.amount!,
         onClick: () {
           Navigator.of(context).pushNamed('/interests', arguments: interest.id);
           events.sendEvent('interestSelect', {"interest": interest.id, "home": true});

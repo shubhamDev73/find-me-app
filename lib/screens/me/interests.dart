@@ -122,7 +122,7 @@ List<Widget> getInterestList(List<Interest> obj, Function onClick, int id) {
       tempRow.add(InterestButton(
         name: interest.name,
         onClick: () => onClick(interest.id),
-        amount: interest.amount,
+        amount: interest.amount!,
         selected: interest.id == id,
       ));
       if(j != elementsInRow - 1 && itemCounter != obj.length)
