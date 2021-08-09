@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/cupertino.dart';
 
 import 'package:findme/constant.dart';
 
@@ -70,15 +71,14 @@ class _PasswordFieldState extends State<PasswordField> {
         ),
         Positioned(
           top: 25,
-          left: 220,
+          left: 200,
           child: InkWell(
             onTap: () => setState(() {
               obscured = !obscured;
             }),
-            child: Container(
-              height: 20,
-              width: 20,
-              color: obscured ? Colors.white : Colors.black,
+            child: Icon(
+              obscured ? CupertinoIcons.eye : CupertinoIcons.eye_slash,
+              color: Colors.grey.shade300,
             ),
           ),
         ),
