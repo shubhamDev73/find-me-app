@@ -18,7 +18,7 @@ class ChatListItem extends StatelessWidget {
 
   ChatListItem({required this.found, this.index = 0});
 
-  final StreamController<int> unreadNumController = StreamController<int>();
+  final StreamController<int> unreadNumController = StreamController<int>.broadcast();
 
   DateTime? lastMessageTime;
 
@@ -80,9 +80,9 @@ class ChatListItem extends StatelessWidget {
 
           return Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: <Widget>[
+            children: [
               Row(
-                children: <Widget>[
+                children: [
                   FoundWidget(id: found.id, widget: (found) => Container(
                     padding: EdgeInsets.all(17),
                     child: CachedNetworkImage(imageUrl: found.avatar['v1'], height: 40),
@@ -138,7 +138,7 @@ class ChatListItem extends StatelessWidget {
                     ),
                   ],
                 ) : Container(),
-              ), fullPage: false),
+              ), fullPage: false, loadingWidget: Container()),
             ],
           );
         }, fullPage: false, cacheObj: found.lastMessage == null ? null : [FakeDocument(id: found.lastMessage!['id'], data: found.lastMessage!)]),

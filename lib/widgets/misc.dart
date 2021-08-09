@@ -17,31 +17,31 @@ class WidgetBuilder<T> {
   final Widget Function(T) widgetCreator;
   const WidgetBuilder(this.widgetCreator);
 
-  Widget Function(BuildContext, AsyncSnapshot<T>) getBuilder ({bool fullPage = true}) {
+  Widget Function(BuildContext, AsyncSnapshot<T>) getBuilder (Widget loadingWidget) {
     return (BuildContext context, AsyncSnapshot<T> snapshot) {
       if(snapshot.hasData) return widgetCreator(snapshot.data!);
       else if(snapshot.hasError) return Text("${snapshot.error}");
-      return LoadingScreen(fullPage: fullPage);
+      return loadingWidget;
     };
   }
 
 }
 
-FutureBuilder<T> createFutureWidget<T>(Future<T> futureObj, Widget Function(T) widgetCreator, {bool fullPage = true}) {
+FutureBuilder<T> createFutureWidget<T>(Future<T> futureObj, Widget Function(T) widgetCreator, {bool fullPage = true, Widget? loadingWidget}) {
   return FutureBuilder<T>(
     future: futureObj,
-    builder: WidgetBuilder<T>(widgetCreator).getBuilder(fullPage: fullPage),
+    builder: WidgetBuilder<T>(widgetCreator).getBuilder(loadingWidget ?? LoadingScreen(fullPage: fullPage)),
   );
 }
 
-StreamBuilder<T> createStreamWidget<T>(Stream<T> streamObj, Widget Function(T) widgetCreator, {bool fullPage = true}) {
+StreamBuilder<T> createStreamWidget<T>(Stream<T> streamObj, Widget Function(T) widgetCreator, {bool fullPage = true, Widget? loadingWidget}) {
   return StreamBuilder<T>(
     stream: streamObj,
-    builder: WidgetBuilder<T>(widgetCreator).getBuilder(fullPage: fullPage),
+    builder: WidgetBuilder<T>(widgetCreator).getBuilder(loadingWidget ?? LoadingScreen(fullPage: fullPage)),
   );
 }
 
-StreamBuilder<QuerySnapshot> createFirebaseStreamWidget(Stream<QuerySnapshot> streamObj, Function widgetCreator, {bool fullPage = true, List<FakeDocument>? cacheObj}) {
+StreamBuilder<QuerySnapshot> createFirebaseStreamWidget(Stream<QuerySnapshot> streamObj, Function widgetCreator, {bool fullPage = true, List<FakeDocument>? cacheObj, Widget? waitingWidget}) {
   return StreamBuilder<QuerySnapshot>(
     stream: streamObj,
     builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
@@ -49,7 +49,7 @@ StreamBuilder<QuerySnapshot> createFirebaseStreamWidget(Stream<QuerySnapshot> st
       else if(snapshot.hasError) return Text("${snapshot.error}");
 
       if(cacheObj != null) return widgetCreator(cacheObj);
-      return LoadingScreen(fullPage: fullPage);
+      return waitingWidget ?? LoadingScreen(fullPage: fullPage);
     },
   );
 }
