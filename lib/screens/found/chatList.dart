@@ -110,7 +110,7 @@ class _ProfilePicState extends State<ProfilePic> {
   @override
   Widget build(BuildContext context) {
     return createFutureWidget<User>(globals.getUser(), (User user) =>
-        CachedNetworkImage(imageUrl: user.avatar['v1'], height: 75),
+      CachedNetworkImage(imageUrl: user.avatar['v1'], height: 75),
     );
   }
 }
@@ -133,11 +133,12 @@ class _ChatListState extends State<ChatList> {
     super.initState();
     assignFoundList(widget.founds);
     globals.onChatListUpdate = (Map<int, Found> founds) =>
-      WidgetsBinding.instance!.addPostFrameCallback((timeStamp) =>
+      WidgetsBinding.instance!.addPostFrameCallback((timeStamp) {
+        if(!mounted) return;
         setState(() {
           assignFoundList(founds);
-        })
-      );
+        });
+      });
   }
 
   @override

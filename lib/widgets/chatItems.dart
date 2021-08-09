@@ -41,11 +41,11 @@ class ChatMessageItem extends StatelessWidget {
                   ),
                 ),
                 child: Text(
-                    message,
-                    textAlign: me ? TextAlign.right : TextAlign.left,
-                    style: TextStyle(
-                      fontSize: 15,
-                    ),
+                  message,
+                  textAlign: me ? TextAlign.right : TextAlign.left,
+                  style: TextStyle(
+                    fontSize: 15,
+                  ),
                 ),
               ),
               Positioned(

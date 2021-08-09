@@ -188,7 +188,14 @@ MappedCachedData<int, Found> founds = MappedCachedData(
       value: (found) => Found.fromJson(found),
     ),
   setCallback: (data, [int? key]) {
-    if(onFoundChanged.isEmpty) data.forEach((key, value) {onFoundChanged[key] = Map.identity();});
+    _anotherUser.clear();
+
+    for(int dKey in data.keys){
+      if(!onFoundChanged.containsKey(dKey)) onFoundChanged[dKey] = Map.identity();
+    }
+    for(int fKey in onFoundChanged.keys){
+      if(!data.containsKey(fKey)) onFoundChanged.remove(fKey);
+    }
 
     onChatListUpdate?.call(data);
     if(key != null && onFoundChanged.containsKey(key)) onFoundChanged[key]!.values.forEach((f) => f(data[key]));

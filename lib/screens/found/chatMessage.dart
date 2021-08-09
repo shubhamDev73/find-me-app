@@ -144,7 +144,7 @@ class ChatMessage extends StatelessWidget {
               margin: EdgeInsets.symmetric(vertical: 3.0, horizontal: 4.0),
               padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
               child: Row(
-                children: <Widget>[
+                children: [
                   Expanded(
                     child: Container(
                       padding: EdgeInsets.symmetric(horizontal: 12.0),
@@ -265,11 +265,13 @@ class _ChatMessageListState extends State<ChatMessageList> {
       if(messages.length > downloadedMessages){
         streamDownloaded = true;
         downloadedMessages = messages.length;
-        globals.founds.mappedUpdate(widget.found.id, (Found found) {
-          found.lastMessage = globals.getMessageJSON(messages[0]);
-          found.unreadNum = 0;
-          return found;
-        });
+        WidgetsBinding.instance!.addPostFrameCallback((timeStamp) =>
+          globals.founds.mappedUpdate(widget.found.id, (Found found) {
+            found.lastMessage = globals.getMessageJSON(messages[0]);
+            found.unreadNum = 0;
+            return found;
+          })
+        );
         globals.addPostCall('found/read/', {"id": widget.found.id}, overwrite: (body) => body['id'] == widget.found.id);
       }
 

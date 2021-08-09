@@ -418,7 +418,7 @@ class _FoundWidgetState extends State<FoundWidget> {
 
   @override
   void initState() {
-    globals.onFoundChanged[widget.id]![widget.string] = (Found? found) => setState((){});
+    globals.onFoundChanged[widget.id]![widget.string] = (Found? found) {if(!mounted) return; setState((){});};
     super.initState();
   }
 
