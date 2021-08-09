@@ -4,11 +4,48 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 
 import 'package:findme/models/pageTab.dart';
+import 'package:findme/models/found.dart';
 import 'package:findme/constant.dart';
 import 'package:findme/widgets/misc.dart';
-import 'package:findme/main.dart' as main;
 import 'package:findme/globals.dart' as globals;
 import 'package:findme/events.dart' as events;
+
+void onNotification(Map<String, dynamic> data) async {
+  switch(data['type']){
+    case 'Found':
+      globals.founds.get(forceNetwork: true);
+      break;
+    case 'Personality':
+      globals.meUser.get(forceNetwork: true);
+      break;
+    case 'Chat':
+      int id = int.parse(data['id']);
+      Map<int, Found> founds = await globals.founds.get();
+      globals.currentTab.set(PageTab.found);
+      globals.pageOnTabChange = {"route": "/message", "arguments": founds[id]};
+      break;
+    case 'AvatarUpdate':
+      int id = int.parse(data['id']);
+      Map<String, Map<String, dynamic>> avatars = await globals.avatars.get();
+      globals.founds.mappedUpdate(id, (Found found) {
+        found.mood = data['mood'];
+        found.avatar = avatars[data['base']]!['avatars'][data['mood']]['url'];
+        return found;
+      });
+      break;
+    case 'NickUpdate':
+      int id = int.parse(data['id']);
+      globals.founds.mappedUpdate(id, (Found found) {
+        found.nick = data['nick'];
+        return found;
+      });
+      break;
+  }
+}
+
+Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
+  onNotification(message.data);
+}
 
 class TabbedScreen extends StatefulWidget {
 
@@ -27,31 +64,34 @@ class _TabbedScreenState extends State<TabbedScreen> {
   @override
   void initState() {
     super.initState();
-    Firebase.initializeApp();
-    globals.interests.get(forceNetwork: true);
-    globals.moods.get(forceNetwork: true);
-    globals.avatars.get(forceNetwork: true);
-    globals.personality.get(forceNetwork: true);
-    globals.meUser.get(forceNetwork: true);
-    createToken();
+    init();
 
     globals.onTabChanged = (PageTab newTab) => setState(() {
       _tabHistory.add(_currentTab!);
       _currentTab = newTab;
       if(globals.pageOnTabChange != null){
+        navigatorKeys[_currentTab]!.currentState!.popUntil(ModalRoute.withName('/'));
         navigatorKeys[_currentTab]!.currentState!.pushNamed(globals.pageOnTabChange!['route'], arguments: globals.pageOnTabChange!['arguments']);
         globals.pageOnTabChange = null;
       }
     });
   }
 
-  void createToken() async {
-    await globals.posts.get();
+  @override
+  void dispose() {
+    globals.onTabChanged = null;
+    super.dispose();
+  }
+
+  void init() async {
+    await Firebase.initializeApp();
+
+    FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
     String fcmToken = (await FirebaseMessaging.instance.getToken())!;
     globals.addPostCall('notification/token/', {"fcm_token": fcmToken}, overwrite: (body) => true);
 
     FirebaseMessaging.onMessage.listen((RemoteMessage message) async {
-      main.onNotification(message.data);
+      onNotification(message.data);
 
       bool display = true;
       if(message.data.containsKey('display')) display = message.data['display'] == 'true';

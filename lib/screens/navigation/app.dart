@@ -18,12 +18,27 @@ class _AppState extends State<App> {
   @override
   void initState () {
     super.initState();
-    globals.onLogout = () {setState(() {
+    init();
+    globals.onLogout = () => setState(() {
       isLoggedIn = false;
-    });};
-    globals.onLogin = () {setState(() {
+    });
+    globals.onLogin = () => setState(() {
       isLoggedIn = true;
-    });};
+    });
+  }
+
+  void init() async {
+    // user data
+    globals.meUser.get(forceNetwork: true);
+    globals.founds.get(forceNetwork: true);
+
+    // info data
+    globals.interests.get(forceNetwork: true);
+    globals.moods.get(forceNetwork: true);
+    globals.avatars.get(forceNetwork: true);
+    globals.personality.get(forceNetwork: true);
+
+    await globals.posts.get();
   }
 
   @override
