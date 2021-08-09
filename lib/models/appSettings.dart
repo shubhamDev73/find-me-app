@@ -63,10 +63,3 @@ AppSettings logoutSettings(String page){
     events.sendEvent('settingsLogout', {"page": page});
   });
 }
-
-AppSettings muteNotificationsSettings(String page) {
-  return AppSettings(text: "Mute notifications", onTap: () {
-    globals.addPostCall('notification/token/', {"fcm_token": ""}, overwrite: (body) => true);
-    events.sendEvent('settingsMuteNotifications', {"page": page});
-  });
-}

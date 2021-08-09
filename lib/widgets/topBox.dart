@@ -39,7 +39,6 @@ class TopBox extends StatelessWidget {
                       }),
                       aboutSettings(context, 'me'),
                       privacySettings(context, 'me'),
-                      muteNotificationsSettings('me'),
                       AppSettings(text: "Change password", onTap: () {
                         Navigator.of(context).pushNamed('/settings/password');
                         events.sendEvent('settingsChangePassword');

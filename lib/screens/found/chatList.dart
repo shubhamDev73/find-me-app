@@ -57,10 +57,8 @@ class FoundPage extends StatelessWidget {
                     InkWell(
                       onTap: () {
                         List<AppSettings> settings = List.of({
-                          AppSettings(text: "Search", onTap: () => globals.scaffoldKey.currentState!.showSnackBar(SnackBar(content: Text("Not implemented")))),
                           aboutSettings(context, 'found'),
                           privacySettings(context, 'found'),
-                          muteNotificationsSettings('found'),
                           logoutSettings('found'),
                         });
 

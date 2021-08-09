@@ -92,12 +92,29 @@ class ChatMessage extends StatelessWidget {
                         child: InkWell(
                           onTap: () {
                             List<AppSettings> settings = List.of({
-                              AppSettings(text: "Search", onTap: () => globals.scaffoldKey.currentState!.showSnackBar(SnackBar(content: Text("Not implemented")))),
                               AppSettings(text: "Retain", onTap: () {
                                 globals.addPostCall('found/retain/', {"id": found.id});
                                 events.sendEvent('settingsRetain', {"user": found.id});
                               }),
-                              AppSettings(text: "Block", onTap: () => globals.scaffoldKey.currentState!.showSnackBar(SnackBar(content: Text("Not implemented")))),
+                              AppSettings(text: "Block", onTap: () => showDialog(
+                                context: context,
+                                builder: (context) => AlertDialog(
+                                  content: ListTile(
+                                    title: Text('Block ${found.nick}'),
+                                    subtitle: Text('Are you sure you want to block ${found.nick}?'),
+                                  ),
+                                  actions: <Widget>[
+                                    TextButton(
+                                      child: Text('No'),
+                                      onPressed: () => Navigator.of(context).pop(),
+                                    ),
+                                    TextButton(
+                                      child: Text('Yes'),
+                                      onPressed: () => globals.scaffoldKey.currentState!.showSnackBar(SnackBar(content: Text("Not implemented"))),
+                                    ),
+                                  ],
+                                ),
+                              )),
                             });
 
                             Navigator.of(context).pushNamed('/settings', arguments: settings);
