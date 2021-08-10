@@ -38,15 +38,14 @@ class _ChangePasswordState extends State<ChangePassword> {
                     isLoading = true;
                   });
 
-                  POST('login/details/', {"old_password": inputs['oldPassword'], "password": inputs['password']}, callback: (json) {
+                  POST('login/details/', {"old_password": inputs['oldPassword'], "password": inputs['password']}, callback: (Map<String, dynamic>? json) {
                     setState(() {
                       isLoading = false;
                     });
-                    if(json.containsKey('error'))
+                    if(json != null && json.containsKey('error'))
                       globals.showSnackBar(json['error']);
-                    else{
+                    else
                       Navigator.of(context).popUntil(ModalRoute.withName('/'));
-                    }
                   }, onError: (String errorText) {
                     setState(() {
                       isLoading = false;

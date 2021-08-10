@@ -39,11 +39,11 @@ class _ChangeNickState extends State<ChangeNick> {
                     isLoading = true;
                   });
 
-                  POST('login/details/', inputs, callback: (json) {
+                  POST('login/details/', inputs, callback: (Map<String, dynamic>? json) {
                     setState(() {
                       isLoading = false;
                     });
-                    if(json.containsKey('error'))
+                    if(json != null && json.containsKey('error'))
                       globals.showSnackBar(json['error']);
                     else{
                       globals.meUser.update((User user) {
