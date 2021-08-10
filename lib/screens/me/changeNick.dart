@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:findme/models/user.dart';
 import 'package:findme/widgets/topBox.dart';
-import 'package:findme/widgets/misc.dart';
+import 'package:findme/widgets/textFields.dart';
 import 'package:findme/constant.dart';
 import 'package:findme/screens/loading.dart';
 import 'package:findme/API.dart';
@@ -26,6 +26,10 @@ class _ChangeNickState extends State<ChangeNick> {
         child: Column(
           children: [
             TopBox(title: 'Change nick'),
+            Expanded(
+              flex: 2,
+              child: Container(),
+            ),
             Expanded(
               flex: 5,
               child: InputForm(

@@ -3,6 +3,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
 import 'package:findme/widgets/misc.dart';
+import 'package:findme/widgets/textFields.dart';
 import 'package:findme/assets.dart';
 import 'package:findme/constant.dart';
 import 'package:findme/screens/loading.dart';
@@ -65,7 +66,7 @@ class _LoginState extends State<Login> {
         child: Column(
           children: [
             Expanded(
-              flex: 6,
+              flex: 5,
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -103,11 +104,13 @@ class _LoginState extends State<Login> {
                 submitText: 'login',
                 buttons: [
                   Button(
+                    width: 200,
                     type: 'raised',
                     text: 'forgot password',
                     onTap: () => Navigator.of(context).pushNamed('/otp/send'),
                   ),
                   Button(
+                    width: 200,
                     type: 'raised',
                     text: 'login with Google',
                     onTap: () {
@@ -118,6 +121,7 @@ class _LoginState extends State<Login> {
                     },
                   ),
                   Button(
+                    width: 200,
                     type: 'raised',
                     text: 'register here!',
                     onTap: () => Navigator.of(context).pushNamed('/register'),

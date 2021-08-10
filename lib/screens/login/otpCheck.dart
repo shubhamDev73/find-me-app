@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
 
 import 'package:findme/widgets/misc.dart';
-import 'package:findme/assets.dart';
+import 'package:findme/widgets/textFields.dart';
 import 'package:findme/constant.dart';
 import 'package:findme/screens/loading.dart';
 import 'package:findme/API.dart';
@@ -26,36 +25,12 @@ class _OtpCheckState extends State<OtpCheck> {
         child: Column(
           children: [
             Expanded(
-              flex: 6,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Hero(
-                    tag: "logo",
-                    child: SvgPicture.asset(
-                      Assets.onBoardingThree,
-                      width: 60,
-                    ),
-                  ),
-                  SizedBox(height: 8),
-                  Text(
-                    "find.me",
-                    style: TextStyle(
-                      fontSize: 36,
-                      fontWeight: FontWeight.w400,
-                      color: Colors.white,
-                    ),
-                  ),
-                  Text(
-                    "discover so much",
-                    style: TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.w400,
-                      color: Colors.white,
-                    ),
-                  ),
-                ],
-              ),
+              flex: 2,
+              child: Button(type: 'back'),
+            ),
+            Expanded(
+              flex: 2,
+              child: Container(),
             ),
             Expanded(
               flex: 5,

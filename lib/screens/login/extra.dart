@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 
-import 'package:findme/widgets/misc.dart';
+import 'package:findme/widgets/textFields.dart';
 import 'package:findme/assets.dart';
 import 'package:findme/constant.dart';
 import 'package:findme/screens/loading.dart';
@@ -28,7 +28,7 @@ class _ExtraState extends State<Extra> {
         child: Column(
           children: [
             Expanded(
-              flex: 6,
+              flex: 3,
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
