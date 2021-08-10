@@ -24,7 +24,7 @@ AppSettings privacySettings(BuildContext context, String page){
           title: Text('Privacy'),
           subtitle: Text('We say everything is private on this app, but actually, nothing is private..\n\nMwah ha ha ha ha...'),
         ),
-        actions: <Widget>[
+        actions: [
           TextButton(
             child: Text('Ok'),
             onPressed: () => Navigator.of(context).pop(),
@@ -45,7 +45,7 @@ AppSettings aboutSettings(BuildContext context, String page){
           title: Text('About'),
           subtitle: Text('This app is about finding amazing conversations!!'),
         ),
-        actions: <Widget>[
+        actions: [
           TextButton(
             child: Text('Ok'),
             onPressed: () => Navigator.of(context).pop(),

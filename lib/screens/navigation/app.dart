@@ -23,6 +23,7 @@ class _AppState extends State<App> {
       isLoggedIn = false;
     });
     globals.onLogin = () => setState(() {
+      init();
       isLoggedIn = true;
     });
   }
@@ -46,6 +47,7 @@ class _AppState extends State<App> {
     if(isLoggedIn == null)
       return createFutureWidget(globals.token.get(), (String token) {
         isLoggedIn = token != '';
+        if(isLoggedIn!) init();
         return screen();
       });
     else

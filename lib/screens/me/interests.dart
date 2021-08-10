@@ -172,7 +172,6 @@ class _InterestsState extends State<Interests> {
     return createFutureWidget<User>(globals.getUser(me: widget.me), (User user) {
       return Scaffold(
         body: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Expanded(
               flex: 2,

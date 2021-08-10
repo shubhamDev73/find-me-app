@@ -24,8 +24,7 @@ class FoundPage extends StatelessWidget {
               color: ThemeColors.primaryColor,
               child: Container(
                 child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
+                  children: [
                     Expanded(
                       flex: 12,
                       child: Row(

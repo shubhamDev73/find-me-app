@@ -89,7 +89,7 @@ class ChatListItem extends StatelessWidget {
                   )),
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
+                    children: [
                       FoundWidget(id: found.id, widget: (found) => Text(
                         found.nick,
                         style: TextStyle(
@@ -117,7 +117,7 @@ class ChatListItem extends StatelessWidget {
                 margin: EdgeInsets.symmetric(horizontal: 10.0),
                 child: num > 0 ? Column(
                   crossAxisAlignment: CrossAxisAlignment.end,
-                  children: <Widget>[
+                  children: [
                     DateWidget(endDate: dateTime!, textStyle: TextStyle(
                       color: Colors.black,
                       fontSize: 12,

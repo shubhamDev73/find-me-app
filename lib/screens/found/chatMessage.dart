@@ -31,7 +31,7 @@ class ChatMessage extends StatelessWidget {
     return createFutureWidget<Map<String, dynamic>>(globals.moods.get(), (moods) => Scaffold(
       body: Container(
         child: Column(
-          children: <Widget>[
+          children: [
             Expanded(
               flex: 1,
               child: InkWell(
@@ -58,8 +58,7 @@ class ChatMessage extends StatelessWidget {
                       )),
                       Column(
                         mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: <Widget>[
+                        children: [
                           FoundWidget(id: found.id, widget: (found) => Container(
                             child: Text(
                               found.nick,

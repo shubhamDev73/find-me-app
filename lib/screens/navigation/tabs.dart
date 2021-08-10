@@ -104,7 +104,7 @@ class _TabbedScreenState extends State<TabbedScreen> {
               title: Text(message.notification!.title!),
               subtitle: Text(message.notification!.body!),
             ),
-            actions: <Widget>[
+            actions: [
               TextButton(
                 child: Text('Ok'),
                 onPressed: () {
@@ -138,7 +138,7 @@ class _TabbedScreenState extends State<TabbedScreen> {
         },
         child: Scaffold(
           body: Stack(
-            children: PageTab.values.map<Widget>((PageTab tab) => Offstage(
+            children: PageTab.values.map((PageTab tab) => Offstage(
               offstage: _currentTab != tab,
               child: tabScreens[tab],
             )).toList(),

@@ -52,7 +52,7 @@ class _OnboardingScreensState extends State<OnboardingScreens> {
                     slideIndex = index;
                   });
                 },
-                children: <Widget>[
+                children: [
                   SlideTile(
                     imagePath: slides[0].getImageAssetPath(),
                     title: slides[0].getTitle(),
