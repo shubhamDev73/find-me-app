@@ -26,19 +26,19 @@ class _ChangePasswordState extends State<ChangePassword> {
           children: [
             TopBox(title: 'Change password'),
             Expanded(
-              flex: 2,
+              flex: 1,
               child: Container(),
             ),
             Expanded(
               flex: 5,
               child: InputForm(
-                fieldTypes: ['password', 'confirmPassword', 'submit'],
+                fieldTypes: ['oldPassword', 'gap', 'password', 'confirmPassword', 'submit'],
                 onSubmit: (inputs) {
                   setState(() {
                     isLoading = true;
                   });
 
-                  POST('login/details/', inputs, callback: (json) {
+                  POST('login/details/', {"old_password": inputs['oldPassword'], "password": inputs['password']}, callback: (json) {
                     setState(() {
                       isLoading = false;
                     });

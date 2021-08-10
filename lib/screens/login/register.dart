@@ -63,7 +63,7 @@ class _RegisterState extends State<Register> {
             Expanded(
               flex: 5,
               child: InputForm(
-                fieldTypes: ['email', 'phone', 'username', 'password', 'confirmPassword', 'submit', 'button'],
+                fieldTypes: ['email', 'phone', 'nick', 'password', 'confirmPassword', 'submit', 'button'],
                 submitText: 'register',
                 buttons: [
                   Button(

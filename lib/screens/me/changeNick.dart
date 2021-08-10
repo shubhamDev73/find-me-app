@@ -33,7 +33,7 @@ class _ChangeNickState extends State<ChangeNick> {
             Expanded(
               flex: 5,
               child: InputForm(
-                fieldTypes: ['username', 'submit'],
+                fieldTypes: ['nick', 'submit'],
                 onSubmit: (inputs) {
                   setState(() {
                     isLoading = true;

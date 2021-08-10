@@ -74,7 +74,7 @@ class _PasswordFieldState extends State<PasswordField> {
         ),
         Positioned(
           top: 25,
-          left: 200,
+          right: 10,
           child: InkWell(
             onTap: () => setState(() {
               obscured = !obscured;
@@ -132,6 +132,13 @@ class InputForm extends StatelessWidget {
                   },
                 );
                 break;
+              case 'oldPassword':
+                widget = PasswordField(
+                  passwordController: controllers[index],
+                  label: "old password",
+                  autofocus: index == 0,
+                );
+                break;
               case 'submit':
                 widget = Container(
                   margin: EdgeInsets.fromLTRB(0, 30, 0, 0),
@@ -164,6 +171,16 @@ class InputForm extends StatelessWidget {
                   autofillHints: [AutofillHints.email, AutofillHints.telephoneNumber, AutofillHints.nickname, AutofillHints.name, AutofillHints.username],
                 );
                 break;
+              case 'nick':
+                widget = textFieldForRegistration(
+                  editingController: controllers[index],
+                  keyType: TextInputType.name,
+                  label: "username",
+                  errMsg: "please enter your username",
+                  autofocus: index == 0,
+                  autofillHints: [AutofillHints.nickname, AutofillHints.name, AutofillHints.username],
+                );
+                break;
               case 'email':
                 widget = textFieldForRegistration(
                   editingController: controllers[index],
@@ -182,6 +199,18 @@ class InputForm extends StatelessWidget {
                   errMsg: "please enter your phone number",
                   autofocus: index == 0,
                   autofillHints: [AutofillHints.telephoneNumber],
+                );
+                break;
+              case 'gap':
+                widget = SizedBox(height: 40);
+                break;
+              default:
+                widget = textFieldForRegistration(
+                  editingController: controllers[index],
+                  keyType: TextInputType.text,
+                  label: fieldType,
+                  errMsg: "please enter your $fieldType",
+                  autofocus: index == 0,
                 );
                 break;
             }

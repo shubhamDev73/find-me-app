@@ -62,7 +62,7 @@ class _ExtraState extends State<Extra> {
             Expanded(
               flex: 5,
               child: InputForm(
-                fieldTypes: ['phone', 'username', 'password', 'confirmPassword', 'submit'],
+                fieldTypes: ['phone', 'nick', 'password', 'confirmPassword', 'submit'],
                 onSubmit: (inputs) {
                   setState(() {
                     isLoading = true;
