@@ -31,7 +31,7 @@ class _LoginState extends State<Login> {
     super.initState();
     _googleSignIn.onCurrentUserChanged.listen((GoogleSignInAccount? account) {
       if(account == null){
-        globals.scaffoldKey.currentState!.showSnackBar(SnackBar(content: Text('Something went wrong.')));
+        globals.showSnackBar('Something went wrong.');
         return;
       }
 
@@ -48,12 +48,12 @@ class _LoginState extends State<Login> {
             globals.userId.set(json['user_id']);
           }
         }else
-          globals.scaffoldKey.currentState!.showSnackBar(SnackBar(content: Text("${json['error']}")));
+          globals.showSnackBar(json['error']);
       }, onError: (String errorText) {
         setState(() {
           isLoading = false;
         });
-        globals.scaffoldKey.currentState!.showSnackBar(SnackBar(content: Text(errorText)));
+        globals.showSnackBar(errorText);
       });
     });
   }
@@ -140,12 +140,12 @@ class _LoginState extends State<Login> {
                       globals.token.set(json['token']);
                       globals.userId.set(json['user_id']);
                     }else
-                      globals.scaffoldKey.currentState!.showSnackBar(SnackBar(content: Text("${json['error']}")));
+                      globals.showSnackBar(json['error']);
                   }, onError: (String errorText) {
                     setState(() {
                       isLoading = false;
                     });
-                    globals.scaffoldKey.currentState!.showSnackBar(SnackBar(content: Text(errorText)));
+                    globals.showSnackBar(errorText);
                   });
                 }
               ),

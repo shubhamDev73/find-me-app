@@ -4,6 +4,7 @@ import 'package:google_fonts/google_fonts.dart';
 
 import 'package:findme/screens/navigation/app.dart';
 import 'package:findme/constant.dart';
+import 'package:findme/globals.dart' as globals;
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -22,6 +23,7 @@ class Main extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: title,
+      scaffoldMessengerKey: globals.scaffoldKey,
       theme: ThemeData(
         primaryColor: ThemeColors.primaryColor,
         accentColor: ThemeColors.accentColor,

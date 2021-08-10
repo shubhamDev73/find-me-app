@@ -109,7 +109,7 @@ class ChatMessage extends StatelessWidget {
                                     ),
                                     TextButton(
                                       child: Text('Yes'),
-                                      onPressed: () => globals.scaffoldKey.currentState!.showSnackBar(SnackBar(content: Text("Not implemented"))),
+                                      onPressed: () => globals.showSnackBar("Not implemented"),
                                     ),
                                   ],
                                 ),

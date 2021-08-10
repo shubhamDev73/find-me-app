@@ -48,14 +48,14 @@ class _OtpCheckState extends State<OtpCheck> {
                     });
                     if(json.containsKey('message')){
                       Navigator.of(context).pushNamed('/password/reset');
-                      globals.scaffoldKey.currentState!.showSnackBar(SnackBar(content: Text("${json['message']}")));
+                      globals.showSnackBar(json['message']);
                     }else
-                      globals.scaffoldKey.currentState!.showSnackBar(SnackBar(content: Text("${json['error']}")));
+                      globals.showSnackBar(json['error']);
                   }, onError: (String errorText) {
                     setState(() {
                       isLoading = false;
                     });
-                    globals.scaffoldKey.currentState!.showSnackBar(SnackBar(content: Text(errorText)));
+                    globals.showSnackBar(errorText);
                   });
                 },
               ),

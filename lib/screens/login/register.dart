@@ -86,12 +86,12 @@ class _RegisterState extends State<Register> {
                       globals.token.set(json['token']);
                       globals.userId.set(json['user_id']);
                     }else
-                      globals.scaffoldKey.currentState!.showSnackBar(SnackBar(content: Text("${json['error']}")));
+                      globals.showSnackBar(json['error']);
                   }, onError: (String errorText) {
                     setState(() {
                       isLoading = false;
                     });
-                    globals.scaffoldKey.currentState!.showSnackBar(SnackBar(content: Text(errorText)));
+                    globals.showSnackBar(errorText);
                   });
                 },
               ),

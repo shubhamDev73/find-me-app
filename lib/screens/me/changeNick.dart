@@ -44,7 +44,7 @@ class _ChangeNickState extends State<ChangeNick> {
                       isLoading = false;
                     });
                     if(json.containsKey('error'))
-                      globals.scaffoldKey.currentState!.showSnackBar(SnackBar(content: Text("${json['error']}")));
+                      globals.showSnackBar(json['error']);
                     else{
                       globals.meUser.update((User user) {
                         user.nick = inputs['username']!;
@@ -56,7 +56,7 @@ class _ChangeNickState extends State<ChangeNick> {
                     setState(() {
                       isLoading = false;
                     });
-                    globals.scaffoldKey.currentState!.showSnackBar(SnackBar(content: Text(errorText)));
+                    globals.showSnackBar(errorText);
                   });
                 },
               ),

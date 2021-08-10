@@ -73,7 +73,7 @@ class _ExtraState extends State<Extra> {
                       isLoading = false;
                     });
                     if(json != null && json.containsKey('error'))
-                      globals.scaffoldKey.currentState!.showSnackBar(SnackBar(content: Text("${json['error']}")));
+                      globals.showSnackBar(json['error']);
                     else{
                       globals.token.set(globals.tempExternalRegister['token']);
                       globals.userId.set(globals.tempExternalRegister['user_id']);
@@ -83,7 +83,7 @@ class _ExtraState extends State<Extra> {
                     setState(() {
                       isLoading = false;
                     });
-                    globals.scaffoldKey.currentState!.showSnackBar(SnackBar(content: Text(errorText)));
+                    globals.showSnackBar(errorText);
                   });
                 },
               ),

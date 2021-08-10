@@ -245,6 +245,10 @@ void addPostCall(String url, Map<String, dynamic> body, {bool Function(Map<Strin
 }
 
 GlobalKey<ScaffoldMessengerState> scaffoldKey = new GlobalKey<ScaffoldMessengerState>();
+void showSnackBar(String message) {
+  scaffoldKey.currentState!.showSnackBar(SnackBar(content: Text(message)));
+}
+
 bool isOnline = true;
 Set<String> _runningTasks = Set();
 void _makePostCalls(List<dynamic> postsList) {
@@ -256,13 +260,13 @@ void _makePostCalls(List<dynamic> postsList) {
           _runningTasks.remove(post['id']);
           if(!isOnline){
             isOnline = true;
-            scaffoldKey.currentState!.showSnackBar(SnackBar(content: Text("Now online!")));
+            showSnackBar("Now online!");
           }
           return postsList;
         }),
         onError: (errorText) {
           if(post['first']){
-            scaffoldKey.currentState!.showSnackBar(SnackBar(content: Text(errorText)));
+            showSnackBar(errorText);
             post['first'] = false;
           }
           isOnline = false;

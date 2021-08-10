@@ -43,7 +43,7 @@ class _ChangePasswordState extends State<ChangePassword> {
                       isLoading = false;
                     });
                     if(json.containsKey('error'))
-                      globals.scaffoldKey.currentState!.showSnackBar(SnackBar(content: Text("${json['error']}")));
+                      globals.showSnackBar(json['error']);
                     else{
                       Navigator.of(context).popUntil(ModalRoute.withName('/'));
                     }
@@ -51,7 +51,7 @@ class _ChangePasswordState extends State<ChangePassword> {
                     setState(() {
                       isLoading = false;
                     });
-                    globals.scaffoldKey.currentState!.showSnackBar(SnackBar(content: Text(errorText)));
+                    globals.showSnackBar(errorText);
                   });
                 },
               ),

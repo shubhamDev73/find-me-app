@@ -55,9 +55,6 @@ class _AppState extends State<App> {
   }
 
   Widget screen() {
-    return Scaffold(
-        key: globals.scaffoldKey,
-        body: isLoggedIn! ? TabbedScreen() : LoginScreens(),
-    );
+    return isLoggedIn! ? TabbedScreen() : LoginScreens();
   }
 }
