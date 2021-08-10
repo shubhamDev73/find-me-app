@@ -58,6 +58,7 @@ class ChatMessage extends StatelessWidget {
                       )),
                       Column(
                         mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           FoundWidget(id: found.id, widget: (found) => Container(
                             child: Text(

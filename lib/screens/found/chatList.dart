@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_database/firebase_database.dart';
 
 import 'package:findme/widgets/chatListItems.dart';
@@ -131,13 +132,37 @@ class _ChatListState extends State<ChatList> {
   void initState () {
     super.initState();
     assignFoundList(widget.founds);
-    globals.onChatListUpdate = (Map<int, Found> founds) =>
-      WidgetsBinding.instance!.addPostFrameCallback((timeStamp) {
-        if(!mounted) return;
-        setState(() {
-          assignFoundList(founds);
-        });
+    globals.onChatListUpdate = (Map<int, Found> founds) {
+      if(!mounted) return;
+      setState(() {
+        assignFoundList(founds);
       });
+    };
+
+    for(Found found in widget.founds.values){
+      FirebaseFirestore.instance
+        .collection('chats')
+        .doc(found.chatId)
+        .collection('chats')
+        .orderBy('timestamp', descending: true)
+        .limit(1)
+        .snapshots()
+        .listen((event) {
+          List<QueryDocumentSnapshot> messages = event.docs;
+          DateTime lastMessageTime = found.lastMessage == null ? DateTime.fromMillisecondsSinceEpoch(0) : DateTime.parse(found.lastMessage!['timestamp']);
+          dynamic message = messages.length > 0 ? messages[0] : null;
+          if(message != null && message['timestamp'] != null){
+            DateTime dateTime = message['timestamp'] is String ? DateTime.parse(message['timestamp']) : message['timestamp'].toDate();
+            if(dateTime.compareTo(lastMessageTime) > 0)
+              globals.founds.mappedUpdate(found.id, (Found found) {
+                found.lastMessage = globals.getMessageJSON(message);
+                if (message['user'] != found.me)
+                  found.unreadNum++;
+                return found;
+              });
+          }
+        });
+    }
   }
 
   @override

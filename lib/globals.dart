@@ -193,7 +193,8 @@ MappedCachedData<int, Found> founds = MappedCachedData(
     for(int dKey in data.keys){
       if(!onFoundChanged.containsKey(dKey)) onFoundChanged[dKey] = Map.identity();
     }
-    for(int fKey in onFoundChanged.keys){
+    List<int> fKeys = onFoundChanged.keys.toList();
+    for(int fKey in fKeys){
       if(!data.containsKey(fKey)) onFoundChanged.remove(fKey);
     }
 

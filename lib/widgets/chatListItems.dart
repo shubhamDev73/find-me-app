@@ -1,12 +1,8 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 
 import 'package:findme/models/found.dart';
-import 'package:findme/models/fakeDocument.dart';
 import 'package:findme/widgets/misc.dart';
 import 'package:findme/constant.dart';
 import 'package:findme/globals.dart' as globals;
@@ -18,28 +14,8 @@ class ChatListItem extends StatelessWidget {
 
   ChatListItem({required this.found, this.index = 0});
 
-  final StreamController<int> unreadNumController = StreamController<int>.broadcast();
-
-  DateTime? lastMessageTime;
-
-  void syncWithFound (Found? found) {
-    if(found == null) return;
-    unreadNumController.add(found.unreadNum);
-    lastMessageTime = found.lastMessage == null ? DateTime.fromMillisecondsSinceEpoch(0) : DateTime.parse(found.lastMessage!['timestamp']);
-  }
-
   @override
   Widget build (BuildContext context) {
-    Stream<QuerySnapshot> lastMessage = FirebaseFirestore.instance
-        .collection('chats')
-        .doc(found.chatId)
-        .collection('chats')
-        .orderBy('timestamp', descending: true)
-        .limit(1)
-        .snapshots();
-    syncWithFound(found);
-    globals.onFoundChanged[found.id]!['chatList'] = syncWithFound;
-
     DatabaseReference realtimeFound = FirebaseDatabase.instance.reference().child("${found.id}-${found.me}");
     realtimeFound.update({
       'online': true,
@@ -64,84 +40,69 @@ class ChatListItem extends StatelessWidget {
       child: Container(
         color: ThemeColors.chatListColors[index % 2 == 0],
         padding: EdgeInsets.symmetric(vertical: 10),
-        child: createFirebaseStreamWidget(lastMessage, (messages) {
-          dynamic message = messages.length > 0 ? messages[0] : null;
-          DateTime? dateTime;
-          if(message != null && message['timestamp'] != null){
-            dateTime = message['timestamp'] is String ? DateTime.parse(message['timestamp']) : message['timestamp'].toDate();
-            if(dateTime!.compareTo(lastMessageTime!) > 0)
-              globals.founds.mappedUpdate(found.id, (Found found) {
-                found.lastMessage = globals.getMessageJSON(message);
-                if(message['user'] != found.me)
-                  found.unreadNum++;
-                return found;
-              });
-          }
-
-          return Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Row(
-                children: [
-                  FoundWidget(id: found.id, widget: (found) => Container(
-                    padding: EdgeInsets.all(17),
-                    child: CachedNetworkImage(imageUrl: found.avatar['v1'], height: 40),
-                  )),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      FoundWidget(id: found.id, widget: (found) => Text(
-                        found.nick,
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 20.0,
-                        ),
-                      )),
-                      Container(
-                        constraints: BoxConstraints(maxWidth: 200, maxHeight: 20),
-                        child: Text(
-                          message == null ? 'New connect!' : message['message'],
-                          overflow: TextOverflow.ellipsis,
-                          style: TextStyle(
-                            color: Colors.black,
-                            fontSize: 14.0,
-                            fontStyle: message == null ? FontStyle.italic : FontStyle.normal,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ]
-              ),
-              message == null ? Container() : createStreamWidget<int>(unreadNumController.stream, (int num) => Container(
-                margin: EdgeInsets.symmetric(horizontal: 10.0),
-                child: num > 0 ? Column(
-                  crossAxisAlignment: CrossAxisAlignment.end,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Row(
+              children: [
+                Container(
+                  padding: EdgeInsets.all(17),
+                  child: CachedNetworkImage(imageUrl: found.avatar['v1'], height: 40),
+                ),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    DateWidget(endDate: dateTime!, textStyle: TextStyle(
-                      color: Colors.black,
-                      fontSize: 12,
-                    )),
-                    Container(
-                      padding: EdgeInsets.all(7.0),
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        color: ThemeColors.primaryColor,
+                    Text(
+                      found.nick,
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 20.0,
                       ),
+                    ),
+                    Container(
+                      constraints: BoxConstraints(maxWidth: 200, maxHeight: 20),
                       child: Text(
-                        "$num",
+                        found.lastMessage == null ? 'New connect!' : found.lastMessage!['message'],
+                        overflow: TextOverflow.ellipsis,
                         style: TextStyle(
-                          color: Colors.white,
+                          color: Colors.black,
                           fontSize: 14.0,
+                          fontStyle: found.lastMessage == null ? FontStyle.italic : FontStyle.normal,
                         ),
                       ),
                     ),
                   ],
-                ) : Container(),
-              ), fullPage: false, loadingWidget: Container()),
-            ],
-          );
-        }, fullPage: false, cacheObj: found.lastMessage == null ? null : [FakeDocument(id: found.lastMessage!['id'], data: found.lastMessage!)]),
+                ),
+              ]
+            ),
+            found.lastMessage == null || found.unreadNum <= 0 ? Container() : Container(
+              margin: EdgeInsets.symmetric(horizontal: 10.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  DateWidget(endDate: DateTime.parse(found.lastMessage!['timestamp']), textStyle: TextStyle(
+                    color: Colors.black,
+                    fontSize: 12,
+                  )),
+                  Container(
+                    padding: EdgeInsets.all(7.0),
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: ThemeColors.primaryColor,
+                    ),
+                    child: Text(
+                      found.unreadNum.toString(),
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 14.0,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

@@ -91,7 +91,7 @@ class _TabbedScreenState extends State<TabbedScreen> {
     globals.addPostCall('notification/token/', {"fcm_token": fcmToken}, overwrite: (body) => true);
 
     FirebaseMessaging.onMessage.listen((RemoteMessage message) async {
-      onNotification(message.data);
+      if(message.data['type'] != 'Chat') onNotification(message.data);
 
       bool display = true;
       if(message.data.containsKey('display')) display = message.data['display'] == 'true';
