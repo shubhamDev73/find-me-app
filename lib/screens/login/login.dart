@@ -105,13 +105,13 @@ class _LoginState extends State<Login> {
                 buttons: [
                   Button(
                     width: 200,
-                    type: 'raised',
+                    type: 'secondary',
                     text: 'forgot password',
                     onTap: () => Navigator.of(context).pushNamed('/otp/send'),
                   ),
                   Button(
                     width: 200,
-                    type: 'raised',
+                    type: 'secondary',
                     text: 'login with Google',
                     onTap: () {
                       setState(() {
@@ -122,7 +122,7 @@ class _LoginState extends State<Login> {
                   ),
                   Button(
                     width: 200,
-                    type: 'raised',
+                    type: 'secondary',
                     text: 'register here!',
                     onTap: () => Navigator.of(context).pushNamed('/register'),
                   ),

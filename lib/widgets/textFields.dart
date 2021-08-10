@@ -144,7 +144,7 @@ class InputForm extends StatelessWidget {
                   margin: EdgeInsets.fromLTRB(0, 30, 0, 0),
                   child: Button(
                     width: 200,
-                    type: 'raised',
+                    type: 'secondary',
                     text: submitText,
                     onTap: () {
                       int confirmPasswordIndex = fieldTypes.indexOf('confirmPassword');

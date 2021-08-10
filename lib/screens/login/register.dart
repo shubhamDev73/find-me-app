@@ -68,7 +68,7 @@ class _RegisterState extends State<Register> {
                 buttons: [
                   Button(
                     width: 200,
-                    type: 'raised',
+                    type: 'secondary',
                     text: 'login here!',
                     onTap: () => Navigator.of(context).pushNamed('/login'),
                   ),

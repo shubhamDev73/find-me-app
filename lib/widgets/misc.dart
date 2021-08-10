@@ -148,21 +148,25 @@ class Button extends StatelessWidget {
             ),
           ),
         );
-      case 'raised':
+      case 'secondary':
         return Container(
           height: height,
           width: width,
-          padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
-          child: RaisedButton(
+          child: ElevatedButton(
             onPressed: onTap,
-            color: Colors.white,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(14),
-            ),
+              style: ElevatedButton.styleFrom(
+                primary: Colors.white,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(14),
+                ),
+              ),
             child: Text(
               text,
               textAlign: TextAlign.center,
-              style: TextStyle(color: ThemeColors.accentColor),
+              style: TextStyle(
+                color: ThemeColors.accentColor,
+                fontSize: 20,
+              ),
             ),
           ),
         );
