@@ -34,8 +34,8 @@ class SliderModel {
 
 List<SliderModel> getSlides() {
   return List.of({
-    new SliderModel(imageAssetPath: Assets.onBoardingOne, title: "find", desc: "discover people"),
-    new SliderModel(imageAssetPath: Assets.onBoardingTwo, title: "me", desc: "discover thyself"),
-    new SliderModel(imageAssetPath: Assets.onBoardingThree, title: "find.me", desc: "discover so much"),
+    new SliderModel(imageAssetPath: Assets.onboardingOne, title: "find", desc: "discover people"),
+    new SliderModel(imageAssetPath: Assets.onboardingTwo, title: "me", desc: "discover thyself"),
+    new SliderModel(imageAssetPath: Assets.onboardingThree, title: "find.me", desc: "discover so much"),
   });
 }

@@ -2,14 +2,14 @@ class Assets {
   static const me = "assets/tabs/meTab.svg";
   static const found = "assets/tabs/foundTab.svg";
 
-  static const edit = "assets/icons/edit.svg";
   static const plus = "assets/icons/plus.svg";
   static const chatArrow = "assets/icons/chatArrow.svg";
   static const personalityBar = "assets/icons/personalityBar.svg";
+  static const man = "assets/icons/man.svg";
 
-  static const onBoardingOne = "assets/onBoarding/onBoardingOne.svg";
-  static const onBoardingTwo = "assets/onBoarding/onBoardingTwo.svg";
-  static const onBoardingThree = "assets/onBoarding/onBoardingThree.svg";
+  static const onboardingOne = "assets/onboarding/onboardingOne.svg";
+  static const onboardingTwo = "assets/onboarding/onboardingTwo.svg";
+  static const onboardingThree = "assets/onboarding/onboardingThree.svg";
 
   static const traits = {
     "Fire": {

@@ -43,7 +43,7 @@ flutter:
 
   assets:
     - assets/icons/
-    - assets/onBoarding/
+    - assets/onboarding/
     - assets/tabs/
     - assets/traits/
 

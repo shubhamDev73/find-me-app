@@ -36,7 +36,7 @@ class _RegisterState extends State<Register> {
                   Hero(
                     tag: 'logo',
                     child: SvgPicture.asset(
-                      Assets.onBoardingThree,
+                      Assets.onboardingThree,
                       width: 60,
                     ),
                   ),

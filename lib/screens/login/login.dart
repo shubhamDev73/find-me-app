@@ -73,7 +73,7 @@ class _LoginState extends State<Login> {
                   Hero(
                     tag: 'logo',
                     child: SvgPicture.asset(
-                      Assets.onBoardingThree,
+                      Assets.onboardingThree,
                       width: 60,
                     ),
                   ),

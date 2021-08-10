@@ -35,7 +35,7 @@ class _ExtraState extends State<Extra> {
                   Hero(
                     tag: 'logo',
                     child: SvgPicture.asset(
-                      Assets.onBoardingThree,
+                      Assets.onboardingThree,
                       width: 60,
                     ),
                   ),
