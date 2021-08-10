@@ -150,7 +150,7 @@ class InputForm extends StatelessWidget {
                       int confirmPasswordIndex = fieldTypes.indexOf('confirmPassword');
                       List<String> inputFields = fieldTypes.sublist(0, confirmPasswordIndex >= 0 ? confirmPasswordIndex : submitIndex);
                       Map<String, String> inputs = Map.fromIterable(inputFields,
-                        key: (fieldType) => fieldType,
+                        key: (fieldType) => fieldType == 'nick' ? 'username' : fieldType,
                         value: (fieldType) => controllers[fieldTypes.indexOf(fieldType)].text,
                       );
                       if(_formKey.currentState!.validate()) onSubmit(inputs);

@@ -68,11 +68,11 @@ class _ExtraState extends State<Extra> {
                     isLoading = true;
                   });
 
-                  POST('login/details/', inputs, callback: (json) {
+                  POST('login/details/', inputs, useToken: true, tempToken: globals.tempExternalRegister['token'], callback: (Map<String, dynamic>? json) {
                     setState(() {
                       isLoading = false;
                     });
-                    if(json.containsKey('error'))
+                    if(json != null && json.containsKey('error'))
                       globals.scaffoldKey.currentState!.showSnackBar(SnackBar(content: Text("${json['error']}")));
                     else{
                       globals.token.set(globals.tempExternalRegister['token']);

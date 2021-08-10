@@ -29,8 +29,8 @@ Future<T> GETResponse<T>(String url, {T Function(String)? decoder, Function? cal
 
 }
 
-Future<void> POST(String url, Map<String, dynamic>? body, {bool useToken = true, Function? callback, Function(String)? onError}) async {
-  String token = await globals.token.get();
+Future<void> POST(String url, Map<String, dynamic>? body, {bool useToken = true, String? tempToken, Function? callback, Function(String)? onError}) async {
+  String token = tempToken ?? await globals.token.get();
 
   try{
     final response = await http.post(Uri.parse(baseURL + url), body: jsonEncode(body), headers: useToken ? {"Authorization": "Bearer $token"} : null)
