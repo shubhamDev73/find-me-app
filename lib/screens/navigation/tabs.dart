@@ -66,15 +66,18 @@ class _TabbedScreenState extends State<TabbedScreen> {
     super.initState();
     init();
 
-    globals.onTabChanged = (PageTab newTab) => setState(() {
-      _tabHistory.add(_currentTab!);
-      _currentTab = newTab;
-      if(globals.pageOnTabChange != null){
-        navigatorKeys[_currentTab]!.currentState!.popUntil(ModalRoute.withName('/'));
-        navigatorKeys[_currentTab]!.currentState!.pushNamed(globals.pageOnTabChange!['route'], arguments: globals.pageOnTabChange!['arguments']);
-        globals.pageOnTabChange = null;
-      }
-    });
+    globals.onTabChanged = (PageTab newTab) {
+      if(!mounted) return;
+      setState(() {
+        if(newTab != _currentTab!) _tabHistory.add(_currentTab!);
+        _currentTab = newTab;
+        if(globals.pageOnTabChange != null){
+          navigatorKeys[_currentTab]!.currentState!.popUntil(ModalRoute.withName('/'));
+          navigatorKeys[_currentTab]!.currentState!.pushNamed(globals.pageOnTabChange!['route'], arguments: globals.pageOnTabChange!['arguments']);
+          globals.pageOnTabChange = null;
+        }
+      });
+    };
   }
 
   @override
