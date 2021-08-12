@@ -8,22 +8,10 @@ import 'package:uuid/uuid.dart';
 import 'package:findme/models/user.dart';
 import 'package:findme/models/interests.dart';
 import 'package:findme/models/found.dart';
-import 'package:findme/models/pageTab.dart';
 import 'package:findme/models/cachedData.dart';
 import 'package:findme/API.dart';
 
-// currentTab
-
-CachedData<PageTab> currentTab = CachedData(
-  emptyValue: PageTab.me,
-  cacheFile: 'tab.txt',
-  encoder: (PageTab tab) => tab.index.toString(),
-  decoder: (String tabString) => PageTab.values[int.parse(tabString)],
-  setCallback: onTabChanged,
-);
-Function? onTabChanged;
 Map<String, dynamic>? pageOnTabChange;
-
 
 // token
 
@@ -38,7 +26,6 @@ CachedData<String> token = CachedData(
       founds.clear();
 
       // clearing app data specific to user
-      currentTab.clear();
       posts.clear();
 
       onLogout?.call();
