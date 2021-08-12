@@ -170,6 +170,7 @@ class _InterestsState extends State<Interests> {
     if (interestId == null) interestId = ModalRoute.of(context)!.settings.arguments as int;
 
     return createFutureWidget<User>(globals.getUser(me: widget.me), (User user) {
+      if(!user.interests.containsKey(interestId)) interestId = user.interests.values.elementAt(0).id;
       return Scaffold(
         body: Column(
           children: [

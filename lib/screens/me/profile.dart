@@ -48,7 +48,7 @@ class _ProfileState extends State<Profile> {
         },
       );
     }else{
-      Interest interest = interests[index];
+      Interest interest = index < interests.length ? interests[index] : new Interest(id: interests[0].id, name: '', amount: 0, questions: List.empty());
       return InterestButton(
         name: interest.name,
         amount: interest.amount!,
