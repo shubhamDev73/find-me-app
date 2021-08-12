@@ -64,7 +64,7 @@ class QuestionsWidget extends StatelessWidget {
         );
       },
       onPageChanged: (index, reason) {
-        events.sendEvent('questionSelect', {"question": questions[index]['id']});
+        events.sendEvent('questionSelect', {"question": questions[index]['id']}, me);
       },
       gap: 250,
     );
@@ -173,7 +173,7 @@ class _InterestsState extends State<Interests> {
                   child: ListView(
                     children: getInterestList(user.interests.values.toList(), (int newInterestId) => setState(() {
                       interestId = newInterestId;
-                      events.sendEvent('interestSelect', {"interest": interestId});
+                      events.sendEvent('interestSelect', {"interest": interestId}, widget.me);
                     }), interestId!),
                   ),
                 ),

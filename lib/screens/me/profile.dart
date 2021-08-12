@@ -44,7 +44,7 @@ class _ProfileState extends State<Profile> {
         selected: true,
         onClick: () {
           Navigator.of(context).pushNamed('/interests', arguments: interests[0].id);
-          events.sendEvent('interestSelect', {"interest": 0, "home": true});
+          events.sendEvent('interestSelect', {"interest": 0, "home": true}, widget.me);
         },
       );
     }else{
@@ -54,7 +54,7 @@ class _ProfileState extends State<Profile> {
         amount: interest.amount!,
         onClick: () {
           Navigator.of(context).pushNamed('/interests', arguments: interest.id);
-          events.sendEvent('interestSelect', {"interest": interest.id, "home": true});
+          events.sendEvent('interestSelect', {"interest": interest.id, "home": true}, widget.me);
         },
       );
     }
@@ -74,7 +74,7 @@ class _ProfileState extends State<Profile> {
               widget: TraitsElements(
                 onClick: (String trait) {
                   Navigator.of(context).pushNamed('/personality', arguments: trait);
-                  events.sendEvent('traitSelect', {"trait": trait, "home": true});
+                  events.sendEvent('traitSelect', {"trait": trait, "home": true}, widget.me);
                 },
                 personality: user.personality,
               ),
@@ -85,7 +85,7 @@ class _ProfileState extends State<Profile> {
             child: GestureDetector(
               onTap: () {
                 Navigator.of(context).pushNamed('/mood');
-                events.sendEvent('avatarClick');
+                events.sendEvent('avatarClick', {}, widget.me);
               },
               child: UserInfo(user),
             ),

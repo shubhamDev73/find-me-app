@@ -121,7 +121,7 @@ class _PersonalityState extends State<Personality> {
                     setState(() {
                       trait = traitString;
                     });
-                    events.sendEvent('traitSelect', {"trait": traitString});
+                    events.sendEvent('traitSelect', {"trait": traitString}, widget.me);
                   },
                   personality: user.personality,
                   selectedElement: trait,
@@ -147,7 +147,7 @@ class _PersonalityState extends State<Personality> {
                   List<dynamic> urls = user.personality[trait]['url'];
                   String url = urls[random.nextInt(urls.length)];
                   if(await canLaunch(url)) await launch(url);
-                  events.sendEvent('exploreClick', {"trait": trait});
+                  events.sendEvent('exploreClick', {"trait": trait}, widget.me);
                 },
               ),
               Expanded(
@@ -176,7 +176,7 @@ class _PersonalityState extends State<Personality> {
                     description: adjective['description'],
                   ),
                   onPageChanged: (index, reason) {
-                    events.sendEvent('adjectiveChange', {"adjective": adjectives[trait]![index]['name']});
+                    events.sendEvent('adjectiveChange', {"adjective": adjectives[trait]![index]['name']}, widget.me);
                   },
                   gap: 140,
                 ),

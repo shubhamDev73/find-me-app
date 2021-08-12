@@ -147,13 +147,14 @@ Future<User> getUser ({bool me = true}) async {
   return me ? meUser.get() : _anotherUser.get();
 }
 
-void setAnotherUser (String url) {
+void setAnotherUser (String url, String userId) {
   if(_anotherUser.url != url){
     _anotherUser.clear();
     _anotherUser.url = url;
   }
+  otherUserId = userId;
 }
-
+String? otherUserId;
 
 // found
 MappedCachedData<int, Found> founds = MappedCachedData(

@@ -36,7 +36,7 @@ class ChatMessage extends StatelessWidget {
               flex: 1,
               child: InkWell(
                 onTap: () {
-                  globals.setAnotherUser('/found/${found.id}');
+                  globals.setAnotherUser('/found/${found.id}', found.id.toString());
                   Navigator.of(context).pushNamed('/user', arguments: found);
                   events.sendEvent('viewProfile', {"user": found.id});
                 },
