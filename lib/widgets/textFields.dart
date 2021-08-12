@@ -141,7 +141,7 @@ class InputForm extends StatelessWidget {
                 break;
               case 'submit':
                 widget = Container(
-                  margin: EdgeInsets.fromLTRB(0, 30, 0, 0),
+                  margin: EdgeInsets.fromLTRB(0, 30, 0, 10),
                   child: Button(
                     width: 200,
                     type: 'secondary',
@@ -159,7 +159,10 @@ class InputForm extends StatelessWidget {
                 );
                 break;
               case 'button':
-                widget = buttons![index - submitIndex - 1];
+                widget = Container(
+                  margin: EdgeInsets.symmetric(vertical: 10),
+                  child: buttons![index - submitIndex - 1],
+                );
                 break;
               case 'username':
                 widget = textFieldForRegistration(

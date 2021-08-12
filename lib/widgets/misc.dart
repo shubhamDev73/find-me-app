@@ -121,9 +121,10 @@ class Button extends StatelessWidget {
   final double height;
   final double width;
   final String text;
+  final double? fontSize;
   final void Function()? onTap;
 
-  Button({this.type = 'default', this.height = 42, this.width = 125, this.text = '', this.onTap});
+  Button({this.type = 'default', this.height = 42, this.width = 125, this.text = '', this.fontSize, this.onTap});
 
   @override
   Widget build(BuildContext context) {
@@ -142,7 +143,10 @@ class Button extends StatelessWidget {
             child: Center(
               child: Text(
                 text,
-                style: TextStyle(color: Colors.white),
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: fontSize,
+                ),
                 textAlign: TextAlign.center,
               ),
             ),
@@ -165,7 +169,7 @@ class Button extends StatelessWidget {
               textAlign: TextAlign.center,
               style: TextStyle(
                 color: ThemeColors.accentColor,
-                fontSize: 20,
+                fontSize: fontSize,
               ),
             ),
           ),
