@@ -18,17 +18,17 @@ class _AppState extends State<App> {
   @override
   void initState () {
     super.initState();
-    init();
+    getPosts();
     globals.onLogout = () => setState(() {
       isLoggedIn = false;
     });
     globals.onLogin = () => setState(() {
-      init();
+      getData();
       isLoggedIn = true;
     });
   }
 
-  void init() async {
+  void getData() {
     // user data
     globals.meUser.get(forceNetwork: true);
     globals.founds.get(forceNetwork: true);
@@ -38,7 +38,9 @@ class _AppState extends State<App> {
     globals.moods.get(forceNetwork: true);
     globals.avatars.get(forceNetwork: true);
     globals.personality.get(forceNetwork: true);
+  }
 
+  void getPosts() async {
     await globals.posts.get();
   }
 
@@ -47,7 +49,7 @@ class _AppState extends State<App> {
     if(isLoggedIn == null)
       return createFutureWidget(globals.token.get(), (String token) {
         isLoggedIn = token != '';
-        if(isLoggedIn!) init();
+        if(isLoggedIn!) getData();
         return screen();
       });
     else
