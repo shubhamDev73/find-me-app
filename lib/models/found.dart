@@ -46,7 +46,7 @@ class Found {
       "nick": nick,
       "avatar": avatar,
       "mood": mood,
-      "retain_request_send": retainRequestSent,
+      "retain_request_sent": retainRequestSent,
       "retained": retained,
     };
 

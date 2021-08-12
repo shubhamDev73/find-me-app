@@ -139,7 +139,7 @@ Function? onAvatarsChanged;
 // users
 
 CachedData<User> meUser = CachedData(
-  emptyValue: User(nick: '', baseAvatar: '', interests: LinkedHashMap.identity(), personality: {}, timeline: [], mood: '', avatar: {}),
+  emptyValue: User(nick: '', baseAvatar: '', interests: LinkedHashMap.identity(), personality: {}, mood: '', avatar: {}),
   url: 'me/',
   cacheFile: 'user.json',
   encoder: (User user) => jsonEncode(user.toJson()),
@@ -149,7 +149,7 @@ CachedData<User> meUser = CachedData(
 Map<String, Function> onUserChanged = {};
 
 CachedData<User> _anotherUser = CachedData(
-  emptyValue: User(nick: '', baseAvatar: '', interests: LinkedHashMap.identity(), personality: {}, timeline: [], mood: '', avatar: {}),
+  emptyValue: User(nick: '', baseAvatar: '', interests: LinkedHashMap.identity(), personality: {}, mood: '', avatar: {}),
   url: '',
   encoder: (User user) => jsonEncode(user.toJson()),
   decoder: (String userString) => User.fromJson(jsonDecode(userString), false),

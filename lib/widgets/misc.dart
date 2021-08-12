@@ -8,7 +8,6 @@ import 'package:intl/intl.dart';
 import 'package:findme/models/found.dart';
 import 'package:findme/constant.dart';
 import 'package:findme/screens/loading.dart';
-import 'package:findme/models/fakeDocument.dart';
 import 'package:findme/globals.dart' as globals;
 
 class WidgetBuilder<T> {
@@ -40,14 +39,12 @@ StreamBuilder<T> createStreamWidget<T>(Stream<T> streamObj, Widget Function(T) w
   );
 }
 
-StreamBuilder<QuerySnapshot> createFirebaseStreamWidget(Stream<QuerySnapshot> streamObj, Function widgetCreator, {bool fullPage = true, List<FakeDocument>? cacheObj, Widget? waitingWidget}) {
+StreamBuilder<QuerySnapshot> createFirebaseStreamWidget(Stream<QuerySnapshot> streamObj, Function widgetCreator, {bool fullPage = true, Widget? waitingWidget}) {
   return StreamBuilder<QuerySnapshot>(
     stream: streamObj,
     builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
       if(snapshot.hasData) return widgetCreator(snapshot.data?.docs);
       else if(snapshot.hasError) return Text("${snapshot.error}");
-
-      if(cacheObj != null) return widgetCreator(cacheObj);
       return waitingWidget ?? LoadingScreen(fullPage: fullPage);
     },
   );
