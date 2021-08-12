@@ -9,7 +9,7 @@ import 'package:findme/models/user.dart';
 import 'package:findme/globals.dart' as globals;
 import 'package:findme/events.dart' as events;
 
-class QuestionsWidget extends StatefulWidget {
+class QuestionsWidget extends StatelessWidget {
 
   final List<dynamic> questions;
   final bool me;
@@ -17,31 +17,17 @@ class QuestionsWidget extends StatefulWidget {
   QuestionsWidget({required this.me, required this.interestId, required this.questions});
 
   @override
-  _QuestionsWidgetState createState() => _QuestionsWidgetState();
-}
-
-class _QuestionsWidgetState extends State<QuestionsWidget> {
-
-  Map<String, dynamic>? currentQuestion;
-
-  @override
-  void initState() {
-    super.initState();
-    currentQuestion = widget.questions[0];
-  }
-
-  @override
   Widget build(BuildContext context) {
-    if(!widget.questions.contains(currentQuestion)) currentQuestion = widget.questions[0];
-    TextEditingController answerController = TextEditingController(text: currentQuestion!['answer']);
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.start,
-      children: [
-        Carousel(
-          items: widget.questions,
-          widget: (question) => Container(
-            padding: EdgeInsets.symmetric(horizontal: 50),
-            child: Center(
+    return Carousel(
+      items: questions,
+      widget: (question) {
+        TextEditingController answerController = TextEditingController(text: question['answer']);
+        return Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            Container(
+              height: 150,
+              padding: EdgeInsets.symmetric(horizontal: 50),
               child: Text(
                 question['question'],
                 textAlign: TextAlign.center,
@@ -51,37 +37,36 @@ class _QuestionsWidgetState extends State<QuestionsWidget> {
                 ),
               ),
             ),
-          ),
-          onPageChanged: (index, reason) => setState(() {
-            currentQuestion = widget.questions[index];
-            events.sendEvent('questionSelect', {"question": currentQuestion!['id']});
-          }),
-          gap: 300,
-        ),
-        Container(
-          margin: EdgeInsets.symmetric(horizontal: 60),
-          child: widget.me ? TextField(
-            controller: answerController,
-            onSubmitted: (text) => updateAnswer(widget.interestId, currentQuestion!['id'], text),
-            textAlign: TextAlign.center,
-            maxLines: null,
-            style: GoogleFonts.quicksand(
-              textStyle: TextStyle(
-                fontSize: 25,
-                fontWeight: FontWeight.w700,
+            Container(
+              margin: EdgeInsets.symmetric(horizontal: 60),
+              child: me ? TextField(
+                controller: answerController,
+                onSubmitted: (text) => updateAnswer(interestId, question['id'], text),
+                textAlign: TextAlign.center,
+                maxLines: null,
+                style: GoogleFonts.quicksand(
+                  textStyle: TextStyle(
+                    fontSize: 25,
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+              ) :
+              Text(
+                answerController.text,
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: 25,
+                  fontWeight: FontWeight.w700,
+                ),
               ),
             ),
-          ) :
-          Text(
-            currentQuestion!['answer'],
-            textAlign: TextAlign.center,
-            style: TextStyle(
-              fontSize: 25,
-              fontWeight: FontWeight.w700,
-            ),
-          ),
-        ),
-      ],
+          ],
+        );
+      },
+      onPageChanged: (index, reason) {
+        events.sendEvent('questionSelect', {"question": questions[index]['id']});
+      },
+      gap: 250,
     );
   }
 
@@ -174,10 +159,7 @@ class _InterestsState extends State<Interests> {
       return Scaffold(
         body: Column(
           children: [
-            Expanded(
-              flex: 2,
-              child: Button(type: 'back'),
-            ),
+            Button(type: 'back'),
             Expanded(
               flex: 6,
               child: QuestionsWidget(me: widget.me, interestId: interestId!, questions: user.interests[interestId]!.questions),
