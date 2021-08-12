@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:collection';
 
@@ -211,7 +212,36 @@ CachedData<List<dynamic>> posts = CachedData(
     if(post.containsKey('onError')) return {'url': post['url'], 'body': post['body'], 'id': post['id']};
     return post;
   }).toList()),
-  setCallback: _makePostCalls,
+  setCallback: (postsList) {
+    timer?.cancel();
+    timer = Timer(Duration(milliseconds: 1000), () async {
+      for(Map<String, dynamic> post in postsList){
+        if(!_runningTasks.contains(post['id'])){
+          POST(post['url'], post['body'],
+            callback: (data) => posts.update((postsList) {
+              postsList.remove(post);
+              _runningTasks.remove(post['id']);
+              if(!isOnline){
+                isOnline = true;
+                showSnackBar("Now online!");
+              }
+              return postsList;
+            }),
+            onError: (errorText) {
+              if(post['first']){
+                showSnackBar(errorText);
+                post['first'] = false;
+              }
+              isOnline = false;
+              _runningTasks.remove(post['id']);
+              posts.update((data) => data);
+            },
+          );
+          _runningTasks.add(post['id']);
+        }
+      }
+    });
+  },
 );
 
 void addPostCall(String url, Map<String, dynamic> body, {bool Function(Map<String, dynamic>)? overwrite}) {
@@ -239,33 +269,7 @@ void showSnackBar(String message) {
 
 bool isOnline = true;
 Set<String> _runningTasks = Set();
-void _makePostCalls(List<dynamic> postsList) {
-  for(Map<String, dynamic> post in postsList){
-    if(!_runningTasks.contains(post['id'])){
-      POST(post['url'], post['body'],
-        callback: (data) => posts.update((postsList) {
-          postsList.remove(post);
-          _runningTasks.remove(post['id']);
-          if(!isOnline){
-            isOnline = true;
-            showSnackBar("Now online!");
-          }
-          return postsList;
-        }),
-        onError: (errorText) {
-          if(post['first']){
-            showSnackBar(errorText);
-            post['first'] = false;
-          }
-          isOnline = false;
-          _runningTasks.remove(post['id']);
-          posts.update((data) => data);
-        },
-      );
-      _runningTasks.add(post['id']);
-    }
-  }
-}
+Timer? timer;
 
 String otpUsername = '';
 Map<String, dynamic> tempExternalRegister = {};

@@ -83,7 +83,7 @@ class _MoodState extends State<Mood> {
                         globals.meUser.update((user) {
                           user.avatar = moodAvatar['url'];
                           user.baseAvatar = avatar['name'];
-                          globals.addPostCall('me/avatar/update/', {"id": moodAvatar['id']});
+                          globals.addPostCall('me/avatar/update/', {"id": moodAvatar['id']}, overwrite: (body) => true);
                           return user;
                         });
                         events.sendEvent('avatarSelect', {"avatar": avatar['name']});
@@ -143,7 +143,7 @@ class _MoodState extends State<Mood> {
                   onPageChanged: (index, reason) {
                     Map<String, dynamic> avatar = avatarList[index];
 
-                    globals.addPostCall('me/avatar/update/', {"id": avatar['id']});
+                    globals.addPostCall('me/avatar/update/', {"id": avatar['id']}, overwrite: (body) => true);
                     setState(() {
                       mood = avatar['mood'];
                     });
