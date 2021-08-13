@@ -69,8 +69,9 @@ class _AddInterestsState extends State<AddInterests> {
 
                         globals.addPostCall(
                           'me/interests/update/',
-                          {"interest": interest.id, "amount": interest.amount},
+                          {"interest": interest.id, "amount": interest.amount, "timestamp": DateTime.now().toUtc().toString()},
                           overwrite: (body) => body['interest'] == interest.id,
+                          collect: true,
                         );
 
                         globals.meUser.update((User user) {

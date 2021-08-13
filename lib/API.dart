@@ -29,7 +29,7 @@ Future<T> GETResponse<T>(String url, {T Function(String)? decoder, Function? cal
 
 }
 
-Future<void> POST(String url, Map<String, dynamic>? body, {bool useToken = true, String? tempToken, Function? callback, Function(String)? onError}) async {
+Future<void> POST(String url, dynamic body, {bool useToken = true, String? tempToken, Function? callback, Function(String)? onError}) async {
   String token = tempToken ?? await globals.token.get();
 
   try{

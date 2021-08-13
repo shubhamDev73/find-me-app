@@ -245,20 +245,33 @@ CachedData<List<dynamic>> posts = CachedData(
   },
 );
 
-void addPostCall(String url, Map<String, dynamic> body, {bool Function(Map<String, dynamic>)? overwrite}) {
+void addPostCall(String url, Map<String, dynamic> body, {bool Function(Map<String, dynamic>)? overwrite, bool collect = false}) {
   posts.update((postsList) {
-    bool present = false;
+    bool overwritten = false;
     if(overwrite != null){
       for(Map<String, dynamic> post in postsList){
-        if(post['url'] == url && overwrite(post['body'])){
-          post['body'] = body;
-          post['first'] = true;
-          present = true;
+        if(post['url'] == url){
+          if(collect){
+            for(int i = 0; i < post['body'].length; i++){
+              if(overwrite(post['body'][i])){
+                post['body'][i] = body;
+                overwritten = true;
+                break;
+              }
+            }
+            if(!overwritten) post['body'].add(body);
+            post['first'] = true;
+            overwritten = true;
+          }else if(overwrite(post['body'])){
+            post['body'] = body;
+            post['first'] = true;
+            overwritten = true;
+          }
           break;
         }
       }
     }
-    if(!present) postsList.add({"url": url, "body": body, "first": true, "id": uuid.v1()});
+    if(!overwritten) postsList.add({"url": url, "body": collect ? [body] : body, "first": true, "id": uuid.v1()});
     return postsList;
   });
 }
