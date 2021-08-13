@@ -126,6 +126,7 @@ class _TabbedScreenState extends State<TabbedScreen> {
             child: tabScreens[tab],
           )).toList(),
         ),
+        resizeToAvoidBottomInset: _currentTab == PageTab.found,
         bottomNavigationBar: SizedBox(
           height: 50,
           child: BottomNavigationBar(

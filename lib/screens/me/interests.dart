@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+import 'package:findme/assets.dart';
 import 'package:findme/constant.dart';
 import 'package:findme/widgets/interestButton.dart';
 import 'package:findme/widgets/misc.dart';
@@ -39,17 +41,29 @@ class QuestionsWidget extends StatelessWidget {
             ),
             Container(
               margin: EdgeInsets.symmetric(horizontal: 60),
-              child: me ? TextField(
-                controller: answerController,
-                onSubmitted: (text) => updateAnswer(interestId, question['id'], text),
-                textAlign: TextAlign.center,
-                maxLines: null,
-                style: GoogleFonts.quicksand(
-                  textStyle: TextStyle(
-                    fontSize: 25,
-                    fontWeight: FontWeight.w700,
+              child: me ? Stack(
+                children: [
+                  TextField(
+                    controller: answerController,
+                    onSubmitted: (text) => updateAnswer(interestId, question['id'], text),
+                    textAlign: TextAlign.center,
+                    maxLines: null,
+                    style: GoogleFonts.quicksand(
+                      textStyle: TextStyle(
+                        fontSize: 25,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
                   ),
-                ),
+                  Positioned(
+                    right: 0,
+                    bottom: 20,
+                    child: InkWell(
+                      onTap: () => updateAnswer(interestId, question['id'], answerController.text),
+                      child: SvgPicture.asset(Assets.chatArrow),
+                    ),
+                  ),
+                ],
               ) :
               Text(
                 answerController.text,
@@ -66,7 +80,7 @@ class QuestionsWidget extends StatelessWidget {
       onPageChanged: (index, reason) {
         events.sendEvent('questionSelect', {"question": questions[index]['id']}, me);
       },
-      gap: 250,
+      gap: 300,
     );
   }
 
@@ -157,6 +171,7 @@ class _InterestsState extends State<Interests> {
     return createFutureWidget<User>(globals.getUser(me: widget.me), (User user) {
       if(!user.interests.containsKey(interestId)) interestId = user.interests.values.elementAt(0).id;
       return Scaffold(
+        resizeToAvoidBottomInset: false,
         body: Column(
           children: [
             Button(type: 'back'),
