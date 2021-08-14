@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:findme/screens/navigation/animatedRoute.dart';
 import 'package:findme/screens/onboarding/start.dart';
+import 'package:findme/screens/onboarding/mood.dart';
 
 class OnboardingScreens extends StatelessWidget {
 
@@ -10,6 +11,7 @@ class OnboardingScreens extends StatelessWidget {
   Map<String, Widget> createRoutes() {
     return {
       '/': Start(),
+      '/mood': Mood(),
     };
   }
 
