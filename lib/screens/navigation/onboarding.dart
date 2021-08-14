@@ -3,6 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:findme/screens/navigation/animatedRoute.dart';
 import 'package:findme/screens/onboarding/start.dart';
 import 'package:findme/screens/onboarding/mood.dart';
+import 'package:findme/screens/onboarding/interests.dart';
+import 'package:findme/screens/onboarding/addInterests.dart';
+import 'package:findme/screens/onboarding/interestQuestions.dart';
 
 class OnboardingScreens extends StatelessWidget {
 
@@ -12,6 +15,9 @@ class OnboardingScreens extends StatelessWidget {
     return {
       '/': Start(),
       '/mood': Mood(),
+      '/interests': Interests(),
+      '/interests/add': AddInterests(),
+      '/interests/question': InterestQuestions(),
     };
   }
 
