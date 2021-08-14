@@ -1,49 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:firebase_core/firebase_core.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
 
 import 'package:findme/models/pageTab.dart';
-import 'package:findme/models/found.dart';
 import 'package:findme/constant.dart';
 import 'package:findme/globals.dart' as globals;
 import 'package:findme/events.dart' as events;
-
-void onNotification(Map<String, dynamic> data) async {
-  switch(data['type']){
-    case 'Found':
-      globals.founds.get(forceNetwork: true);
-      break;
-    case 'Personality':
-      globals.meUser.get(forceNetwork: true);
-      break;
-    case 'Chat':
-      int id = int.parse(data['id']);
-      Map<int, Found> founds = await globals.founds.get();
-      globals.pageOnTabChange = {"tab": PageTab.found, "route": "/message", "arguments": founds[id]};
-      break;
-    case 'AvatarUpdate':
-      int id = int.parse(data['id']);
-      Map<String, Map<String, dynamic>> avatars = await globals.avatars.get();
-      globals.founds.mappedUpdate(id, (Found found) {
-        found.mood = data['mood'];
-        found.avatar = avatars[data['base']]!['avatars'][data['mood']]['url'];
-        return found;
-      });
-      break;
-    case 'NickUpdate':
-      int id = int.parse(data['id']);
-      globals.founds.mappedUpdate(id, (Found found) {
-        found.nick = data['nick'];
-        return found;
-      });
-      break;
-  }
-}
-
-Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
-  onNotification(message.data);
-}
 
 class TabbedScreen extends StatefulWidget {
 
@@ -55,47 +16,6 @@ class _TabbedScreenState extends State<TabbedScreen> {
 
   PageTab _currentTab = PageTab.found;
   List<PageTab> _tabHistory = List.empty(growable: true);
-
-  @override
-  void initState() {
-    super.initState();
-    init();
-  }
-
-  void init() async {
-    await Firebase.initializeApp();
-
-    FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
-    String fcmToken = (await FirebaseMessaging.instance.getToken())!;
-    globals.addPostCall('notification/token/', {"fcm_token": fcmToken}, overwrite: (body) => true);
-
-    FirebaseMessaging.onMessage.listen((RemoteMessage message) async {
-      if(message.data['type'] != 'Chat') onNotification(message.data);
-
-      bool display = true;
-      if(message.data.containsKey('display')) display = message.data['display'] == 'true';
-
-      if(display && message.notification != null){
-        showDialog(
-          context: context,
-          builder: (context) => AlertDialog(
-            content: ListTile(
-              title: Text(message.notification!.title!),
-              subtitle: Text(message.notification!.body!),
-            ),
-            actions: [
-              TextButton(
-                child: Text('Ok'),
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-              ),
-            ],
-          ),
-        );
-      }
-    });
-  }
 
   @override
   Widget build(BuildContext context) {
