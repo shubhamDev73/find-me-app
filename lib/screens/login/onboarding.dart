@@ -1,7 +1,10 @@
-import 'package:findme/constant.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:findme/models/onboardingModel.dart';
+
+import 'package:findme/assets.dart';
+import 'package:findme/constant.dart';
+import 'package:findme/widgets/misc.dart';
 
 class OnboardingScreens extends StatefulWidget {
   @override
@@ -9,38 +12,39 @@ class OnboardingScreens extends StatefulWidget {
 }
 
 class _OnboardingScreensState extends State<OnboardingScreens> {
-  List<SliderModel> slides = getSlides();
+
   int slideIndex = 0;
   PageController controller = new PageController();
 
+  Widget _buildPageIndicator(bool isCurrentPage) {
+    return Container(
+      margin: EdgeInsets.symmetric(horizontal: 2.0),
+      height: isCurrentPage ? 10.0 : 6.0,
+      width: isCurrentPage ? 10.0 : 6.0,
+      decoration: BoxDecoration(
+        color: isCurrentPage ? Colors.white : Colors.transparent,
+        border: isCurrentPage
+            ? Border.all(color: Colors.transparent)
+            : Border.all(color: Colors.white),
+        borderRadius: BorderRadius.circular(12),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
-    Widget _buildPageIndicator(bool isCurrentPage) {
-      return Container(
-        margin: EdgeInsets.symmetric(horizontal: 2.0),
-        height: isCurrentPage ? 10.0 : 6.0,
-        width: isCurrentPage ? 10.0 : 6.0,
-        decoration: BoxDecoration(
-          color: isCurrentPage ? Colors.white : Colors.transparent,
-          border: isCurrentPage
-              ? Border.all(color: Colors.transparent)
-              : Border.all(color: Colors.white),
-          borderRadius: BorderRadius.circular(12),
-        ),
-      );
-    }
-
     return Scaffold(
       body: Container(
         decoration: new BoxDecoration(
-            gradient: new LinearGradient(
-          begin: Alignment.topCenter,
-          end: Alignment.bottomCenter,
-          colors: [
-            Colors.white,
-            ThemeColors.primaryColor,
-          ],
-        )),
+          gradient: new LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [
+              Colors.white,
+              ThemeColors.primaryColor,
+            ],
+          ),
+        ),
         child: Column(
           children: [
             Expanded(
@@ -54,118 +58,71 @@ class _OnboardingScreensState extends State<OnboardingScreens> {
                 },
                 children: [
                   SlideTile(
-                    imagePath: slides[0].getImageAssetPath(),
-                    title: slides[0].getTitle(),
-                    desc: slides[0].getDesc(),
+                    imagePath: Assets.onboardingOne,
+                    title: 'find',
+                    description: 'discover people',
                   ),
                   SlideTile(
-                    imagePath: slides[1].getImageAssetPath(),
-                    title: slides[1].getTitle(),
-                    desc: slides[1].getDesc(),
+                    imagePath: Assets.onboardingTwo,
+                    title: 'me',
+                    description: 'discover thyself',
                   ),
                   SlideTile(
-                    imagePath: slides[2].getImageAssetPath(),
-                    title: slides[2].getTitle(),
-                    desc: slides[2].getDesc(),
+                    imagePath: Assets.onboardingThree,
+                    title: 'find.me',
+                    description: 'discover conversations',
                     isLast: true,
                   )
                 ],
               ),
             ),
             Expanded(
-                flex: slideIndex != 2 ? 1 : 4,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    slideIndex != 2
-                        ? Container()
-                        : Column(
-                            children: [
-                              InkWell(
-                                onTap: () => Navigator.of(context)
-                                    .pushNamed("/register"),
-                                child: Container(
-                                  margin: EdgeInsets.symmetric(vertical: 2),
-                                  padding: EdgeInsets.symmetric(
-                                    horizontal: 20,
-                                    vertical: 10,
-                                  ),
-                                  decoration: BoxDecoration(
-                                    color: Colors.white,
-                                    borderRadius: BorderRadius.circular(14),
-                                  ),
-                                  width:
-                                      MediaQuery.of(context).size.width * 0.5,
-                                  child: Text(
-                                    "sign up",
-                                    style: TextStyle(
-                                      fontSize: 14,
-                                      fontWeight: FontWeight.w500,
-                                      color: ThemeColors.primaryColor,
-                                    ),
-                                    textAlign: TextAlign.center,
-                                  ),
-                                ),
-                              ),
-                              InkWell(
-                                onTap: () =>
-                                    Navigator.of(context).pushNamed("/login"),
-                                child: Container(
-                                  margin: EdgeInsets.symmetric(vertical: 10),
-                                  padding: EdgeInsets.symmetric(
-                                      horizontal: 20, vertical: 10),
-                                  decoration: BoxDecoration(
-                                      color: Colors.white,
-                                      borderRadius: BorderRadius.circular(14)),
-                                  width:
-                                      MediaQuery.of(context).size.width * 0.5,
-                                  child: Text(
-                                    "login",
-                                    style: TextStyle(
-                                      fontSize: 14,
-                                      fontWeight: FontWeight.w500,
-                                      color: ThemeColors.primaryColor,
-                                    ),
-                                    textAlign: TextAlign.center,
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                    SizedBox(
-                      height: 20,
+              flex: slideIndex != 2 ? 1 : 4,
+              child: Column(
+                children: [
+                  slideIndex == 2 ? Column(
+                    children: [
+                      Container(
+                        margin: EdgeInsets.symmetric(vertical: 20),
+                        child: Button(
+                          type: 'secondary',
+                          text: 'sign up',
+                          onTap: () => Navigator.of(context).pushNamed('/register'),
+                        ),
+                      ),
+                      Button(
+                        type: 'secondary',
+                        text: 'login',
+                        onTap: () => Navigator.of(context).pushNamed('/login'),
+                      ),
+                    ],
+                  ) : Container(),
+                  SizedBox(height: 20),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      for (int i = 0; i < 3; i++)
+                        _buildPageIndicator(i == slideIndex)
+                    ],
+                  ),
+                  SizedBox(height: 6),
+                  slideIndex != 2 ? GestureDetector(
+                    onTap: () => controller.animateToPage(2,
+                      duration: Duration(milliseconds: 400),
+                      curve: Curves.linear,
                     ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        for (int i = 0; i < 3; i++)
-                          i == slideIndex
-                              ? _buildPageIndicator(true)
-                              : _buildPageIndicator(false),
-                      ],
+                    child: Text(
+                      'skip >',
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w500,
+                        color: Colors.white,
+                      ),
                     ),
-                    SizedBox(
-                      height: 6,
-                    ),
-                    slideIndex != 2
-                        ? GestureDetector(
-                            onTap: () {
-                              controller.animateToPage(2,
-                                  duration: Duration(milliseconds: 400),
-                                  curve: Curves.linear);
-                            },
-                            child: Text(
-                              "skip >",
-                              style: TextStyle(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.w500,
-                                  color: Colors.white),
-                            ),
-                          )
-                        : Container(),
-                  ],
-                ))
+                  ) : Container(),
+                ],
+              ),
+            ),
           ],
         ),
       ),
@@ -174,10 +131,10 @@ class _OnboardingScreensState extends State<OnboardingScreens> {
 }
 
 class SlideTile extends StatelessWidget {
-  final String imagePath, title, desc;
+  final String imagePath, title, description;
   final bool isLast;
 
-  SlideTile({required this.imagePath, required this.title, required this.desc, this.isLast = false});
+  SlideTile({required this.imagePath, required this.title, required this.description, this.isLast = false});
 
   @override
   Widget build(BuildContext context) {
@@ -185,20 +142,15 @@ class SlideTile extends StatelessWidget {
       padding: EdgeInsets.symmetric(horizontal: 20),
       alignment: Alignment.center,
       child: Column(
-        mainAxisAlignment:
-            isLast ? MainAxisAlignment.end : MainAxisAlignment.center,
+        mainAxisAlignment: isLast ? MainAxisAlignment.end : MainAxisAlignment.center,
         children: [
           Hero(
-            tag: "logo",
-            child: SvgPicture.asset(
-              imagePath,
-            ),
+            tag: 'logo',
+            child: SvgPicture.asset(imagePath),
           ),
-          SizedBox(
-            height: 8,
-          ),
+          SizedBox(height: 8),
           Hero(
-            tag: "title",
+            tag: 'title',
             child: Text(
               title,
               style: TextStyle(
@@ -209,9 +161,9 @@ class SlideTile extends StatelessWidget {
             ),
           ),
           Hero(
-            tag: "desc",
+            tag: 'description',
             child: Text(
-              desc,
+              description,
               style: TextStyle(
                 fontSize: 12,
                 fontWeight: FontWeight.w400,
