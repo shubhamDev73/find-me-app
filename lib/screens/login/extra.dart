@@ -77,6 +77,7 @@ class _ExtraState extends State<Extra> {
                     else{
                       globals.token.set(globals.tempExternalRegister['token']);
                       globals.userId.set(globals.tempExternalRegister['user_id']);
+                      globals.onboarded.set(globals.tempExternalRegister['onboarded']);
                       globals.tempExternalRegister.clear();
                     }
                   }, onError: (String errorText) {

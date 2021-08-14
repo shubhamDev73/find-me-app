@@ -40,6 +40,13 @@ CachedData<String> userId = CachedData(
   cacheFile: 'userId.txt',
 );
 
+CachedData<bool> onboarded = CachedData(
+  emptyValue: true,
+  cacheFile: 'onboarded.txt',
+  setCallback: onOnboarded,
+);
+Function(bool)? onOnboarded;
+
 
 // data
 
@@ -287,3 +294,4 @@ Timer? timer;
 
 String otpUsername = '';
 Map<String, dynamic> tempExternalRegister = {};
+Map<String, Function> onboardingCallbacks = {};

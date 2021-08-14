@@ -85,6 +85,7 @@ class _RegisterState extends State<Register> {
                     if(json.containsKey('token')){
                       globals.token.set(json['token']);
                       globals.userId.set(json['user_id']);
+                      globals.onboarded.set(json['onboarded']);
                     }else
                       globals.showSnackBar(json['error']);
                   }, onError: (String errorText) {

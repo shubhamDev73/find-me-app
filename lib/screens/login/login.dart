@@ -46,6 +46,7 @@ class _LoginState extends State<Login> {
           }else{
             globals.token.set(json['token']);
             globals.userId.set(json['user_id']);
+            globals.onboarded.set(json['onboarded']);
           }
         }else
           globals.showSnackBar(json['error']);
@@ -139,6 +140,7 @@ class _LoginState extends State<Login> {
                     if(json.containsKey('token')){
                       globals.token.set(json['token']);
                       globals.userId.set(json['user_id']);
+                      globals.onboarded.set(json['onboarded']);
                     }else
                       globals.showSnackBar(json['error']);
                   }, onError: (String errorText) {

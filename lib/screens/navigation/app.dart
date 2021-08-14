@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:findme/screens/navigation/loginScreens.dart';
 import 'package:findme/screens/navigation/tabs.dart';
+import 'package:findme/screens/navigation/onboarding.dart';
 import 'package:findme/widgets/misc.dart';
 import 'package:findme/globals.dart' as globals;
 
@@ -14,6 +15,7 @@ class App extends StatefulWidget {
 class _AppState extends State<App> {
 
   bool? isLoggedIn;
+  bool? isOnboarded;
 
   @override
   void initState () {
@@ -25,6 +27,9 @@ class _AppState extends State<App> {
     globals.onLogin = () => setState(() {
       getData();
       isLoggedIn = true;
+    });
+    globals.onOnboarded = (bool onboarded) => setState(() {
+      isOnboarded = onboarded;
     });
   }
 
@@ -46,17 +51,18 @@ class _AppState extends State<App> {
 
   @override
   Widget build(BuildContext context) {
-    if(isLoggedIn == null)
-      return createFutureWidget(globals.token.get(), (String token) {
+    if(isLoggedIn == null || isOnboarded == null)
+      return createFutureWidget(globals.token.get(), (String token) => createFutureWidget(globals.onboarded.get(), (bool onboarded) {
+        isOnboarded = onboarded;
         isLoggedIn = token != '';
         if(isLoggedIn!) getData();
         return screen();
-      });
+      }));
     else
       return screen();
   }
 
   Widget screen() {
-    return isLoggedIn! ? TabbedScreen() : LoginScreens();
+    return isLoggedIn! ? isOnboarded! ? TabbedScreen() : OnboardingScreens() : LoginScreens();
   }
 }
