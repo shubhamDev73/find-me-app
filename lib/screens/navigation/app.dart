@@ -14,9 +14,12 @@ void onNotification(Map<String, dynamic> data) async {
   switch(data['type']){
     case 'Found':
       globals.founds.get(forceNetwork: true);
+      globals.pageOnTabChange = {"tab": PageTab.found, "route": "/"};
       break;
     case 'Personality':
-      globals.meUser.get(forceNetwork: true);
+      await globals.meUser.get(forceNetwork: true);
+      bool onboarded = await globals.onboarded.get();
+      globals.pageOnTabChange = onboarded ? {"tab": PageTab.me, "route": "/personality", "arguments": "Water"} : {"route": "/personality/bar"};
       break;
     case 'Chat':
       int id = int.parse(data['id']);
