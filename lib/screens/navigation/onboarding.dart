@@ -2,6 +2,10 @@ import 'package:flutter/material.dart';
 
 import 'package:findme/screens/navigation/animatedRoute.dart';
 import 'package:findme/screens/onboarding/start.dart';
+import 'package:findme/screens/onboarding/personality.dart';
+import 'package:findme/screens/onboarding/personalityElements.dart';
+import 'package:findme/screens/onboarding/personalityBar.dart';
+import 'package:findme/screens/onboarding/personalityAdjectives.dart';
 import 'package:findme/screens/onboarding/mood.dart';
 import 'package:findme/screens/onboarding/interests.dart';
 import 'package:findme/screens/onboarding/addInterests.dart';
@@ -14,6 +18,10 @@ class OnboardingScreens extends StatelessWidget {
   Map<String, Widget> createRoutes() {
     return {
       '/': Start(),
+      '/personality': Personality(),
+      '/personality/elements': PersonalityElements(),
+      '/personality/bar': PersonalityBar(),
+      '/personality/adjectives': PersonalityAdjectives(),
       '/mood': Mood(),
       '/interests': Interests(),
       '/interests/add': AddInterests(),
