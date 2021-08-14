@@ -109,12 +109,12 @@ class _AddInterestsState extends State<AddInterests> {
                 ),
               ),
             ),
-            SizedBox(height: 10),
+            SizedBox(height: 20),
             canProceed ? Button(
               text: "Proceed",
               onTap: () => Navigator.of(context).pushNamed('/interests/question', arguments: user.interests.values.toList()[0].id),
             ) : Container(),
-            SizedBox(height: 10),
+            SizedBox(height: 20),
           ],
         ),
       ));

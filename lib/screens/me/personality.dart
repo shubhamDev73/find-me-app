@@ -168,7 +168,6 @@ class _PersonalityState extends State<Personality> {
                   color: ThemeColors.boxColor,
                   borderRadius: BorderRadius.circular(15),
                 ),
-                // margin: EdgeInsets.symmetric(horizontal: 10),
                 child: Carousel(
                   items: adjectives[trait]!,
                   widget: (adjective) => AdjListItem(

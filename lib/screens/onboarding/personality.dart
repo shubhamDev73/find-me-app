@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import 'package:findme/widgets/misc.dart';
 import 'package:findme/widgets/traitBar.dart';
 import 'package:findme/constant.dart';
 
@@ -21,8 +22,11 @@ class Personality extends StatelessWidget {
               ),
               Column(
                 children: [
+                  Button(
+                    type: 'back',
+                  ),
                   Container(
-                    margin: EdgeInsets.symmetric(vertical: 50),
+                    margin: EdgeInsets.symmetric(horizontal: 20),
                     child: Text(
                       "Personality",
                       textAlign: TextAlign.center,
@@ -33,6 +37,7 @@ class Personality extends StatelessWidget {
                     ),
                   ),
                   Container(
+                    margin: EdgeInsets.symmetric(vertical: 40),
                     child: Text(
                       "Your psyche is divided into five elements",
                       textAlign: TextAlign.center,
@@ -42,11 +47,11 @@ class Personality extends StatelessWidget {
                     ),
                   ),
                   Container(
-                    margin: EdgeInsets.symmetric(vertical: 45),
                     child: TraitButton(trait: trait, value: personality[trait]!, selected: true, onTap: (){}),
                   ),
+                  SizedBox(height: 40),
                   Container(
-                    width: 270,
+                    margin: EdgeInsets.symmetric(horizontal: 20),
                     child: Text(
                       "These elements make up a crucial part of your self",
                       textAlign: TextAlign.center,
@@ -55,9 +60,9 @@ class Personality extends StatelessWidget {
                       ),
                     ),
                   ),
+                  SizedBox(height: 20),
                   Container(
-                    margin: EdgeInsets.symmetric(vertical: 40),
-                    width: 270,
+                    margin: EdgeInsets.symmetric(horizontal: 20),
                     child: Text(
                       "each element has two ends and we lie somewhere in between",
                       textAlign: TextAlign.center,
@@ -66,6 +71,7 @@ class Personality extends StatelessWidget {
                       ),
                     ),
                   ),
+                  SizedBox(height: 35),
                   TraitsElements(
                     onClick: (traitString) => Navigator.of(context).pushNamed('/personality/elements'),
                     personality: personality,

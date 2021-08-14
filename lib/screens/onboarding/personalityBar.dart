@@ -26,31 +26,34 @@ class _PersonalityBarState extends State<PersonalityBar> {
           children: [
             TopBox(
               description: "Here is your first analysis for various elements.",
+              height: 190,
               widget: TraitsElements(
                 onClick: (String traitString) => setState(() {trait = traitString;}),
                 personality: user.personality,
                 selectedElement: trait,
               ),
             ),
-            Text(
-              trait,
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                fontSize: 30,
-                fontWeight: FontWeight.w600,
-              ),
-            ),
-            Expanded(
-              flex: 5,
-              child: Container(
-                padding: EdgeInsets.symmetric(horizontal: 32, vertical: 25),
+            SizedBox(height: 40),
+            Container(
+              child: Center(
                 child: Text(
-                  user.personality[trait]['description'],
-                  textAlign: TextAlign.center,
+                  trait,
                   style: TextStyle(
-                    fontSize: 16,
+                    fontSize: 24,
                     fontWeight: FontWeight.bold,
                   ),
+                ),
+              ),
+            ),
+            Container(
+              height: 150,
+              padding: EdgeInsets.symmetric(horizontal: 32, vertical: 25),
+              child: Text(
+                user.personality[trait]['description'],
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
                 ),
               ),
             ),
@@ -86,14 +89,23 @@ class _PersonalityBarState extends State<PersonalityBar> {
                 ),
               ],
             ),
-            Text(
-              "The bar lets you know what side are you on. Right being the extreme.",
-              textAlign: TextAlign.center,
+            SizedBox(height: 30),
+            Container(
+              margin: EdgeInsets.symmetric(horizontal: 32),
+                child: Text(
+                "The bar lets you know what side are you on. Right being the extreme.",
+                textAlign: TextAlign.center,
+              ),
             ),
-            Text(
-              "It adapts as you take multiple tests, and get to explore yourself better.",
-              textAlign: TextAlign.center,
+            SizedBox(height: 20),
+            Container(
+              margin: EdgeInsets.symmetric(horizontal: 32),
+              child: Text(
+                "It adapts as you take multiple tests, and get to explore yourself better.",
+                textAlign: TextAlign.center,
+              ),
             ),
+            SizedBox(height: 40),
             Button(
               text: 'Got it',
               onTap: () => Navigator.of(context).pushNamed('/personality/adjectives'),

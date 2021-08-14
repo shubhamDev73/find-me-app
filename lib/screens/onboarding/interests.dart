@@ -28,6 +28,9 @@ class Interests extends StatelessWidget {
               child: Text(
                 "Tap on an interest multiple times to indicate how strong your interest is",
                 textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: 20,
+                ),
               ),
             ),
           ),
@@ -66,6 +69,9 @@ class _InterestInfoState extends State<InterestInfo> {
         SizedBox(height: 30),
         Text(
           widget.infoTexts[amount],
+          style: TextStyle(
+            fontSize: 18,
+          ),
         ),
         SizedBox(height: 30),
         canProceed ? Button(

@@ -48,14 +48,19 @@ class _PersonalityElementsState extends State<PersonalityElements> {
                 selectedElement: trait,
               ),
             ),
+            SizedBox(height: 50),
             Container(
               child: Center(
                 child: Text(
                   trait,
-                  style: TextStyle(fontSize: 24),
+                  style: TextStyle(
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
               ),
             ),
+            SizedBox(height: 20),
             Container(
               child: Center(
                 child: RichText(
@@ -71,6 +76,7 @@ class _PersonalityElementsState extends State<PersonalityElements> {
                 ),
               ),
             ),
+            SizedBox(height: 50),
             Container(
               child: Center(
                 child: Text(
@@ -80,7 +86,7 @@ class _PersonalityElementsState extends State<PersonalityElements> {
                 ),
               ),
             ),
-            SizedBox(height: 20),
+            SizedBox(height: 30),
             Button(
               text: "Take a Test",
               onTap: () async {
@@ -89,9 +95,7 @@ class _PersonalityElementsState extends State<PersonalityElements> {
                 if(await canLaunch(url)) await launch(url);
                 _timer?.cancel();
                 _timer = Timer.periodic(Duration(milliseconds: 1000), (timer) {
-                  print("check");
                   if(globals.pageOnTabChange != null){
-                    print("null");
                     Navigator.of(context).pushNamed(globals.pageOnTabChange!['route']);
                     globals.pageOnTabChange = null;
                     _timer!.cancel();

@@ -23,6 +23,7 @@ class _InterestQuestionsState extends State<InterestQuestions> {
 
     return createFutureWidget<User>(globals.meUser.get(), (User user) {
       return Scaffold(
+        resizeToAvoidBottomInset: false,
         body: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
@@ -35,6 +36,7 @@ class _InterestQuestionsState extends State<InterestQuestions> {
               flex: 6,
               child: QuestionsWidget(me: true, interestId: interestId!, questions: user.interests[interestId]!.questions),
             ),
+            SizedBox(height: 10),
             Container(
               margin: EdgeInsets.symmetric(horizontal: 20, vertical: 20),
               child: Text(

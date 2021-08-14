@@ -50,7 +50,7 @@ class _MoodState extends State<Mood> {
           children: [
             TopBox(
               height: 208,
-              title: animalSelected ? 'slide to select your mood' : 'tap to select your animal spirit',
+              title: animalSelected ? 'slide to select your mood' : 'tap to select your spirit',
               widget: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: avatars.values.map((avatar) => Container(
@@ -80,26 +80,30 @@ class _MoodState extends State<Mood> {
             ),
             Expanded(
               flex: 5,
-              child: Container(
-                height: 190,
-                width: 190,
-                child: animalSelected ? Container(
-                  child: Center(
-                    child: CachedNetworkImage(
-                      imageUrl: userAvatars[mood]['url']['v2'],
-                    ),
+              child: Column(
+                children: [
+                  Container(
+                    height: 190,
+                    width: 190,
+                    child: animalSelected ? Container(
+                      child: Center(
+                        child: CachedNetworkImage(
+                          imageUrl: userAvatars[mood]['url']['v2'],
+                        ),
+                      ),
+                    ) : Container(),
                   ),
-                ) : Container(),
+                  SizedBox(height: 50),
+                  moodSelected ? Button(
+                    text: "Done",
+                    onTap: () {
+                      globals.onboardingCallbacks['mood']?.call();
+                      Navigator.of(context).pop();
+                    },
+                  ) : Container(),
+                ],
               ),
             ),
-            SizedBox(height: 50),
-            moodSelected ? Button(
-              text: "Done",
-              onTap: () {
-                globals.onboardingCallbacks['mood']?.call();
-                Navigator.of(context).pop();
-              },
-            ) : Container(),
             Expanded(
               flex: 3,
               child: animalSelected ? Carousel(

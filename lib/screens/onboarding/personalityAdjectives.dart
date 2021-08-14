@@ -105,7 +105,7 @@ class _PersonalityAdjectivesState extends State<PersonalityAdjectives> {
                 ),
               ),
               Expanded(
-                flex: 5,
+                flex: 3,
                 child: Container(
                   padding: EdgeInsets.symmetric(horizontal: 32, vertical: 25),
                   child: Text(
@@ -163,6 +163,10 @@ class _PersonalityAdjectivesState extends State<PersonalityAdjectives> {
                   globals.onboardingCallbacks['personality']?.call();
                   Navigator.of(context).popUntil(ModalRoute.withName('/'));
                 },
+              ),
+              Expanded(
+                flex: 1,
+                child: Container(),
               ),
             ],
           ),

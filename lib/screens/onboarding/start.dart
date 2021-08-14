@@ -111,7 +111,6 @@ class _StartState extends State<Start> {
                     margin: EdgeInsets.symmetric(vertical: 12),
                     child: personalityDone && moodDone && interestsDone ? Button(
                       text: 'Done',
-                      fontSize: 20,
                       width: 200,
                       onTap: () {
                         globals.addPostCall('onboarded/', {}, overwrite: (body) => true);

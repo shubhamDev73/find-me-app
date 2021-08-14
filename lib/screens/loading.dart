@@ -20,7 +20,7 @@ class LoadingScreen extends StatelessWidget {
               Stack(
                 clipBehavior: Clip.none,
                 children: [
-                  CircularProgressIndicator(),
+                  CircularProgressIndicator(color: ThemeColors.primaryColor),
                   Positioned(
                     bottom: 2,
                     right: -5,
@@ -45,7 +45,7 @@ class LoadingScreen extends StatelessWidget {
     ) :
     Container(
       child: Center(
-        child: CircularProgressIndicator(),
+        child: CircularProgressIndicator(color: ThemeColors.primaryColor),
       ),
     );
   }
