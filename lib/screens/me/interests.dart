@@ -41,29 +41,18 @@ class QuestionsWidget extends StatelessWidget {
             ),
             Container(
               margin: EdgeInsets.symmetric(horizontal: 60),
-              child: me ? Stack(
-                children: [
-                  TextField(
-                    controller: answerController,
-                    onSubmitted: (text) => updateAnswer(interestId, question['id'], text),
-                    textAlign: TextAlign.center,
-                    maxLines: null,
-                    style: GoogleFonts.quicksand(
-                      textStyle: TextStyle(
-                        fontSize: 25,
-                        fontWeight: FontWeight.w700,
-                      ),
-                    ),
+              child: me ? TextField(
+                textInputAction: TextInputAction.send,
+                controller: answerController,
+                onSubmitted: (text) => updateAnswer(interestId, question['id'], text),
+                textAlign: TextAlign.center,
+                maxLines: null,
+                style: GoogleFonts.quicksand(
+                  textStyle: TextStyle(
+                    fontSize: 25,
+                    fontWeight: FontWeight.w700,
                   ),
-                  Positioned(
-                    right: 0,
-                    bottom: 20,
-                    child: InkWell(
-                      onTap: () => updateAnswer(interestId, question['id'], answerController.text),
-                      child: SvgPicture.asset(Assets.chatArrow),
-                    ),
-                  ),
-                ],
+                ),
               ) :
               Text(
                 answerController.text,
