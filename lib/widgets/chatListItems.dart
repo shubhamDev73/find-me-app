@@ -31,7 +31,7 @@ class ChatListItem extends StatelessWidget {
     return GestureDetector(
       onTap: () {
         if(found.lastMessage == null){
-          globals.setAnotherUser('/found/${found.id}', found.id.toString());
+          globals.setOtherUser('/found/${found.id}', found.id.toString());
           Navigator.of(context).pushNamed('/user', arguments: found);
         }else{
           Navigator.of(context).pushNamed('/message', arguments: found);

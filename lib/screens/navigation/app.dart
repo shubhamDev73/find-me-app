@@ -34,6 +34,7 @@ void onNotification(Map<String, dynamic> data) async {
         found.avatar = avatars[data['base']]!['avatars'][data['mood']]['url'];
         return found;
       });
+      if(globals.otherUserId == data['id']) globals.otherUser.clear();
       break;
     case 'NickUpdate':
       int id = int.parse(data['id']);
@@ -41,6 +42,7 @@ void onNotification(Map<String, dynamic> data) async {
         found.nick = data['nick'];
         return found;
       });
+      if(globals.otherUserId == data['id']) globals.otherUser.clear();
       break;
   }
 }

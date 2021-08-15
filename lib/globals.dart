@@ -23,7 +23,7 @@ CachedData<String> token = CachedData(
     if(token == ''){
       // clearing user data
       meUser.clear();
-      _anotherUser.clear();
+      otherUser.clear();
       founds.clear();
 
       // clearing app data specific to user
@@ -143,7 +143,7 @@ CachedData<User> meUser = CachedData(
 );
 Map<String, Function> onUserChanged = {};
 
-CachedData<User> _anotherUser = CachedData(
+CachedData<User> otherUser = CachedData(
   emptyValue: User(nick: '', baseAvatar: '', interests: LinkedHashMap.identity(), personality: {}, mood: '', avatar: {}),
   url: '',
   encoder: (User user) => jsonEncode(user.toJson()),
@@ -151,13 +151,13 @@ CachedData<User> _anotherUser = CachedData(
 );
 
 Future<User> getUser ({bool me = true}) async {
-  return me ? meUser.get() : _anotherUser.get();
+  return me ? meUser.get() : otherUser.get();
 }
 
-void setAnotherUser (String url, String userId) {
-  if(_anotherUser.url != url){
-    _anotherUser.clear();
-    _anotherUser.url = url;
+void setOtherUser (String url, String userId) {
+  if(otherUser.url != url){
+    otherUser.clear();
+    otherUser.url = url;
   }
   otherUserId = userId;
 }
@@ -184,8 +184,6 @@ MappedCachedData<int, Found> founds = MappedCachedData(
       value: (found) => Found.fromJson(found),
     ),
   setCallback: (data, [int? key]) {
-    _anotherUser.clear();
-
     for(int dKey in data.keys){
       if(!onFoundChanged.containsKey(dKey)) onFoundChanged[dKey] = Map.identity();
     }
