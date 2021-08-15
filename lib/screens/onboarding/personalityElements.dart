@@ -24,6 +24,7 @@ class PersonalityElements extends StatefulWidget {
 class _PersonalityElementsState extends State<PersonalityElements> {
 
   String trait = 'Water';
+  bool testTaken = false;
   Timer? _timer;
 
   @override
@@ -92,6 +93,9 @@ class _PersonalityElementsState extends State<PersonalityElements> {
                 List<dynamic> allUrls = personality['questionnaire']!['initial'];
                 String url = '${allUrls[random.nextInt(allUrls.length)]}?nick=${user.nick}';
                 if(await canLaunch(url)) await launch(url);
+                setState(() {
+                  testTaken = true;
+                });
                 _timer?.cancel();
                 _timer = Timer.periodic(Duration(milliseconds: 1000), (timer) {
                   if(globals.pageOnTabChange != null){
@@ -102,6 +106,14 @@ class _PersonalityElementsState extends State<PersonalityElements> {
                 });
               },
             ),
+            SizedBox(height: 30),
+            testTaken ? Button(
+              text: "Proceed",
+              onTap: () async {
+                await globals.meUser.get(forceNetwork: true);
+                Navigator.of(context).pushNamed('/personality/bar');
+              },
+            ) : Container(),
           ],
         ),
       )),
