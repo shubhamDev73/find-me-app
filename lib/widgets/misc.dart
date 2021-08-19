@@ -214,6 +214,7 @@ class _CarouselState extends State<Carousel> {
   @override
   void initState(){
     if(widget.controller == null) widget.controller = new CarouselController();
+    WidgetsBinding.instance!.addPostFrameCallback((timeStamp) => widget.controller!.jumpToPage(widget.initialPage));
     super.initState();
   }
 
@@ -227,7 +228,6 @@ class _CarouselState extends State<Carousel> {
           carouselController: widget.controller,
           items: widget.items.map((item) => widget.widget(item)).toList(),
           options: CarouselOptions(
-            initialPage: widget.initialPage,
             scrollDirection: Axis.horizontal,
             enableInfiniteScroll: true,
             viewportFraction: 1.0 / widget.elementsToDisplay,
@@ -327,6 +327,7 @@ class _FoundWidgetState extends State<FoundWidget> {
 
   @override
   void initState() {
+    if(globals.onFoundChanged[widget.id] == null) globals.onFoundChanged[widget.id] = Map.identity();
     globals.onFoundChanged[widget.id]![widget.string] = (Found? found) {if(!mounted) return; setState((){});};
     super.initState();
   }
