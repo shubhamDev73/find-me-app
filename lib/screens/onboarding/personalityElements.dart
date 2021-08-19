@@ -1,4 +1,3 @@
-import 'dart:async';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
@@ -25,16 +24,10 @@ class _PersonalityElementsState extends State<PersonalityElements> {
 
   String trait = 'Water';
   bool testTaken = false;
-  Timer? _timer;
-
-  @override
-  void dispose() {
-    _timer?.cancel();
-    super.dispose();
-  }
 
   @override
   Widget build(BuildContext context) {
+    globals.context = context;
     return createFutureWidget<User>(globals.meUser.get(), (User user) =>
       createFutureWidget<Map<String, Map<String, dynamic>>>(globals.personality.get(), (Map<String, Map<String, dynamic>> personality) => Scaffold(
         body: Column(
@@ -93,24 +86,16 @@ class _PersonalityElementsState extends State<PersonalityElements> {
                 List<dynamic> allUrls = personality['questionnaire']!['initial'];
                 String url = '${allUrls[random.nextInt(allUrls.length)]}?nick=${user.nick}';
                 if(await canLaunch(url)) await launch(url);
-                setState(() {
+                WidgetsBinding.instance!.addPostFrameCallback((timeStamp) => setState(() {
                   testTaken = true;
-                });
-                _timer?.cancel();
-                _timer = Timer.periodic(Duration(milliseconds: 1000), (timer) {
-                  if(globals.pageOnTabChange != null){
-                    Navigator.of(context).pushNamed(globals.pageOnTabChange!['route']);
-                    globals.pageOnTabChange = null;
-                    _timer!.cancel();
-                  }
-                });
+                }));
               },
             ),
             SizedBox(height: 30),
             testTaken ? Button(
               text: "Proceed",
               onTap: () async {
-                await globals.meUser.get(forceNetwork: true);
+                globals.meUser.clear();
                 Navigator.of(context).pushNamed('/personality/bar');
               },
             ) : Container(),
