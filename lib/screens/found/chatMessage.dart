@@ -93,7 +93,7 @@ class ChatMessage extends StatelessWidget {
                           onTap: () {
                             List<AppSettings> settings = List.of({
                               AppSettings(text: "Retain", onTap: () {
-                                globals.addPostCall('found/retain/', {"id": found.id});
+                                globals.addPostCall('found/retain/', {"id": found.id}, overwrite: (body) => body['id'] == found.id);
                                 events.sendEvent('settingsRetain', {"user": found.id});
                               }),
                               AppSettings(text: "Block", onTap: () => showDialog(
@@ -110,7 +110,10 @@ class ChatMessage extends StatelessWidget {
                                     ),
                                     TextButton(
                                       child: Text('Yes'),
-                                      onPressed: () => globals.showSnackBar("Not implemented"),
+                                      onPressed: () {
+                                        globals.addPostCall('found/block/', {"id": found.id}, overwrite: (body) => body['id'] == found.id);
+                                        events.sendEvent('settingsBlock', {"user": found.id});
+                                      },
                                     ),
                                   ],
                                 ),
