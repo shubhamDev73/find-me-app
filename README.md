@@ -1,16 +1,15 @@
-# findme
+# Find.Me
 
-AI App
+Find me is a social network to facilitate better conversations by connecting with people compatible with you based on their personality, interests and mood.
 
-## Getting Started
+This is the application project of the platform. Backend server repository present [here](https://github.com/shubhamDev73/find-me-server).
 
-This project is a starting point for a Flutter application.
+## Installation and running
 
-A few resources to get you started if this is your first Flutter project:
+`Flutter 2.2.3` can be installed from [here](https://docs.flutter.dev/get-started/install).
 
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
+Running
+- Using Android Studio (recommended): [view official docs](https://docs.flutter.dev/get-started/editor?tab=androidstudio)
+- Using terminal: `flutter run`
 
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+Additionally, credentials will be needed for firebase functionalities.
